@@ -6,19 +6,20 @@
 <style>
     #split {
         font-family: Mori, sans-serif;
-        font-size: 4rem;
+        font-size: 3.5rem;
         color: black;
         will-change: transform;
         transform: translateZ(0);
         -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none;   /* Safari */
-        -khtml-user-select: none;    /* Konqueror HTML */
-        -moz-user-select: none;      /* Old Firefox */
-        -ms-user-select: none;       /* Internet Explorer/Edge */
-        user-select: none;           /* Standard syntax */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Standard syntax */
     }
 
     #splash {
+        clip-path: inset(0 0 0% 0);
         position: fixed;
         inset: 0;
         background-color: white;
@@ -55,9 +56,10 @@
                     },
                     onComplete() {
                         gsap.to("#splash", {
-                            opacity: 0,
-                            duration: 1,
-                            delay: 0,
+                            clipPath: "inset(100% 0 0 0)",
+                            duration: 1.3,
+                            delay: 0.1,
+                            ease: "expo.out",
                             onComplete() {
                                 const splash =
                                     document.getElementById("splash");
