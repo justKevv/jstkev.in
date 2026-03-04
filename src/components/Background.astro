@@ -1,0 +1,82 @@
+<!-- GenkoBackground.astro -->
+<canvas id="genko-bg"></canvas>
+
+<style>
+    #genko-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+    }
+</style>
+
+<script is:inline>
+    const canvas = document.getElementById("genko-bg");
+    const ctx = canvas.getContext("2d");
+
+    let W, H, time = 0;
+    const CELL = 44; // size of each square cell
+    const GAP = 10;   // gap between columns
+
+    function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        time += 0.004;
+
+        const baseAlpha = 0.11 + Math.sin(time) * 0.02;
+
+        const cols = Math.ceil(W / (CELL + GAP)) + 1;
+        const rows = Math.ceil(H / CELL) + 1;
+
+        // center empty zone where portfolio content lives
+        const zoneWidth = W * 0.45;
+        const centerX1 = (W / 2) - (zoneWidth / 2);
+        const centerX2 = (W / 2) + (zoneWidth / 2);
+        const centerY1 = H * 0;
+        const centerY2 = H * 1;
+
+        ctx.lineWidth = 0.5;
+        const totalGridW = cols * (CELL + GAP);
+        const gridOffsetX = (W - totalGridW) / 2;
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const x = gridOffsetX + c * (CELL + GAP);
+                const y = r * CELL;
+
+                // skip cells inside the center zone
+                if (
+                    x + CELL > centerX1 &&
+                    x < centerX2 &&
+                    y + CELL > centerY1 &&
+                    y < centerY2
+                ) continue;
+
+                // outer cell
+                ctx.strokeStyle = `rgba(20, 20, 20, ${baseAlpha})`;
+                ctx.beginPath();
+                ctx.rect(x, y, CELL, CELL);
+                ctx.stroke();
+
+                // inner smaller square (authentic genko detail)
+                const inset = CELL * 0.15;
+                ctx.strokeStyle = `rgba(20, 20, 20, ${baseAlpha * 0.4})`;
+                ctx.beginPath();
+                ctx.rect(x + inset, y + inset, CELL - inset * 2, CELL - inset * 2);
+                ctx.stroke();
+            }
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    draw();
+</script>
