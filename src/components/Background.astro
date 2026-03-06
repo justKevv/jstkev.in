@@ -17,8 +17,9 @@
     const ctx = canvas.getContext("2d");
 
     let W, H, time = 0;
-    const CELL = 44; // size of each square cell
-    const GAP = 8;   // gap between columns
+    const CELL = 44;
+    const GAP = 8;
+    const colStep = CELL + GAP;
 
     function resize() {
         W = canvas.width = window.innerWidth;
@@ -30,41 +31,31 @@
         time += 0.004;
 
         const baseAlpha = 0.11 + Math.sin(time) * 0.02;
-
-        const cols = Math.ceil(W / (CELL + GAP)) + 1;
         const rows = Math.ceil(H / CELL) + 1;
 
-        // center empty zone where portfolio content lives
-        const zoneWidth = W * 0.45;
+        // anchor the grid so a column edge sits exactly at W/2
+        const offset = (W / 2) % colStep - CELL / 2;
+        const cols = Math.ceil(W / colStep) + 2;
+
+        // clear zone in fixed pixels, centered on W/2
+        const zoneWidth = Math.min(W * 0.85, 680);
         const centerX1 = (W / 2) - (zoneWidth / 2);
         const centerX2 = (W / 2) + (zoneWidth / 2);
-        const centerY1 = H * 0;
-        const centerY2 = H * 1;
 
         ctx.lineWidth = 0.5;
-        const totalGridW = cols * (CELL + GAP);
-        const gridOffsetX = (W - totalGridW) / 2;
 
         for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                const x = gridOffsetX + c * (CELL + GAP);
+            for (let c = -1; c < cols; c++) {
+                const x = offset + c * colStep - colStep;
                 const y = r * CELL;
 
-                // skip cells inside the center zone
-                if (
-                    x + CELL > centerX1 &&
-                    x < centerX2 &&
-                    y + CELL > centerY1 &&
-                    y < centerY2
-                ) continue;
+                if (x + CELL > centerX1 && x < centerX2) continue;
 
-                // outer cell
                 ctx.strokeStyle = `rgba(20, 20, 20, ${baseAlpha})`;
                 ctx.beginPath();
                 ctx.rect(x, y, CELL, CELL);
                 ctx.stroke();
 
-                // inner smaller square (authentic genko detail)
                 const inset = CELL * 0.15;
                 ctx.strokeStyle = `rgba(20, 20, 20, ${baseAlpha * 0.4})`;
                 ctx.beginPath();
