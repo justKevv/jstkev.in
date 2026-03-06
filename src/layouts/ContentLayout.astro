@@ -1,0 +1,19 @@
+---
+const { class: className } = Astro.props;
+---
+
+<div class={`content-layout ${className}`}>
+    <slot />
+</div>
+
+<style>
+    .content-layout {
+        position: relative;
+        z-index: 1;
+        width: min(85vw, 680px);
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 2rem;
+        box-sizing: border-box;
+    }
+</style>

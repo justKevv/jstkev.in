@@ -3,13 +3,16 @@ import Background from '../components/Background.astro';
 import SplashScreen from '../components/SplashScreen.astro';
 import Welcome from '../components/Welcome.astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import ContentLayout from "../layouts/ContentLayout.astro";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <MainLayout>
-    <SplashScreen/>
-	<Welcome />
+    <!-- <SplashScreen/> -->
+    <ContentLayout>
+        <h1>Hi</h1>
+    </ContentLayout>
 	<Background />
 </MainLayout>
