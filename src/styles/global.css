@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@theme {
+    --animate-pulse-opacity: pulse-opacity 3s ease-in-out infinite;
+    --animate-flicker: flicker 5s ease-in-out 1s infinite;
+}
+
+@keyframes pulse-opacity {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 0.2; }
+}
+
+@keyframes flicker {
+    0%, 90%, 100% { opacity: 0.4; }
+    95%           { opacity: 0.15; }
+}
