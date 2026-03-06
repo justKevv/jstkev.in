@@ -2,7 +2,7 @@
 const { class: className } = Astro.props;
 ---
 
-<div class={`content-layout ${className}`}>
+<div class={`content-layout${className ?? ''}`}>
     <slot />
 </div>
 
