@@ -21,6 +21,11 @@
     const GAP = 8;
     const colStep = CELL + GAP;
 
+    function getZoneWidth() {
+        const layout = document.querySelector(".content-layout");
+        return layout ? layout.getBoundingClientRect().width : Math.min(W * 0.85, 680);
+    }
+
     function resize() {
         W = canvas.width = window.innerWidth;
         H = canvas.height = window.innerHeight;
@@ -33,12 +38,11 @@
         const baseAlpha = 0.11 + Math.sin(time) * 0.02;
         const rows = Math.ceil(H / CELL) + 1;
 
-        // anchor the grid so a column edge sits exactly at W/2
         const offset = (W / 2) % colStep - CELL / 2;
         const cols = Math.ceil(W / colStep) + 2;
 
-        // clear zone in fixed pixels, centered on W/2
-        const zoneWidth = Math.min(W * 0.85, 680);
+        // read directly from the DOM element
+        const zoneWidth = getZoneWidth();
         const centerX1 = (W / 2) - (zoneWidth / 2);
         const centerX2 = (W / 2) + (zoneWidth / 2);
 
@@ -71,3 +75,4 @@
     window.addEventListener("resize", resize);
     draw();
 </script>
+
