@@ -1,0 +1,35 @@
+---
+const {  subject } = Astro.props;
+---
+
+<div class="relative w-full h-fit z-20 pointer-events-none my-14 mx-auto">
+    <!-- corner brackets -->
+    <div class="absolute top-0 left-0 w-4.5 h-4.5 border-[#1a1a1a] border-t-[1.5px] border-l-[1.5px] opacity-50 animate-[pulse-opacity_3s_ease-in-out_infinite]"></div>
+    <div class="absolute top-0 right-0 w-4.5 h-4.5 border-[#1a1a1a] border-t-[1.5px] border-r-[1.5px] opacity-50 animate-[pulse-opacity_3s_ease-in-out_infinite]"></div>
+    <div class="absolute bottom-0 left-0 w-4.5 h-4.5 border-[#1a1a1a] border-b-[1.5px] border-l-[1.5px] opacity-50 animate-[pulse-opacity_3s_ease-in-out_infinite]"></div>
+    <div class="absolute bottom-0 right-0 w-4.5 h-4.5 border-[#1a1a1a] border-b-[1.5px] border-r-[1.5px] opacity-50 animate-[pulse-opacity_3s_ease-in-out_infinite]"></div>
+    
+    <!-- top labels -->
+    <span class="absolute -top-5 left-0 font-mono text-[10px] tracking-[0.12em] text-[#1a1a1a] opacity-40 uppercase">detection_01 // <b>{subject}</b></span>
+    <span class="absolute -top-5 right-0 font-mono text-[10px] tracking-[0.12em] text-[#1a1a1a] opacity-40 uppercase">conf: <span id="conf">0.97</span></span>
+    
+    <div class="p-4 pointer-events-auto">
+        <slot/>
+    </div>
+    
+    <!-- bottom coords -->
+    <div class="absolute -bottom-5 left-0 right-0 flex justify-between font-mono text-[10px] tracking-[0.08em] text-[#1a1a1a] opacity-30 animate-[flicker_5s_ease-in-out_1s_infinite]">
+        <span>[0.241, 0.118, 0.753, 0.889]</span>
+        <span>frame_<span id="frame">0001</span></span>
+    </div>
+</div>
+
+<script is:inline>
+  setInterval(() => {
+    if (Math.random() > 0.7) {
+      document.getElementById("conf").textContent = (0.94 + Math.random() * 0.05).toFixed(2);
+      const f = document.getElementById("frame");
+      f.textContent = String(parseInt(f.textContent) + 1).padStart(4, "0");
+    }
+  }, 1200);
+</script>
