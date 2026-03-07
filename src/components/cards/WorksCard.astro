@@ -1,0 +1,53 @@
+---
+const { company, role, stack, type, date, location, highlights } = Astro.props;
+---
+
+<div class="work-item py-6 cursor-pointer group" onclick="this.classList.toggle('open')">
+    <div class="flex justify-between items-start gap-4">
+        <!-- everything on the left -->
+        <div class="flex flex-col gap-0.5 min-w-0">
+            <span class="text-[13px] text-[#1a1a1a]/40 tracking-[0.15em] uppercase font-mono">{company}</span>
+            <span class="text-2xl text-[#1a1a1a] tracking-tight font-serif group-hover:opacity-50 transition-opacity duration-200">{role}</span>
+            <span class="text-[13px] border border-[#EDE8E0] w-fit px-2 py-0.5 text-[#1a1a1a]/65 font-mono">{type}</span>
+            <div class="text-[13px] flex flex-wrap gap-x-2 mt-1.5">
+                <span class="text-[#1a1a1a]/55 font-mono">{location}</span>
+                <span class="text-[#1a1a1a]/40 font-mono">·</span>
+                <span class="text-[#1a1a1a]/55 font-mono">{date}</span>
+            </div>
+            <div class="flex flex-wrap gap-x-1 mt-1">
+                {stack.map((s: string, i: number) => (
+                    <span class="text-[13px] text-[#EA580C]/60 font-mono">{s}{i < stack.length - 1 ? ' ·' : ''}</span>
+                ))}
+            </div>
+        </div>
+
+        <!-- arrow always top right -->
+        <svg class="toggle-icon text-[#1a1a1a]/30 transition-transform duration-300 w-2 h-2 shrink-0 mt-1.5" viewBox="0 0 6 6" fill="currentColor">
+            <polygon points="0,0 6,3 0,6"/>
+        </svg>
+    </div>
+
+    <div class="work-details grid transition-all duration-300 ease-in-out">
+        <div class="overflow-hidden">
+            <ul class="list-disc ml-5 mt-4 space-y-1 pb-1">
+                {highlights.map((point: string) => (
+                    <li class="font-serif text-md text-[#1a1a1a]/55 leading-relaxed">
+                        {point}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .work-details {
+        grid-template-rows: 0fr;
+    }
+    .work-item.open .work-details {
+        grid-template-rows: 1fr;
+    }
+    .work-item.open .toggle-icon {
+        transform: rotate(90deg);
+    }
+</style>
