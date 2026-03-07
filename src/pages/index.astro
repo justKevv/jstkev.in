@@ -1,18 +1,27 @@
 ---
+import '../styles/global.css'
 import Background from '../components/Background.astro';
 import SplashScreen from '../components/SplashScreen.astro';
-import Welcome from '../components/Welcome.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import ContentLayout from "../layouts/ContentLayout.astro";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import DetectionCard from '../layouts/DetectionCard.astro';
 ---
 
 <MainLayout>
     <!-- <SplashScreen/> -->
     <ContentLayout>
-        <h1>Hi</h1>
+        <DetectionCard subject="subject">
+            <p class="text-[#1a1a1a] text-lg opacity-35">文</p>
+            <h1 class="text-3xl text-[#1a1a1a] font-serif leading">Kevin Bramasta Arvyto Wardhana</h1>
+            <h3 class="text-sm opacity-35 tracking-widest text-[#1a1a1a] font-serif mt-2">design engineer</h3>
+            <hr class="border-t-[0.5px] border-[#1a1a1a] opacity-20 my-3 w-8 h-0.5">
+            <p class="font-serif text-md max-w-96 text-[#1a1a1a] opacity-60 leading-7">
+                one thing led to another — ml, code, design, you name it. always picking up something new, always figuring it out as i go. having fun with it though.
+            </p>
+        </DetectionCard>
+        <DetectionCard subject="layout">
+            <p>Test</p>
+        </DetectionCard>
     </ContentLayout>
 	<Background />
 </MainLayout>
