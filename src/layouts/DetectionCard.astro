@@ -1,11 +1,14 @@
 ---
-const {  subject } = Astro.props;
+const { subject } = Astro.props;
+
+declare global { var __detectionCount: number; }
+const detection_id = String((globalThis.__detectionCount = (globalThis.__detectionCount ?? 0) + 1)).padStart(2, '0')
 ---
 
 <div class="relative w-full h-fit z-20 pointer-events-none my-8 mx-auto">
     <!-- top labels -->
     <div class="flex justify-between font-mono text-[10px] tracking-[0.12em] text-[#1a1a1a] opacity-40 uppercase mb-2">
-        <span>detection_01 // <b>{subject}</b></span>
+        <span>detection_{detection_id} // <b>{subject}</b></span>
         <span>conf: <span id="conf">0.97</span></span>
     </div>
     
