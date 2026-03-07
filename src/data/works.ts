@@ -1,7 +1,7 @@
 export const works = [
   {
     company: "independent",
-    role: "Full Stack Developer",
+    role: "full stack developer",
     stack: ['php', 'laravel', 'filament', 'livewire', 'tailwind', 'mysql'],
     type: "freelance",
     date: "dec 2025 - feb 2026",

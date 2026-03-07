@@ -7,7 +7,7 @@ const { company, role, stack, type, date, location, highlights } = Astro.props;
         <!-- everything on the left -->
         <div class="flex flex-col gap-0.5 min-w-0">
             <span class="text-[14px] text-[#1a1a1a]/40 tracking-[0.15em] uppercase font-mono">{company}</span>
-            <span class="text-2xl text-[#1a1a1a] tracking-tight font-serif group-hover:opacity-50 transition-opacity duration-200">{role}</span>
+            <span class="text-2xl text-[#1a1a1a] tracking-tight capitalize font-serif group-hover:opacity-50 transition-opacity duration-200">{role}</span>
             <span class="text-[14px] border border-[#EDE8E0] w-fit px-2 py-0.5 text-[#1a1a1a]/65 font-mono">{type}</span>
             <div class="text-[14px] flex flex-wrap gap-x-2 mt-1.5">
                 <span class="text-[#1a1a1a]/55 font-mono">{location}</span>
