@@ -3,6 +3,7 @@ const { subject } = Astro.props;
 
 declare global { var __detectionCount: number; }
 const detection_id = String((globalThis.__detectionCount = (globalThis.__detectionCount ?? 0) + 1)).padStart(2, '0')
+const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
 ---
 
 <div class="relative w-full h-fit z-20 pointer-events-none my-8 mx-auto">
@@ -25,6 +26,6 @@ const detection_id = String((globalThis.__detectionCount = (globalThis.__detecti
     
     <!-- bottom coords -->
     <div class="flex justify-between font-mono text-[11px] tracking-[0.08em] text-[#1a1a1a] opacity-30 pointer-events-none mt-2 animate-flicker">
-        <span>[0.241, 0.118, 0.753, 0.889]</span>
+        <span>[{bbox.join(', ')}]</span>
     </div>
 </div>
