@@ -5,6 +5,7 @@ import SplashScreen from '../components/SplashScreen.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import ContentLayout from "../layouts/ContentLayout.astro";
 import DetectionCard from '../layouts/DetectionCard.astro';
+import WorksCard from '../components/cards/WorksCard.astro';
 
 globalThis.__detectionCount = 0;
 ---
@@ -13,12 +14,12 @@ globalThis.__detectionCount = 0;
     <!-- <SplashScreen/> -->
     <ContentLayout>
         <DetectionCard subject="jst.kevv">
-            <p class="text-[#1a1a1a] text-xl opacity-35">文</p>
+            <p class="text-[#EA580C]/60 text-xl">文</p>
             <h1 class="text-4xl text-[#1a1a1a] font-serif leading">Kevin Bramasta Arvyto Wardhana</h1>
             <h3 class="text-md opacity-35 tracking-widest text-[#1a1a1a] font-serif mt-2">design engineer wannabe</h3>
             <hr class="border-t-[0.5px] border-[#1a1a1a] opacity-20 my-3 w-8 h-0.5">
             <p class="font-serif text-lg max-w-96 text-[#1a1a1a] opacity-60 leading-7">
-                one thing led to another — ml, code, design, you name it. always picking up something new, always figuring it out as i go. having fun with it though.
+                one thing led to another — <span class="text-[#EA580C]">ml</span>, <span class="text-[#EA580C]">code</span>, <span class="text-[#EA580C]">design</span>, you name it. always picking up something new, always figuring it out as i go. having fun with it though.
             </p>
         </DetectionCard>
         <DetectionCard subject="about">
