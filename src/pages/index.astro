@@ -7,6 +7,8 @@ import ContentLayout from "../layouts/ContentLayout.astro";
 import DetectionCard from '../layouts/DetectionCard.astro';
 import WorksCard from '../components/cards/WorksCard.astro';
 
+import { works } from '../data/works';
+
 globalThis.__detectionCount = 0;
 ---
 
@@ -28,6 +30,19 @@ globalThis.__detectionCount = 0;
                 <p>these days i'm mostly into <span class="text-[#EA580C]">ml</span>, building <span class="text-[#EA580C]">backends</span>, and learning whatever looks interesting. <span class="text-[#EA580C]">golang</span>, <span class="text-[#EA580C]">iot</span>, <span class="text-[#EA580C]">astro</span> — yeah i know it's a lot. i just can't help it.</p>
                 <p><span class="text-[#DC2626]">indonesia</span>-based, chronically curious, occasionally overthinks life at 2am.</p>
             </div>
+        </DetectionCard>
+        <DetectionCard subject="work">
+            {works.map((work) => (
+              <WorksCard
+                  company={work.company}
+                  role={work.role}
+                  stack={work.stack}
+                  type={work.type}
+                  date={work.date}
+                  location={work.location}
+                  highlights={work.highlights}
+              />
+            ))}
         </DetectionCard>
     </ContentLayout>
 	<Background />
