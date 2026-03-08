@@ -22,7 +22,7 @@
     #splash {
         position: fixed;
         inset: 0;
-        background-color: white;
+        background-color: #F9FAFB;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -60,6 +60,10 @@
                     onComplete() {
                         const clone = document.createElement("span");
                         clone.textContent = "文";
+
+                        const vCx = window.innerWidth  / 2;
+                        const vCy = window.innerHeight / 2;
+  
                         clone.style.cssText = `
                             position: fixed;
                             font-family: Mori, sans-serif;
@@ -68,15 +72,21 @@
                             color: black;
                             z-index: 1000;
                             pointer-events: none;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
+                            top: 0;
+                            left: 0;
+                            transform-origin: center center;
                         `;
                         document.body.appendChild(clone);
                         gsap.set(splitEl, { opacity: 0 });
-
+  
+                        // Measure clone to get its true pixel dimensions
                         const cloneRect = clone.getBoundingClientRect();
-
+  
+                        // Place clone so its center is exactly at viewport center
+                        const startX = vCx - cloneRect.width  / 2;
+                        const startY = vCy - cloneRect.height / 2;
+                        gsap.set(clone, { x: startX, y: startY });
+  
                         const heroEl = document.getElementById("hero-wen");
                         if (!heroEl) return;
                         heroEl.style.visibility = "hidden";
@@ -84,13 +94,15 @@
                         const heroRect = heroEl.getBoundingClientRect();
                         heroEl.style.opacity = "0";
                         heroEl.style.visibility = "";
-
-                        const fromCx = cloneRect.left + cloneRect.width  / 2;
-                        const fromCy = cloneRect.top  + cloneRect.height / 2;
-                        const toCx   = heroRect.left  + heroRect.width   / 2;
-                        const toCy   = heroRect.top   + heroRect.height  / 2;
-                        const scale  = heroRect.height / cloneRect.height;
-
+  
+                        // Target: top-left of hero element (clone will match top-left too)
+                        const endX = heroRect.left;
+                        const endY = heroRect.top;
+  
+                        const fromSize = parseFloat(getComputedStyle(clone).fontSize);
+                        const toSize   = parseFloat(getComputedStyle(heroEl).fontSize);
+                        const scale    = toSize / fromSize;
+  
                         const exitTl = gsap.timeline({
                             onComplete() {
                                 clone.remove();
@@ -100,17 +112,18 @@
                                 document.body.style.overflow = "";
                             },
                         });
-
+  
                         exitTl.to(clone, {
-                            x: toCx - fromCx,
-                            y: toCy - fromCy,
+                            x: endX,
+                            y: endY,
                             scale,
+                            transformOrigin: "top left",
                             color: "#EA580C",
                             opacity: 0.6,
                             duration: 0.9,
                             ease: "expo.inOut",
                         });
-
+  
                         exitTl.to("#splash", {
                             opacity: 0,
                             duration: 0.35,
@@ -128,7 +141,7 @@
                     delay: 0.3,
                 });
 
-                tl.to(self.lines, { duration: 0.4 });
+                tl.to(self.lines, { duration: 0.85 });
             },
         });
     }
