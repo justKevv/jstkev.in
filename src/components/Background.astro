@@ -14,6 +14,10 @@
 </style>
 
 <script is:inline>
+    const groups = ['电影', '凯文'];
+
+    let placedChars = [];
+
     const canvas = document.getElementById("genko-bg");
     const ctx = canvas.getContext("2d");
 
@@ -21,6 +25,68 @@
     const CELL = 55;
     const GAP = 8;
     const colStep = CELL + GAP;
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function placeCharacters() {
+        placedChars = [];
+
+        const offset = (W / 2) % colStep - CELL / 2;
+        const zoneWidth = getZoneWidth();
+        const cx1 = (W / 2) - (zoneWidth / 2);
+        const cx2 = (W / 2) + (zoneWidth / 2);
+
+        const totalCols = Math.ceil(W / colStep) + 2;
+
+        // Only allow the 3 columns closest to the content zone on each side
+        const NEAR_COLS = 3;
+        const rowMin = Math.floor(H * 0.3 / CELL);
+        const rowMax = Math.ceil(H * 0.55 / CELL);
+        const available = [];
+        for (let col = -1; col < totalCols; col++) {
+            const x = offset + col * colStep - colStep;
+            if (x + CELL > cx1 && x < cx2) continue; // inside content zone — skip
+            const distToZone = x + CELL <= cx1 ? cx1 - (x + CELL) : x - cx2;
+            if (distToZone > NEAR_COLS * colStep) continue; // too far from center — skip
+            for (let row = rowMin; row < rowMax; row++) {
+                available.push({ col, row });
+            }
+        }
+        shuffle(available);
+
+        // Track occupied cells so groups don't overlap each other
+        const occupied = new Set();
+        const key = (col, row) => `${col},${row}`;
+
+        for (let gi = 0; gi < groups.length; gi++) {
+            const chars = [...groups[gi]]; // split into individual codepoints
+
+            // Find a starting cell where all `chars.length` consecutive rows are free
+            let placed = false;
+            for (const cell of available) {
+                // Check that cell + the rows below it are all free
+                const fits = chars.every((_, ci) => !occupied.has(key(cell.col, cell.row + ci)));
+                if (!fits) continue;
+
+                // Assign each char in the group to consecutive rows, same column
+                chars.forEach((ch, ci) => {
+                    const r = cell.row + ci;
+                    occupied.add(key(cell.col, r));
+                    placedChars.push({ char: ch, gridCol: cell.col, gridRow: r, groupIdx: gi });
+                });
+                placed = true;
+                break;
+            }
+
+            if (!placed) console.warn(`Could not place group: "${groups[gi]}"`);
+        }
+    }
 
     function getZoneWidth() {
         const layout = document.querySelector(".content-layout");
@@ -30,6 +96,7 @@
     function resize() {
         W = canvas.width = window.innerWidth;
         H = canvas.height = window.innerHeight;
+        placeCharacters();
     }
 
     function draw() {
@@ -42,7 +109,6 @@
         const offset = (W / 2) % colStep - CELL / 2;
         const cols = Math.ceil(W / colStep) + 2;
 
-        // read directly from the DOM element
         const zoneWidth = getZoneWidth();
         const centerX1 = (W / 2) - (zoneWidth / 2);
         const centerX2 = (W / 2) + (zoneWidth / 2);
@@ -69,6 +135,20 @@
             }
         }
 
+        placedChars.forEach((c, i) => {
+            const cx = offset + c.gridCol * colStep - colStep + CELL / 2;
+            const cy = c.gridRow * CELL + CELL / 2;
+
+            const charAlpha = 0.13 + 1 * 0.07;
+            const charSize  = CELL * (0.55 + 1 * 0.06);
+
+            ctx.font = `${charSize}px serif`;
+            ctx.fillStyle = `rgba(20, 20, 20, ${charAlpha})`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(c.char, cx, cy);
+        });
+
         requestAnimationFrame(draw);
     }
 
@@ -76,4 +156,3 @@
     window.addEventListener("resize", resize);
     draw();
 </script>
-
