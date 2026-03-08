@@ -6,9 +6,9 @@ const detection_id = String((globalThis.__detectionCount = (globalThis.__detecti
 const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
 ---
 
-<div class="relative w-full h-fit z-20 pointer-events-none my-8 mx-auto">
+<section class="relative w-full h-fit z-20 pointer-events-none my-16 mx-auto">
     <!-- top labels -->
-    <div class="flex justify-between font-mono text-[11px] tracking-[0.12em] text-[#1a1a1a] opacity-40 uppercase mb-2">
+    <div class="flex justify-between font-mono text-[13px] tracking-[0.12em] text-[#1a1a1a] opacity-40 uppercase mb-2">
         <span>detection_{detection_id} // <b>{subject}</b></span>
         <span>conf: <span id="conf">0.97</span></span>
     </div>
@@ -28,4 +28,4 @@ const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
     <div class="flex justify-between font-mono text-[11px] tracking-[0.08em] text-[#1a1a1a] opacity-30 pointer-events-none mt-2 animate-flicker">
         <span>[{bbox.join(', ')}]</span>
     </div>
-</div>
+</section>
