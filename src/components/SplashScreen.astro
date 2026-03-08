@@ -11,16 +11,15 @@
         color: black;
         will-change: transform;
         transform: translateZ(0);
-        -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none; /* Safari */
-        -khtml-user-select: none; /* Konqueror HTML */
-        -moz-user-select: none; /* Old Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-        user-select: none; /* Standard syntax */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     #splash {
-        clip-path: inset(0 0 0% 0);
         position: fixed;
         inset: 0;
         background-color: white;
@@ -38,35 +37,85 @@
 
     gsap.registerPlugin(SplitText);
 
-    document.fonts.ready.then(() => {
-        gsap.set("#split", { opacity: 1 });
+    document.body.style.overflow = "hidden";
 
-        SplitText.create("#split", {
+    function runSplash() {
+        const splitEl = document.getElementById("split");
+        if (!splitEl) return;
+
+        gsap.set(splitEl, { opacity: 1 });
+
+        let hasRun = false;
+
+        SplitText.create(splitEl, {
             type: "words,lines",
             linesClass: "line",
-            autoSplit: true,
+            autoSplit: false,
             mask: "lines",
             onSplit(self) {
+                if (hasRun) return;
+                hasRun = true;
+
                 const tl = gsap.timeline({
-                    onStart() {
-                        gsap.to("#splash", {
-                            opacity: 1,
-                            duration: 0.5,
-                            delay: 0,
-                        });
-                    },
                     onComplete() {
-                        gsap.to("#splash", {
-                            clipPath: "inset(100% 0 0 0)",
-                            duration: 1.3,
-                            delay: 0.1,
-                            ease: "expo.out",
+                        const clone = document.createElement("span");
+                        clone.textContent = "文";
+                        clone.style.cssText = `
+                            position: fixed;
+                            font-family: Mori, sans-serif;
+                            font-size: 3.4rem;
+                            font-weight: 500;
+                            color: black;
+                            z-index: 1000;
+                            pointer-events: none;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                        `;
+                        document.body.appendChild(clone);
+                        gsap.set(splitEl, { opacity: 0 });
+
+                        const cloneRect = clone.getBoundingClientRect();
+
+                        const heroEl = document.getElementById("hero-wen");
+                        if (!heroEl) return;
+                        heroEl.style.visibility = "hidden";
+                        heroEl.style.opacity = "1";
+                        const heroRect = heroEl.getBoundingClientRect();
+                        heroEl.style.opacity = "0";
+                        heroEl.style.visibility = "";
+
+                        const fromCx = cloneRect.left + cloneRect.width  / 2;
+                        const fromCy = cloneRect.top  + cloneRect.height / 2;
+                        const toCx   = heroRect.left  + heroRect.width   / 2;
+                        const toCy   = heroRect.top   + heroRect.height  / 2;
+                        const scale  = heroRect.height / cloneRect.height;
+
+                        const exitTl = gsap.timeline({
                             onComplete() {
-                                const splash =
-                                    document.getElementById("splash");
+                                clone.remove();
+                                const splash = document.getElementById("splash");
                                 if (splash) splash.style.display = "none";
+                                gsap.set(heroEl, { opacity: 1 });
+                                document.body.style.overflow = "";
                             },
                         });
+
+                        exitTl.to(clone, {
+                            x: toCx - fromCx,
+                            y: toCy - fromCy,
+                            scale,
+                            color: "#EA580C",
+                            opacity: 0.6,
+                            duration: 0.9,
+                            ease: "expo.inOut",
+                        });
+
+                        exitTl.to("#splash", {
+                            opacity: 0,
+                            duration: 0.35,
+                            ease: "power2.in",
+                        }, "-=0.3");
                     },
                 });
 
@@ -79,15 +128,12 @@
                     delay: 0.3,
                 });
 
-                tl.to(self.lines, {
-                    duration: 0.6,
-                    yPercent: 100,
-                    opacity: 0,
-                    stagger: 0.1,
-                    ease: "expo.in",
-                    delay: 1,
-                });
+                tl.to(self.lines, { duration: 0.4 });
             },
         });
-    });
+    }
+
+    requestAnimationFrame(() => requestAnimationFrame(runSplash));
 </script>
+
+
