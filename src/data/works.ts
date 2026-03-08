@@ -1,4 +1,6 @@
-export const works = [
+import type { WorkItem } from "../types/work";
+
+export const works: WorkItem[] = [
   {
     company: "independent",
     role: "full stack developer",
