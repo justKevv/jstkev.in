@@ -6,8 +6,10 @@ import MainLayout from '../layouts/MainLayout.astro';
 import ContentLayout from "../layouts/ContentLayout.astro";
 import DetectionCard from '../layouts/DetectionCard.astro';
 import WorksCard from '../components/cards/WorksCard.astro';
+import ProjectsCard from '../components/cards/ProjectsCard.astro';
 
 import { works } from '../data/works';
+import { projects } from '../data/projects';
 
 globalThis.__detectionCount = 0;
 ---
@@ -41,6 +43,18 @@ globalThis.__detectionCount = 0;
                   date={work.date}
                   location={work.location}
                   highlights={work.highlights}
+              />
+            ))}
+        </DetectionCard>
+        <DetectionCard subject="project">
+            {projects.map((project) => (
+              <ProjectsCard
+                  name={project.name}
+                  description={project.description}
+                  stack={project.stack}
+                  github={project.github},
+                  link={project.link}
+                  date={project.date}
               />
             ))}
         </DetectionCard>
