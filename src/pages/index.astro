@@ -20,7 +20,7 @@ globalThis.__detectionCount = 0;
     <SplashScreen/>
     <ContentLayout>
         <DetectionCard subject="jst.kevv">
-            <p class="text-[#EA580C]/60 text-xl">文</p>
+            <p id="hero-wen" class="text-[#EA580C]/60 text-xl inline-block" style="opacity: 0;">文</p>
             <h1 class="text-4xl text-[#1a1a1a] font-serif leading">Kevin Bramasta Arvyto Wardhana</h1>
             <h3 class="text-md opacity-35 tracking-widest text-[#1a1a1a] font-serif mt-2">design engineer wannabe</h3>
             <hr class="border-t-[0.5px] border-[#1a1a1a] opacity-20 my-3 w-8 h-0.5">
@@ -95,3 +95,10 @@ globalThis.__detectionCount = 0;
     </ContentLayout>
 	<Background />
 </MainLayout>
+
+<script is:inline>
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0)
+</script>
