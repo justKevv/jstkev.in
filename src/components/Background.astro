@@ -139,10 +139,10 @@
             const cx = offset + c.gridCol * colStep - colStep + CELL / 2;
             const cy = c.gridRow * CELL + CELL / 2;
 
-            const charAlpha = 0.13 + 1 * 0.07;
+            const charAlpha = 0.2 + 1 * 0.07;
             const charSize  = CELL * (0.55 + 1 * 0.06);
 
-            ctx.font = `${charSize}px serif`;
+            ctx.font = `${charSize}px Mori, serif`;
             ctx.fillStyle = `rgba(20, 20, 20, ${charAlpha})`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -154,5 +154,7 @@
 
     resize();
     window.addEventListener("resize", resize);
-    draw();
+    document.fonts.load("500 55px Mori").then(() => {
+        draw();
+    });
 </script>
