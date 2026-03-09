@@ -1,0 +1,9 @@
+---
+const { character, pinyin, translation } = Astro.props;
+---
+<div class="flex flex-col gap-2">
+  <span class="font-mono text-[13px] tracking-[0.2em] text-[#1a1a1a]/30 uppercase">subject.name</span>
+  <h1 class="font-serif text-4xl sm:text-5xl text-[#1a1a1a] tracking-tight leading-none">【{character}】</h1>
+  <p class="font-mono text-lg text-[#1a1a1a]/40">{pinyin} · <span class="font-bold text-[#1a1a1a]/80">{translation}</span></p>
+  <slot/>
+</div>
