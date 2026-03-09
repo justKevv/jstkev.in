@@ -1,0 +1,20 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import ContentLayout from "../layouts/ContentLayout.astro";
+import BreadCrumbs from "../components/BreadCrumbs.astro";
+import DetectionCard from "../layouts/DetectionCard.astro";
+---
+
+<MainLayout>
+    <ContentLayout>
+        <BreadCrumbs current="kevin"/>
+        <DetectionCard subject="kevin">
+          <div class="flex flex-col gap-2">
+            <span class="font-mono text-[13px] tracking-[0.2em] text-[#1a1a1a]/30 uppercase">subject.name</span>
+            <h1 class="font-serif text-4xl sm:text-5xl text-[#1a1a1a] tracking-tight leading-none">【凯文】</h1>
+            <p class="font-mono text-xl text-[#1a1a1a]/40 tracking-[0.15em]">kǎi wén</p>
+            <p class="font-serif text-lg text-[#1a1a1a]/50 leading-relaxed mt-1">that's literally my name in chinese. got it here when studying in china</p>
+          </div>
+        </DetectionCard>
+    </ContentLayout>
+</MainLayout>
