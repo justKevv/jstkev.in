@@ -49,16 +49,37 @@ globalThis.__detectionCount = 0;
             ))}
         </DetectionCard>
         <DetectionCard subject="project">
-            {projects.map((project) => (
-              <ProjectsCard
-                  name={project.name}
-                  description={project.description}
-                  stack={project.stack}
-                  github={project.github},
-                  link={project.link}
-                  date={project.date}
-              />
-            ))}
+            {projects.length > 3 ? (
+                <>
+                    {projects.slice(0, 3).map((project) => (
+                        <ProjectsCard
+                            name={project.name}
+                            description={project.description}
+                            stack={project.stack}
+                            github={project.github}
+                            link={project.link}
+                            date={project.date}
+                        />
+                    ))}
+                    <a href="/projects" class="flex items-center justify-center font-mono text-[13px] tracking-wider text-[#1a1a1a]/60 border border-[#1a1a1a]/20 py-2 transition-all duration-300 hover:text-[#1a1a1a] hover:border-[#1a1a1a]/60 hover:bg-[#1a1a1a]/[0.03] group">
+                        <span>see more projects</span>
+                        <svg class="w-3 h-3 ml-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="9" x2="9" y2="1"/><polyline points="3,1 9,1 9,7"/></svg>
+                    </a>
+
+                </>
+            ) : (
+                projects.map((project) => (
+                    <ProjectsCard
+                        name={project.name}
+                        description={project.description}
+                        stack={project.stack}
+                        github={project.github}
+                        link={project.link}
+                        date={project.date}
+                    />
+                ))
+            )}
+
         </DetectionCard>
         <DetectionCard subject="contact">
             <div class="flex flex-col gap-2">
