@@ -1,6 +1,7 @@
 <canvas id="genko-bg"></canvas>
+<div id="genko-overlays" style="position:fixed;inset:0;pointer-events:none;z-index:10;"></div>
 
-<style>
+<style is:global>
     #genko-bg {
         position: fixed;
         inset: 0;
@@ -8,12 +9,41 @@
         height: 100%;
         z-index: 0;
         pointer-events: none;
-        background-color: #F5F5F5;
+        background-color: #f5f5f5;
+    }
+
+    .genko-btn {
+        position: absolute;
+        display: block;
+        pointer-events: auto !important;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .genko-btn .bracket {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        opacity: 0;
+        transform: scale(1.6);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .genko-btn .bracket-tl { top: 0; left: 0; border-top: 2px solid #1a1a1a; border-left: 2px solid #1a1a1a; }
+    .genko-btn .bracket-tr { top: 0; right: 0; border-top: 2px solid #1a1a1a; border-right: 2px solid #1a1a1a; }
+    .genko-btn .bracket-bl { bottom: 0; left: 0; border-bottom: 2px solid #1a1a1a; border-left: 2px solid #1a1a1a; }
+    .genko-btn .bracket-br { bottom: 0; right: 0; border-bottom: 2px solid #1a1a1a; border-right: 2px solid #1a1a1a; }
+
+    .genko-btn:hover .bracket {
+        opacity: 0.5;
+        transform: scale(1);
     }
 </style>
 
+
 <script is:inline>
-    const groups = ['电影', '凯文'];
+    const groups = ["电影", "凯文"];
+    const hrefs = ["/", "/kevin"];
 
     let placedChars = [];
 
@@ -22,9 +52,9 @@
 
     let W, H, time = 0;
     const CELL = 55;
-    const GAP  = 12;
-    const colStep = CELL;        // no gap between columns — cells touch horizontally
-    const rowStep = CELL + GAP;  // gap between rows only
+    const GAP = 12;
+    const colStep = CELL; // no gap between columns — cells touch horizontally
+    const rowStep = CELL + GAP; // gap between rows only
 
     function shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -37,16 +67,16 @@
     function placeCharacters() {
         placedChars = [];
 
-        const offset = (W / 2) % colStep - CELL / 2;
+        const offset = ((W / 2) % colStep) - CELL / 2;
         const zoneWidth = getZoneWidth();
-        const cx1 = (W / 2) - (zoneWidth / 2);
-        const cx2 = (W / 2) + (zoneWidth / 2);
+        const cx1 = W / 2 - zoneWidth / 2;
+        const cx2 = W / 2 + zoneWidth / 2;
 
         const totalCols = Math.ceil(W / colStep) + 2;
 
         const NEAR_COLS = 3;
-        const rowMin = Math.floor(H * 0.3 / rowStep);
-        const rowMax = Math.ceil(H * 0.55 / rowStep);
+        const rowMin = Math.floor((H * 0.3) / rowStep);
+        const rowMax = Math.ceil((H * 0.55) / rowStep);
 
         const validCols = new Set();
         const available = [];
@@ -70,16 +100,25 @@
 
             let placed = false;
             for (const cell of available) {
-                const allColsValid = chars.every((_, ci) => validCols.has(cell.col + ci));
+                const allColsValid = chars.every((_, ci) =>
+                    validCols.has(cell.col + ci),
+                );
                 if (!allColsValid) continue;
 
-                const fits = chars.every((_, ci) => !occupied.has(key(cell.col + ci, cell.row)));
+                const fits = chars.every(
+                    (_, ci) => !occupied.has(key(cell.col + ci, cell.row)),
+                );
                 if (!fits) continue;
 
                 chars.forEach((ch, ci) => {
                     const col = cell.col + ci;
                     occupied.add(key(col, cell.row));
-                    placedChars.push({ char: ch, gridCol: col, gridRow: cell.row, groupIdx: gi });
+                    placedChars.push({
+                        char: ch,
+                        gridCol: col,
+                        gridRow: cell.row,
+                        groupIdx: gi,
+                    });
                 });
                 placed = true;
                 break;
@@ -89,15 +128,57 @@
         }
     }
 
+    function updateOverlays() {
+        const container = document.getElementById("genko-overlays");
+        if (!container) return;
+        container.innerHTML = "";
+
+        const offset = ((W / 2) % colStep) - CELL / 2;
+        const byGroup = {};
+        placedChars.forEach((c) => {
+            if (!byGroup[c.groupIdx]) byGroup[c.groupIdx] = [];
+            byGroup[c.groupIdx].push(c);
+        });
+
+        Object.entries(byGroup).forEach(([gi, chars]) => {
+            const minCol = Math.min(...chars.map((c) => c.gridCol));
+            const maxCol = Math.max(...chars.map((c) => c.gridCol));
+            const row = chars[0].gridRow;
+
+            const x = offset + minCol * colStep - colStep;
+            const y = row * rowStep;
+            const w = (maxCol - minCol + 1) * colStep;
+
+            const a = document.createElement("a");
+            a.href = hrefs[gi] ?? "/";
+            a.className = "genko-btn";
+            a.style.left   = `${x}px`;
+            a.style.top    = `${y}px`;
+            a.style.width  = `${w}px`;
+            a.style.height = `${CELL}px`;
+            a.innerHTML = `
+                <span class="bracket bracket-tl"></span>
+                <span class="bracket bracket-tr"></span>
+                <span class="bracket bracket-bl"></span>
+                <span class="bracket bracket-br"></span>
+            `;
+            container.appendChild(a);
+        });
+    }
+
+
     function getZoneWidth() {
         const layout = document.querySelector(".content-layout");
-        return layout ? layout.getBoundingClientRect().width : Math.min(W * 0.85, 680);
+        return layout
+            ? layout.getBoundingClientRect().width
+            : Math.min(W * 0.85, 680);
     }
 
     function resize() {
         W = canvas.width = window.innerWidth;
         H = canvas.height = window.innerHeight;
         placeCharacters();
+        updateOverlays();
     }
 
     function draw() {
@@ -108,11 +189,11 @@
         const rows = Math.ceil(H / rowStep) + 1;
         const cols = Math.ceil(W / colStep) + 2;
 
-        const offset = (W / 2) % colStep - CELL / 2;
+        const offset = ((W / 2) % colStep) - CELL / 2;
 
         const zoneWidth = getZoneWidth();
-        const centerX1 = (W / 2) - (zoneWidth / 2);
-        const centerX2 = (W / 2) + (zoneWidth / 2);
+        const centerX1 = W / 2 - zoneWidth / 2;
+        const centerX2 = W / 2 + zoneWidth / 2;
 
         ctx.lineWidth = 0.5;
 
@@ -131,7 +212,12 @@
                 const inset = CELL * 0.15;
                 ctx.strokeStyle = `rgba(20, 20, 20, ${baseAlpha * 0.4})`;
                 ctx.beginPath();
-                ctx.rect(x + inset, y + inset, CELL - inset * 2, CELL - inset * 2);
+                ctx.rect(
+                    x + inset,
+                    y + inset,
+                    CELL - inset * 2,
+                    CELL - inset * 2,
+                );
                 ctx.stroke();
             }
         }
@@ -145,8 +231,8 @@
 
             ctx.font = `${charSize}px Mori, serif`;
             ctx.fillStyle = `rgba(20, 20, 20, ${charAlpha})`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
             ctx.fillText(c.char, cx, cy);
         });
 
