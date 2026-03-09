@@ -1,0 +1,21 @@
+---
+import BreadCrumbs from "../components/BreadCrumbs.astro";
+import ChineseCard from "../components/cards/ChineseCard.astro";
+import ContentLayout from "../layouts/ContentLayout.astro";
+import DetectionCard from "../layouts/DetectionCard.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout>
+    <ContentLayout>
+        <BreadCrumbs current="hello"/>
+        <DetectionCard subject="hello">
+            <ChineseCard
+                character="你好"
+                pinyin="nǐ hǎo"
+                translation="hello">
+                <p class="font-serif text-xl text-[#1a1a1a]/50 leading-relaxed mt-1">hello! :D</p>
+            </ChineseCard>
+        </DetectionCard>
+    </ContentLayout>
+</MainLayout>
