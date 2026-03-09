@@ -152,6 +152,7 @@
             const a = document.createElement("a");
             a.href = hrefs[gi] ?? "/";
             a.className = "genko-btn";
+            a.setAttribute("aria-label", groups[gi]);
             a.style.left   = `${x}px`;
             a.style.top    = `${y}px`;
             a.style.width  = `${w}px`;
