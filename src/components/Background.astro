@@ -1,4 +1,3 @@
-<!-- GenkoBackground.astro -->
 <canvas id="genko-bg"></canvas>
 
 <style>
@@ -23,8 +22,9 @@
 
     let W, H, time = 0;
     const CELL = 55;
-    const GAP = 8;
-    const colStep = CELL + GAP;
+    const GAP  = 12;
+    const colStep = CELL;        // no gap between columns — cells touch horizontally
+    const rowStep = CELL + GAP;  // gap between rows only
 
     function shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -44,41 +44,42 @@
 
         const totalCols = Math.ceil(W / colStep) + 2;
 
-        // Only allow the 3 columns closest to the content zone on each side
-        const NEAR_COLS = 2;
-        const rowMin = Math.floor(H * 0.3 / CELL);
-        const rowMax = Math.ceil(H * 0.55 / CELL);
+        const NEAR_COLS = 3;
+        const rowMin = Math.floor(H * 0.3 / rowStep);
+        const rowMax = Math.ceil(H * 0.55 / rowStep);
+
+        const validCols = new Set();
         const available = [];
         for (let col = -1; col < totalCols; col++) {
             const x = offset + col * colStep - colStep;
-            if (x + CELL > cx1 && x < cx2) continue; // inside content zone — skip
+            if (x + CELL > cx1 && x < cx2) continue;
             const distToZone = x + CELL <= cx1 ? cx1 - (x + CELL) : x - cx2;
-            if (distToZone > NEAR_COLS * colStep) continue; // too far from center — skip
+            if (distToZone > NEAR_COLS * colStep) continue;
+            validCols.add(col);
             for (let row = rowMin; row < rowMax; row++) {
                 available.push({ col, row });
             }
         }
         shuffle(available);
 
-        // Track occupied cells so groups don't overlap each other
         const occupied = new Set();
         const key = (col, row) => `${col},${row}`;
 
         for (let gi = 0; gi < groups.length; gi++) {
-            const chars = [...groups[gi]]; // split into individual codepoints
+            const chars = [...groups[gi]];
 
-            // Find a starting cell where all `chars.length` consecutive rows are free
             let placed = false;
             for (const cell of available) {
-                // Check that cell + the rows below it are all free
-                const fits = chars.every((_, ci) => !occupied.has(key(cell.col, cell.row + ci)));
+                const allColsValid = chars.every((_, ci) => validCols.has(cell.col + ci));
+                if (!allColsValid) continue;
+
+                const fits = chars.every((_, ci) => !occupied.has(key(cell.col + ci, cell.row)));
                 if (!fits) continue;
 
-                // Assign each char in the group to consecutive rows, same column
                 chars.forEach((ch, ci) => {
-                    const r = cell.row + ci;
-                    occupied.add(key(cell.col, r));
-                    placedChars.push({ char: ch, gridCol: cell.col, gridRow: r, groupIdx: gi });
+                    const col = cell.col + ci;
+                    occupied.add(key(col, cell.row));
+                    placedChars.push({ char: ch, gridCol: col, gridRow: cell.row, groupIdx: gi });
                 });
                 placed = true;
                 break;
@@ -104,10 +105,10 @@
         time += 0.004;
 
         const baseAlpha = 0.2 + Math.sin(time) * 0.02;
-        const rows = Math.ceil(H / CELL) + 1;
+        const rows = Math.ceil(H / rowStep) + 1;
+        const cols = Math.ceil(W / colStep) + 2;
 
         const offset = (W / 2) % colStep - CELL / 2;
-        const cols = Math.ceil(W / colStep) + 2;
 
         const zoneWidth = getZoneWidth();
         const centerX1 = (W / 2) - (zoneWidth / 2);
@@ -118,7 +119,7 @@
         for (let r = 0; r < rows; r++) {
             for (let c = -1; c < cols; c++) {
                 const x = offset + c * colStep - colStep;
-                const y = r * CELL;
+                const y = r * rowStep;
 
                 if (x + CELL > centerX1 && x < centerX2) continue;
 
@@ -135,12 +136,12 @@
             }
         }
 
-        placedChars.forEach((c, i) => {
+        placedChars.forEach((c) => {
             const cx = offset + c.gridCol * colStep - colStep + CELL / 2;
-            const cy = c.gridRow * CELL + CELL / 2;
+            const cy = c.gridRow * rowStep + CELL / 2;
 
-            const charAlpha = 0.2 + 1 * 0.07;
-            const charSize  = CELL * (0.55 + 1 * 0.06);
+            const charAlpha = 0.27;
+            const charSize = CELL * 0.55;
 
             ctx.font = `${charSize}px Mori, serif`;
             ctx.fillStyle = `rgba(20, 20, 20, ${charAlpha})`;
