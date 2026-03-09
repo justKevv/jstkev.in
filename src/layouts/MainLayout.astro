@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css'
 import Background from "../components/Background.astro";
+import { ClientRouter } from 'astro:transitions';
 
 globalThis.__detectionCount = 0;
 ---
@@ -13,6 +14,7 @@ globalThis.__detectionCount = 0;
 		<link rel="icon" type="image/png" sizes="128x128" href="/文.png">
 		<meta name="generator" content={Astro.generator} />
 		<title>jst.kevv place.</title>
+		<ClientRouter/>
 	</head>
 	<body>
 		<slot />

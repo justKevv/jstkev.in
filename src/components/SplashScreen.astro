@@ -36,15 +36,19 @@
 
     gsap.registerPlugin(SplitText);
 
-    const isFirstVisit = !sessionStorage.getItem("splash-seen");
-    sessionStorage.setItem("splash-seen", "1");
+    function handlePage() {
+        const isFirstVisit = !sessionStorage.getItem("splash-seen");
 
-    if (!isFirstVisit) {
-        const splash = document.getElementById("splash");
-        if (splash) splash.style.display = "none";
-        const heroEl = document.getElementById("hero-wen");
-        if (heroEl) gsap.set(heroEl, { opacity: 1 });
-    } else {
+        if (!isFirstVisit) {
+            const splash = document.getElementById("splash");
+            if (splash) splash.style.display = "none";
+            const heroEl = document.getElementById("hero-wen");
+            if (heroEl) gsap.set(heroEl, { opacity: 1 });
+            return;
+        }
+
+        // First ever visit — mark it and run the full animation.
+        sessionStorage.setItem("splash-seen", "1");
         document.body.style.overflow = "hidden";
 
         function runSplash() {
@@ -158,4 +162,8 @@
             requestAnimationFrame(() => requestAnimationFrame(runSplash));
         });
     }
+
+    // astro:page-load fires on first load AND after every ClientRouter navigation.
+    // This ensures the non-first-visit path runs every time we land on index.
+    document.addEventListener("astro:page-load", handlePage);
 </script>
