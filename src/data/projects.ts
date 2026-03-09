@@ -6,7 +6,7 @@ export const projects: ProjectItem[] = [
     name: "jstkev.in",
     description: "my personal website, built with astro. it's always work in progress, but it's a great way to showcase my skills and projects.",
     stack: ['astro', 'gsap', 'typescript', 'tailwindcss'],
-    date: "2026",
+    date: "always ongoing",
     github: "https://github.com/justKevv",
     link: SITE_URL
   },
