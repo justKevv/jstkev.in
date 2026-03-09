@@ -5,5 +5,6 @@ export interface ProjectItem {
   stack: string[];
   date: string;
   github?: string;
-  link?: string;
+  live_link?: string;
+  content_link: string;
 }
