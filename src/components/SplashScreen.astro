@@ -1,4 +1,3 @@
-<!-- SplashScreen.astro -->
 <div id="splash">
     <h1 id="split" style="opacity: 0;">文</h1>
 </div>
@@ -41,7 +40,13 @@
 
     function runSplash() {
         const splitEl = document.getElementById("split");
-        if (!splitEl) return;
+        const heroEl = document.getElementById("hero-wen");
+        
+        // wait for both elements to exist
+        if (!splitEl || !heroEl) {
+            requestAnimationFrame(runSplash);
+            return;
+        }
 
         gsap.set(splitEl, { opacity: 1 });
 
@@ -61,9 +66,9 @@
                         const clone = document.createElement("span");
                         clone.textContent = "文";
 
-                        const vCx = window.innerWidth  / 2;
+                        const vCx = window.innerWidth / 2;
                         const vCy = window.innerHeight / 2;
-  
+
                         clone.style.cssText = `
                             position: fixed;
                             font-family: Mori, sans-serif;
@@ -75,34 +80,30 @@
                             top: 0;
                             left: 0;
                             transform-origin: center center;
+                            will-change: transform;
                         `;
                         document.body.appendChild(clone);
                         gsap.set(splitEl, { opacity: 0 });
-  
-                        // Measure clone to get its true pixel dimensions
+
                         const cloneRect = clone.getBoundingClientRect();
-  
-                        // Place clone so its center is exactly at viewport center
-                        const startX = vCx - cloneRect.width  / 2;
+                        const startX = vCx - cloneRect.width / 2;
                         const startY = vCy - cloneRect.height / 2;
                         gsap.set(clone, { x: startX, y: startY });
-  
-                        const heroEl = document.getElementById("hero-wen");
-                        if (!heroEl) return;
+
+                        // force layout before measuring hero
                         heroEl.style.visibility = "hidden";
                         heroEl.style.opacity = "1";
                         const heroRect = heroEl.getBoundingClientRect();
                         heroEl.style.opacity = "0";
                         heroEl.style.visibility = "";
-  
-                        // Target: top-left of hero element (clone will match top-left too)
+
                         const endX = heroRect.left;
                         const endY = heroRect.top;
-  
+
                         const fromSize = parseFloat(getComputedStyle(clone).fontSize);
-                        const toSize   = parseFloat(getComputedStyle(heroEl).fontSize);
-                        const scale    = toSize / fromSize;
-  
+                        const toSize = parseFloat(getComputedStyle(heroEl).fontSize);
+                        const scale = toSize / fromSize;
+
                         const exitTl = gsap.timeline({
                             onComplete() {
                                 clone.remove();
@@ -112,7 +113,7 @@
                                 document.body.style.overflow = "";
                             },
                         });
-  
+
                         exitTl.to(clone, {
                             x: endX,
                             y: endY,
@@ -123,7 +124,7 @@
                             duration: 0.9,
                             ease: "expo.inOut",
                         });
-  
+
                         exitTl.to("#splash", {
                             opacity: 0,
                             duration: 0.35,
@@ -146,7 +147,10 @@
         });
     }
 
-    requestAnimationFrame(() => requestAnimationFrame(runSplash));
+    // wait for fonts AND full DOM
+    document.fonts.ready.then(() => {
+        requestAnimationFrame(() => requestAnimationFrame(runSplash));
+    });
 </script>
 
 
