@@ -3,7 +3,7 @@ import { SITE_URL } from "../config";
 
 export const projects: ProjectItem[] = [
   {
-    name: "jsta.dev",
+    name: "jstkev.in",
     description: "my personal website, built with astro. it's always work in progress, but it's a great way to showcase my skills and projects.",
     stack: ['astro', 'gsap', 'typescript', 'tailwindcss'],
     date: "2026",
