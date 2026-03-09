@@ -1,0 +1,27 @@
+---
+import BreadCrumbs from "../../components/BreadCrumbs.astro";
+import ContentLayout from "../../layouts/ContentLayout.astro";
+import DetectionCard from "../../layouts/DetectionCard.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.data.name },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<MainLayout>
+    <ContentLayout>
+        <BreadCrumbs current={project.data.name}/>
+        <DetectionCard subject='lol'>
+            <Content/> 
+        </DetectionCard>
+    </ContentLayout>
+</MainLayout>
