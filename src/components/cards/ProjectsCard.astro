@@ -9,9 +9,13 @@ import { stackUrls } from "../../data/stacksUrls";
   
   <!-- preview -->
   {props.image ? (
+    <a href={props.content_link ?? "/"}>  
       <img src={props.image} alt={`${props.name} preview`} class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm">
+    </a>
     ) : (
+    <a href={props.content_link ?? "/"}>
       <div class="shrink-0 w-full sm:w-55 h-32.5 bg-[#1a1a1a] rounded-sm"></div>
+    </a>
   )}
   <!-- content -->
   <div class="flex flex-col justify-between gap-3 flex-1">
