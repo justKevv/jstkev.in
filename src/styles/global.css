@@ -14,3 +14,29 @@
     0%, 90%, 100% { opacity: 0.4; }
     95%           { opacity: 0.15; }
 }
+
+.mdx-content h1,
+.mdx-content h2,
+.mdx-content h3 {
+    font-family: var(--font-serif, serif);
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+.mdx-content h1 { font-size: 1.5rem; margin-bottom: 0.5rem; margin-top: 2rem; font-weight: 700; }
+.mdx-content h2 { font-size: 1.2rem; margin-bottom: 0.4rem; margin-top: 1.5rem; opacity: 0.75; }
+.mdx-content h3 { font-size: 1rem;   margin-bottom: 0.3rem; margin-top: 1.25rem; opacity: 0.6; }
+
+.mdx-content p {
+    font-family: var(--font-serif, serif);
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    opacity: 0.6;
+    line-height: 1.75;
+    margin-bottom: 1rem;
+}
+
+.mdx-content h1:first-child,
+.mdx-content h2:first-child {
+    margin-top: 0;
+}
