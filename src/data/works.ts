@@ -2,6 +2,20 @@ import type { WorkItem } from "../types/work";
 
 export const works: WorkItem[] = [
   {
+    company: "sekolah alam indonesia",
+    role: "full stack developer",
+    stack: ['next.js', 'react', 'tailwind', 'sanity.io', 'lenis', 'framer-motion'],
+    type: "freelance",
+    date: "oct 2025 - ongoing",
+    location: "indonesia",
+    highlights: [
+      "built a multi-page school profile website using Next.js 15 and Sanity CMS for content management",
+      "implemented scroll-driven parallax animations with Framer Motion and custom spring physics hooks.",
+      "integrated Lenis smooth scroll with custom easing and a manual animation frame loop",
+      "collaborated closely with a designer to translate Figma designs into pixel-accurate, responsive components across multiple pages",
+    ]
+  },
+  {
     company: "independent",
     role: "full stack developer",
     stack: ['php', 'laravel', 'filament', 'livewire', 'tailwind', 'mysql'],
