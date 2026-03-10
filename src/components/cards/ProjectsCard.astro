@@ -9,12 +9,12 @@ import { stackUrls } from "../../data/stacksUrls";
   
   <!-- preview -->
   {props.image ? (
-    <a href={props.content_link ?? "/"}>  
-      <img src={props.image} alt={`${props.name} preview`} class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm">
+    <a href={props.content_link ?? "/"} class="">  
+      <img src={props.image} alt={`${props.name} preview`} class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm border border-transparent hover:border-[#EA580C]/70 transition-colors duration-200 block">
     </a>
     ) : (
-    <a href={props.content_link ?? "/"}>
-      <div class="shrink-0 w-full sm:w-55 h-32.5 bg-[#1a1a1a] rounded-sm"></div>
+    <a href={props.content_link ?? "/"} class="">
+      <div class="shrink-0 w-full sm:w-55 h-32.5 bg-[#1a1a1a] rounded-sm border-4 border-transparent hover:border-[#EA580C] transition-colors duration-200 block"></div>
     </a>
   )}
   <!-- content -->
