@@ -24,7 +24,7 @@ const { Content } = await render(project);
         <BreadCrumbs current={project.data.name}/>
         <DetectionCard>
             {project.data.image ? (
-                <img src={project.data.image} alt={`${project.data.name} preview`} class="w-full h-48 object-cover rounded-sm mb-5"/>
+                <img src={project.data.image} alt={`${project.data.name} preview`} class="w-full border h-48 object-cover object-top rounded-sm mb-5"/>
             ) : (
                 <div class="w-full h-48 bg-[#1a1a1a] rounded-sm mb-5"></div>
             )}
