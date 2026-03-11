@@ -3,5 +3,7 @@ export const stackUrls: Record<string, string> = {
   typescript: "https://www.typescriptlang.org/",
   gsap: "https://gsap.com/",
   tailwindcss: "https://tailwindcss.com",
+  nextjs: "https://nextjs.org/",
+  sanityio: "https://www.sanity.io/",
   // add more
 }
