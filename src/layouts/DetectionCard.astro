@@ -9,23 +9,23 @@ const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
 <section class="relative w-full h-fit z-20 pointer-events-none my-16 mx-auto">
     <!-- top labels -->
     <div class="flex justify-between font-mono text-[13px] tracking-[0.12em] uppercase mb-2">
-        <span class="text-[#1a1a1a66]">dtctn_{detection_id} // <span class="font-extrabold text-[#1a1a1a]/90">{subject}</span></span>
-        <span class="text-[#1a1a1a66]">conf: <span id="conf">0.97</span></span>
+        <span class="text-ink-muted">dtctn_{detection_id} // <span class="font-extrabold text-ink/90">{subject}</span></span>
+        <span class="text-ink-muted">conf: <span id="conf">0.97</span></span>
     </div>
     
     <!-- card body with corner brackets -->
     <div class="relative pointer-events-auto p-4">
         <!-- corner brackets -->
-        <div class="absolute top-0 left-0 w-4.5 h-4.5 border-[#1a1a1a] border-t-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute top-0 right-0 w-4.5 h-4.5 border-[#1a1a1a] border-t-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute bottom-0 left-0 w-4.5 h-4.5 border-[#1a1a1a] border-b-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute bottom-0 right-0 w-4.5 h-4.5 border-[#1a1a1a] border-b-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
+        <div class="absolute top-0 left-0 w-4.5 h-4.5 border-ink border-t-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
+        <div class="absolute top-0 right-0 w-4.5 h-4.5 border-ink border-t-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
+        <div class="absolute bottom-0 left-0 w-4.5 h-4.5 border-ink border-b-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
+        <div class="absolute bottom-0 right-0 w-4.5 h-4.5 border-ink border-b-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
 
         <slot/>
     </div>
     
     <!-- bottom coords -->
-    <div class="flex justify-between font-mono text-[11px] tracking-[0.08em] text-[#1a1a1a] opacity-30 pointer-events-none mt-2 animate-flicker">
+    <div class="flex justify-between font-mono text-[11px] tracking-[0.08em] text-ink opacity-30 pointer-events-none mt-2 animate-flicker">
         <span>[{bbox.join(', ')}]</span>
     </div>
 </section>
