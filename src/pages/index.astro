@@ -33,7 +33,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
                 <p>chronically curious, occasionally overthinks life at 2am.</p>
             </div>
         </DetectionCard>
-        <DetectionCard subject="work">
+        <DetectionCard subject="works">
             {works.map((work) => (
               <WorksCard
                   company={work.company}
@@ -46,7 +46,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
               />
             ))}
         </DetectionCard>
-        <DetectionCard subject="project">
+        <DetectionCard subject="projects">
             {sorted.length > 3 ? (
                 <>
                     {sorted.slice(0, 3).map((project: Project) => (
@@ -82,7 +82,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
             )}
 
         </DetectionCard>
-        <DetectionCard subject="contact">
+        <DetectionCard subject="contacts">
             <div class="flex flex-col gap-2">
               <p class="font-serif text-2xl sm:text-3xl text-ink tracking-tight leading-snug">
                 got something in mind? let's talk.
