@@ -3,6 +3,7 @@ import type { ProjectItem } from "../../types/project";
 const props = Astro.props as ProjectItem;
 import { SITE_URL } from "../../config";
 import { stackUrls } from "../../data/stacksUrls";
+import { Image } from "astro:assets";
 ---
 
 <div class="flex flex-col sm:flex-row gap-5 py-8 border-b border-[#1a1a1a]/10">
@@ -10,7 +11,7 @@ import { stackUrls } from "../../data/stacksUrls";
   <!-- preview -->
   {props.image ? (
     <a href={props.content_link ?? "/"} aria-label={props.name}>  
-        <img src={`/${props.image}`} alt={`${props.name} preview`} loading="eager" decoding="sync" class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm border border-[#1a1a1a]/30 hover:border-[#EA580C]/70 transition-colors duration-250 block">
+        <Image src={props.image} alt={`${props.name} preview`} class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm border border-[#1a1a1a]/30 hover:border-[#EA580C]/70 transition-colors duration-250 block">
     </a>
     ) : (
     <a href={props.content_link ?? "/"} aria-label={props.name}>
