@@ -51,3 +51,24 @@
 .mdx-content h2:first-child {
     margin-top: 0;
 }
+
+.mdx-content blockquote {
+    border-left: 2px solid var(--color-ink);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    opacity: 0.6;
+}
+
+.mdx-link {
+    color: mediumblue;
+    opacity: 0.8;
+    text-underline-offset: 3px;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease, opacity 0.2s ease;
+}
+
+.mdx-link:hover {
+    opacity: 1;
+    text-decoration-color: mediumblue;
+}
