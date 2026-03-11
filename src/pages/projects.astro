@@ -9,6 +9,7 @@ import BackToTop from "../components/miscellaneous/BackToTop.astro";
 
 import { getCollection, type CollectionEntry } from "astro:content";
 const projects = await getCollection("projects");
+const sorted = projects.sort((first, second) => first.data.order - second.data.order);
 type Project = CollectionEntry<"projects">;
 ---
 
@@ -17,7 +18,7 @@ type Project = CollectionEntry<"projects">;
         <BreadCrumbs current="projects" />
         <DetectionCard subject="projects">
             {
-                projects.map((project: Project) => (
+                sorted.map((project: Project) => (
                     <ProjectsCard
                         name={project.data.name}
                         description={project.data.description}
