@@ -1,6 +1,17 @@
 @import "tailwindcss";
 
 @theme {
+    /* colors */
+    --color-ink: #1a1a1a;
+    --color-ink-muted: #1a1a1a66;
+    --color-ink-rgb: 26, 26, 26;
+    --color-bg: #f5f5f5;
+    --color-accent: #EA580C;
+    --color-accent-rgb: 234, 88, 12;
+    --color-danger: #DC2626;
+    --color-surface: #F9FAFB;
+
+    /* animations */
     --animate-pulse-opacity: pulse-opacity 3s ease-in-out infinite;
     --animate-flicker: flicker 5s ease-in-out 1s infinite;
 }
@@ -19,7 +30,7 @@
 .mdx-content h2,
 .mdx-content h3 {
     font-family: var(--font-serif, serif);
-    color: #1a1a1a;
+    color: var(--color-ink);
     font-weight: 500;
 }
 
@@ -30,7 +41,7 @@
 .mdx-content p {
     font-family: var(--font-serif, serif);
     font-size: 1.1rem;
-    color: #1a1a1a;
+    color: var(--color-ink);
     opacity: 0.6;
     line-height: 1.75;
     margin-bottom: 1rem;
