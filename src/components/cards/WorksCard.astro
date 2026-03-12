@@ -3,7 +3,7 @@ import type { WorkItem } from "../../types/work";
 const props = Astro.props as WorkItem;
 ---
 
-<div class="work-item py-6 cursor-pointer group" onclick="this.classList.toggle('open')">
+<div class="work-item py-6 cursor-pointer group not-last:border-b border-ink/10" onclick="this.classList.toggle('open')">
     <div class="flex items-start gap-4">
         <!-- arrow always top right -->
         <svg class="toggle-icon text-ink/60 transition-transform duration-300 w-2 h-2 shrink-0 mt-1.5" viewBox="0 0 6 6" fill="currentColor">
