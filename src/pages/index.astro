@@ -10,6 +10,7 @@ import { works } from '../data/works';
 import { getCollection, type CollectionEntry } from 'astro:content';
 const projects = await getCollection('projects');
 const sorted = projects.sort((first, second) => first.data.order - second.data.order);
+const featured = sorted.filter(p => p.data.featured);
 type Project = CollectionEntry<'projects'>;
 
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
@@ -47,9 +48,9 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
             ))}
         </DetectionCard>
         <DetectionCard subject="projects">
-            {sorted.length > 3 ? (
+            {featured.length > 3 ? (
                 <>
-                    {sorted.slice(0, 3).map((project: Project) => (
+                    {featured.slice(0, 3).map((project: Project) => (
                       <ProjectsCard
                           name={project.data.name}
                           description={project.data.description}
@@ -68,7 +69,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
 
                 </>
             ) : (
-              sorted.map((project: Project) => (
+              featured.map((project: Project) => (
                   <ProjectsCard
                       name={project.data.name}
                       description={project.data.description}
