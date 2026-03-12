@@ -16,6 +16,8 @@ export const stackUrls: Record<string, string> = {
   alpinejs: "https://alpinejs.dev",
   prelineui: "https://preline.co",
   mysql: "https://www.mysql.com",
-  imagekit: "https://imagekit.io"
+  imagekit: "https://imagekit.io",
+  slim: "https://www.slimframework.com",
+  sqlserver: "https://www.microsoft.com/en-us/sql-server",
   // add more
 }
