@@ -10,6 +10,12 @@ export const stackUrls: Record<string, string> = {
   flask: "https://flask.palletsprojects.com",
   streamlit: "https://streamlit.io",
   yolo: "https://docs.ultralytics.com/",
-  gemini: "https://aistudio.google.com/"
+  gemini: "https://aistudio.google.com/",
+  php: "https://www.php.net",
+  laravel: "https://laravel.com",
+  alpinejs: "https://alpinejs.dev",
+  prelineui: "https://preline.co",
+  mysql: "https://www.mysql.com",
+  imagekit: "https://imagekit.io"
   // add more
 }
