@@ -19,6 +19,9 @@ type Project = CollectionEntry<"projects">;
         <BreadCrumbs current="projects" />
         {Object.entries(category).map(([cat, projects]) => (
             <DetectionCard subject={cat}>
+                {cat === 'academics' && (
+                    <h2 class="text-ink opacity-70 font-serif text-lg leading-7">these are my assignment projects through out my college. maybe it could help someone.</h2>
+                )}
                 {projects!.map((project: Project) => (
                     <ProjectsCard
                         name={project.data.name}
