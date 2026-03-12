@@ -10,15 +10,16 @@ import BackToTop from "../components/miscellaneous/BackToTop.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 const projects = await getCollection("projects");
 const sorted = projects.sort((first, second) => first.data.order - second.data.order);
+const category = Object.groupBy(sorted, (project) => project.data.category);
 type Project = CollectionEntry<"projects">;
 ---
 
 <MainLayout>
     <ContentLayout>
         <BreadCrumbs current="projects" />
-        <DetectionCard subject="projects">
-            {
-                sorted.map((project: Project) => (
+        {Object.entries(category).map(([cat, projects]) => (
+            <DetectionCard subject={cat}>
+                {projects!.map((project: Project) => (
                     <ProjectsCard
                         name={project.data.name}
                         description={project.data.description}
@@ -29,9 +30,9 @@ type Project = CollectionEntry<"projects">;
                         date={project.data.date}
                         content_link={`projects/${project.slug}`}
                     />
-                ))
-            }
-        </DetectionCard>
+                ))}
+            </DetectionCard>
+        ))}
         <BackToTop />
     </ContentLayout>
 </MainLayout>
