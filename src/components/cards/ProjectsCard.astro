@@ -15,7 +15,7 @@ import { Image } from "astro:assets";
     </a>
     ) : (
     <a href={props.content_link ?? "/"} aria-label={props.name}>
-      <div class="shrink-0 w-full sm:w-55 h-32.5 bg-ink rounded-sm border-4 border-transparent hover:border-accent transition-colors duration-250 block"></div>
+      <div class="shrink-0 w-full sm:w-55 h-32.5 bg-ink rounded-sm border border-ink/30 hover:border-accent/70 transition-colors duration-250 block"></div>
     </a>
   )}
   <!-- content -->
