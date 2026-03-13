@@ -20,7 +20,7 @@ export const stackUrls: Record<string, string> = {
   slim: "https://www.slimframework.com",
   sqlserver: "https://www.microsoft.com/en-us/sql-server",
   go: "https://golang.org",
-  flow: "https://www.flowlauncher.com",
+  "flow launcher": "https://www.flowlauncher.com",
   "notion api": "https://developers.notion.com",
   // add more
 }
