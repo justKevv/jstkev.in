@@ -48,7 +48,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
             ))}
         </DetectionCard>
         <DetectionCard subject="projects">
-            {featured.length > 3 ? (
+            {featured.length >= 3 ? (
                 <>
                     {featured.slice(0, 3).map((project: Project) => (
                       <ProjectsCard
