@@ -1,0 +1,65 @@
+---
+order: 2
+name: "sentry"
+featured: true
+description: "an ai-powered maintenance copilot for real-time monitoring and analysis of energy industry assets."
+image: "../../assets/projects/sentry.png"
+stack: ["python", "fastapi", "docker", "huggingspaces", "fastcron"]
+github: "https://github.com/orgs/Asah-Team/repositories"
+date: "aug 2025 - jan 2026"
+live_link: "https://sentry-asset-guardian.vercel.app/"
+---
+**disclaimer:** the tech stack that listed above is only the technologies that my friend and i used to during the project, but the project itself is not limited to those technologies.
+
+---
+
+import StackLink from "../../components/miscellaneous/StackLink.astro";
+
+## overview
+
+so, before we start, let's get you guys up to speed first. this project was in collaboration of a program called <a class="mdx-link" href="https://www.dicoding.com/asah" target="_blank" rel="noopener noreferrer">dicoding asah</a>,
+
+tl;dr, this program is a 6 months program where you will learn specific learning path and in the end you will build a capstone project based on a real problem that they give.
+
+## why?
+
+the problem that we got is about the energy industry, more specifically about the maintenance of the assets in the energy industry. 
+
+as you can imagine, the energy industry is a very complex industry with a lot of assets that need to be maintained regularly. and the problem is that the maintenance process is still done manually, which is not only time-consuming but also prone to human error. so, our task is to create a solution that can help the maintenance process to be more efficient and effective.
+
+## how it works
+
+let's divide this into three parts starting with:
+
+### machine learning
+
+since we don't have access to a real dataset, we were told to use this dataset called <a class="mdx-link" href="https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification/data" target="_blank" rel="noopener noreferrer">machine-predictive-maintenance-classification</a>, which is a synthetic dataset that reflects real predictive maintenance encountered in the industry to the best of their knowledge.
+
+we use lstm rul and xgboost for the machine learning part, and we use <StackLink name="fastapi"/> to create an api for the machine learning model, and we also use fastcron to schedule the machine learning model to run every 30 minutes.
+
+![machine learning](../../assets/projects/sentry/machine-learning.png)
+
+for how it works, i'll create separate documentation later, but in short, the machine learning model will take the data from the dataset and first it checks if there is any machine that has failure, if there is, it will predict what category of failure it is, and then it will predict the remaining useful life of the machine. and then it will store the result in the database.
+
+### backend
+
+for the backend, our team (more like my backend team) decided to use <StackLink name="nestjs"/> and <StackLink name="socket.io"/> for communicating with the frontend with real-time monitoring. we also uses langchain for the ai copilot part.
+
+![backend](../../assets/projects/sentry/backend.png)
+
+the backend will receive the data from the <StackLink name="supabase"/>, and then it will also send the data to the frontend for real-time monitoring. and for the ai copilot part, it will use <StackLink name="langchain"/> to generate insights and recommendations based on the data that it receives from the machine learning model. 
+
+we also implement **rag (retrieval-augmented generation)** for the ai copilot, so that it can retrieve relevant information from the document that we create so it will follow the guidelines on how it will fix the machines.
+
+### frontend
+
+frontend is relatively simple, we use <StackLink name="react"/> and <StackLink name="vite"/> for the frontend part. the frontend will display the data that it receives from the backend in a dashboard format using <StackLink name="socket.io"/>, and it will also display the insights and recommendations from the ai copilot.
+
+![frontend](../../assets/projects/sentry/frontend.png)
+
+---
+
+if you want to see the code (since it's a long text), you can check out our **github** repository above.
+
+sorry for the long yapping session :|
+
