@@ -22,5 +22,15 @@ export const stackUrls: Record<string, string> = {
   go: "https://golang.org",
   "flow launcher": "https://www.flowlauncher.com",
   "notion api": "https://developers.notion.com",
+  fastapi: "https://fastapi.tiangolo.com",
+  docker: "https://www.docker.com",
+  huggingspaces: "https://huggingface.co/spaces",
+  fastcron: "https://fastcron.com",
+  nestjs: "https://nestjs.com",
+  "socket.io": "https://socket.io",
+  supabase: "https://supabase.com",
+  langchain: "https://langchain-ai.github.io",
+  react: "https://react.dev",
+  vite: "https://vitejs.dev",
   // add more
 }
