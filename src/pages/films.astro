@@ -13,20 +13,22 @@ const LETTERBOXD_USER = 'justakevv';
 <MainLayout>
     <ContentLayout>
         <BreadCrumbs current="films"/>
-        <DetectionCard subject="films">
+        <DetectionCard subject="cinemas">
             <ChineseCard
                 subject="name"
                 character="电影"
                 pinyin="diàn yǐng"
                 translation="films">
             </ChineseCard>
-        </DetectionCard>
-        <DetectionCard subject="top_4">
-            <div class="mb-6">
+            
+            <hr class="border-t-[0.5px] border-ink/15 my-8"/>
+            
+            <div class="my-6">
                 <p class="font-serif text-lg text-ink/60 leading-relaxed">
                     some of my all-time favorite pieces of cinema.
                 </p>
             </div>
+            
             
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {topFilms.map((film) => (
@@ -40,9 +42,10 @@ const LETTERBOXD_USER = 'justakevv';
                   </div>
                 ))}
             </div>
-        </DetectionCard>
-        <DetectionCard subject="links">
-            <div class="mb-6">
+            
+            <hr class="border-t-[0.5px] border-ink/15 my-8"/>
+            
+            <div class="my-6">
                 <p class="font-serif text-lg text-ink/60 leading-relaxed">
                     go check my recent watch here!
                 </p>
