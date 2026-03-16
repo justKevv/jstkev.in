@@ -14,14 +14,14 @@ const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
     </div>
     
     <!-- card body with corner brackets -->
-    <div class="relative pointer-events-auto p-4">
+    <div class="relative pointer-events-auto p-5">
         <!-- corner brackets -->
-        <div class="absolute top-0 left-0 w-4.5 h-4.5 border-ink border-t-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute top-0 right-0 w-4.5 h-4.5 border-ink border-t-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute bottom-0 left-0 w-4.5 h-4.5 border-ink border-b-[1.5px] border-l-[1.5px] opacity-50 animate-pulse-opacity"></div>
-        <div class="absolute bottom-0 right-0 w-4.5 h-4.5 border-ink border-b-[1.5px] border-r-[1.5px] opacity-50 animate-pulse-opacity"></div>
-
-        <slot/>
+        <div data-corner="tl" class="absolute top-0 left-0 w-5.5 h-5.5 border-ink border-t-[1.8px] border-l-[1.8px]"></div>
+        <div data-corner="tr" class="absolute top-0 right-0 w-5.5 h-5.5 border-ink border-t-[1.8px] border-r-[1.8px]"></div>
+        <div data-corner="bl" class="absolute bottom-0 left-0 w-5.5 h-5.5 border-ink border-b-[1.8px] border-l-[1.8px]"></div>
+        <div data-corner="br" class="absolute bottom-0 right-0 w-5.5 h-5.5 border-ink border-b-[1.8px] border-r-[1.8px]"></div>
+        
+        <slot/> 
     </div>
     
     <!-- bottom coords -->
