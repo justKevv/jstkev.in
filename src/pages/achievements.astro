@@ -18,7 +18,7 @@ import { certifications } from "../data/certifications";
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {certs.map(({image, caption}) => (
                   <div class="flex flex-col gap-2">
-                    <Image src={image} alt={caption} width={800} height={600} quality={80} data-lightbox data-src={image.src} loading="eager" data-caption={caption} class="w-full h-80 object-cover border border-ink/40 rounded-sm cursor-zoom-in"/>
+                    <Image src={image} alt={caption} quality={80} data-lightbox data-src={image.src} loading="eager" data-caption={caption} class="w-full h-80 object-cover border border-ink/40 rounded-sm cursor-zoom-in"/>
                     <p class="font-mono text-[12px] tracking-widest text-ink/50">{caption}</p>
                   </div>
                   ))}
