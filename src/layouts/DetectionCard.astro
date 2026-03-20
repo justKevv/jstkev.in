@@ -10,9 +10,9 @@ const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
     <!-- top labels -->
     <div class="flex justify-between font-mono text-[13px] tracking-[0.12em] uppercase mb-2">
         <span class="text-ink-muted">dtctn_{detection_id} // <span class="font-extrabold text-ink/90">{subject}</span></span>
-        <span class="text-ink-muted">conf: <span id="conf">0.97</span></span>
+        <span class="text-ink-muted whitespace-nowrap">conf: <span id="conf">0.97</span></span>
     </div>
-    
+
     <!-- card body with corner brackets -->
     <div class="relative pointer-events-auto p-4">
         <!-- corner brackets -->
@@ -20,10 +20,10 @@ const bbox = Array.from({length: 4}, () => Math.random().toFixed(3));
         <div data-corner="tr" class="absolute top-0 right-0 w-5.5 h-5.5 border-ink/70 border-t-[1.8px] border-r-[1.8px]"></div>
         <div data-corner="bl" class="absolute bottom-0 left-0 w-5.5 h-5.5 border-ink/70 border-b-[1.8px] border-l-[1.8px]"></div>
         <div data-corner="br" class="absolute bottom-0 right-0 w-5.5 h-5.5 border-ink/70 border-b-[1.8px] border-r-[1.8px]"></div>
-        
-        <slot/> 
+
+        <slot/>
     </div>
-    
+
     <!-- bottom coords -->
     <div class="flex justify-between font-mono text-[11px] tracking-[0.08em] text-ink opacity-30 pointer-events-none mt-2 animate-flicker">
         <span>[{bbox.join(', ')}]</span>
