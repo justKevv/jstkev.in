@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-const images = import.meta.glob('../assets/achievements/*/*.{png,jpg,jpeg,webp}', { eager: false });
+const images = import.meta.glob('../assets/certifications/*/*.{png,jpg,jpeg,webp}', { eager: false });
 
 function toReadable(str: string) {
   return str.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
@@ -22,4 +22,4 @@ const grouped = resolved.reduce((acc, [path, mod]) => {
   return acc;
 }, {} as Record<string, { image: ImageMetadata, caption: string }[]>);
 
-export const achievements = { grouped };
+export const certifications = { grouped };
