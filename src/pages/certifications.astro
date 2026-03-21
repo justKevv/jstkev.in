@@ -15,11 +15,11 @@ import BackToTop from "../components/miscellaneous/BackToTop.astro";
         <BreadCrumbs current="certifications"/>
         {Object.entries(certifications.grouped).map(([groupName, certs]) => (
           <DetectionCard subject={groupName}>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
                   {certs.map(({image, caption}) => (
                   <div class="flex flex-col gap-2">
                     <Image src={image} alt={caption} quality={80} data-lightbox data-src={image.src} loading="eager" data-caption={caption} class="w-full h-80 object-cover border border-ink/40 rounded-sm cursor-zoom-in"/>
-                    <p class="font-mono text-[12px] tracking-widest text-ink/50">{caption}</p>
+                    <p class="font-mono text-[12px] justify-center tracking-widest text-ink/70">{caption}</p>
                   </div>
                   ))}
               </div>
