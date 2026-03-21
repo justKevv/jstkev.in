@@ -5,8 +5,8 @@ import DetectionCard from "../layouts/DetectionCard.astro";
 import MainLayout from "../layouts/MainLayout.astro";
 import Lightbox from "../components/Lightbox.astro";
 import { Image } from 'astro:assets';
-
 import { certifications } from "../data/certifications";
+import BackToTop from "../components/miscellaneous/BackToTop.astro";
 ---
 
 <MainLayout>
@@ -25,5 +25,6 @@ import { certifications } from "../data/certifications";
               </div>
           </DetectionCard>
         ))}
+        <BackToTop/>
     </ContentLayout>
 </MainLayout>
