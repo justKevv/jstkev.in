@@ -9,12 +9,12 @@ const props = Astro.props as WorkItem;
         <svg class="toggle-icon text-ink/60 transition-transform duration-300 w-2 h-2 shrink-0 mt-1.5" viewBox="0 0 6 6" fill="currentColor">
             <polygon points="0,0 6,3 0,6"/>
         </svg>
-        
+
         <!-- everything on the left -->
         <div class="flex flex-col gap-0.5 min-w-0">
             <span class="text-[14px] text-ink/60 tracking-[0.15em] uppercase font-mono">{props.company}</span>
             <span class="text-2xl text-ink/80 tracking-tight capitalize font-serif group-hover:text-ink transition-opacity duration-250">{props.role}</span>
-            <span class="text-[14px] border-2 border-[#EDE8E0] w-fit px-2 py-0.5 text-ink/65 font-mono">{props.type}</span>
+            <span class="text-[14px] border-2 border-ink/15 w-fit px-2 py-0.5 text-ink/65 font-mono">{props.type}</span>
             <div class="text-[14px] flex flex-wrap gap-x-2 mt-1.5">
                 <span class="text-ink/55 font-mono">{props.location}</span>
                 <span class="text-ink/40 font-mono">·</span>
