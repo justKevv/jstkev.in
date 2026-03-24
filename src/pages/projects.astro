@@ -1,17 +1,12 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import Background from "../components/Background.astro";
 import ContentLayout from "../layouts/ContentLayout.astro";
 import DetectionCard from "../layouts/DetectionCard.astro";
 import ProjectsCard from "../components/cards/ProjectsCard.astro";
 import BreadCrumbs from "../components/BreadCrumbs.astro";
 import BackToTop from "../components/miscellaneous/BackToTop.astro";
 
-import { getCollection, type CollectionEntry } from "astro:content";
-const projects = await getCollection("projects");
-const sorted = projects.sort((first, second) => first.data.order - second.data.order);
-const category = Object.groupBy(sorted, (project) => project.data.category);
-type Project = CollectionEntry<"projects">;
+import { category, type Project } from "../data/projects";
 ---
 
 <MainLayout>

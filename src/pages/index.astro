@@ -7,11 +7,7 @@ import WorksCard from '../components/cards/WorksCard.astro';
 import ProjectsCard from '../components/cards/ProjectsCard.astro';
 
 import { works } from '../data/works';
-import { getCollection, type CollectionEntry } from 'astro:content';
-const projects = await getCollection('projects');
-const sorted = projects.sort((first, second) => first.data.order - second.data.order);
-const featured = sorted.filter(p => p.data.featured);
-type Project = CollectionEntry<'projects'>;
+import { featured, type Project } from '../data/projects';
 
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
 ---
