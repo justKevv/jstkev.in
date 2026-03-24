@@ -1,0 +1,46 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string | ImageMetadata;
+  url?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+}
+
+const {
+  title = "jst.kevv place.",
+  description = "Kevin Bramasta Arvyto Wardhana — building for the web, training models, and figuring out the design engineer thing along the way.",
+  image = "/og-image.png",
+  url = Astro.url.href,
+  type = "website",
+  noindex = false,
+} = Astro.props;
+
+// Handle both Astro image objects and plain string paths
+const imageSrc = typeof image === "string" ? image : image.src;
+
+const siteName = "jst.kevv";
+const fullTitle = title === "jst.kevv place." ? title : `${title} · jst.kevv`;
+const canonicalURL = new URL(url, Astro.site);
+const ogImage = new URL(imageSrc, Astro.site);
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={siteName} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
