@@ -20,7 +20,12 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 ---
 
-<MainLayout>
+<MainLayout
+    title={project.data.name}
+    description={project.data.description}
+    image={project.data.image}
+    type="article"
+    >
     <ContentLayout>
         <BreadCrumbs current={project.data.name}/>
         <DetectionCard subject="details">
@@ -29,7 +34,6 @@ const { Content } = await render(project);
             ) : (
                 <div class="w-full h-48 bg-ink rounded-sm mb-5"></div>
             )}
-            
             <div class="flex flex-col gap-1 mb-5">
                 <div class="flex flex-col gap-3">
                     <h2 class="font-serif text-2xl text-ink tracking-tight">{project.data.name}</h2>
