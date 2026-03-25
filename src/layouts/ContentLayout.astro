@@ -10,10 +10,12 @@ const { class: className } = Astro.props;
     .content-layout {
         position: relative;
         z-index: 1;
-        width: min(100vw, 700px);
+        width: min(100vw, 750px);
         margin: 0 auto;
         min-height: 100vh;
         padding: 2rem;
         box-sizing: border-box;
+        border-width: 1px;
+        border-color: color-mix(in oklab, var(--color-ink) /* #1a1a1a */ 20%, transparent);
     }
 </style>
