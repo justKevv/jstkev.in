@@ -55,6 +55,7 @@
         const GAP = 12;
         const colStep = CELL;
         const rowStep = CELL + GAP;
+        let zone = { cx1: 0, cx2: 0 };
 
         const canvas = document.getElementById("genko-bg");
         const ctx = canvas.getContext("2d");
@@ -71,50 +72,64 @@
             return arr;
         }
 
-        function getZoneWidth() {
+        function getZone() {
             const layout = document.querySelector(".content-layout");
-            return layout
-                ? layout.getBoundingClientRect().width
-                : Math.min(W * 0.85, 680);
+            const rect = layout
+                ? layout.getBoundingClientRect()
+                : { left: W / 2 - Math.min(W * 0.85, 700) / 2, right: W / 2 + Math.min(W * 0.85, 700) / 2 };
+            return { cx1: rect.left, cx2: rect.right };
         }
 
         function placeCharacters() {
             placedChars = [];
-            const offset = ((W / 2) % colStep) - CELL / 2;
-            const zoneWidth = getZoneWidth();
-            const cx1 = W / 2 - zoneWidth / 2;
-            const cx2 = W / 2 + zoneWidth / 2;
+            const { cx1, cx2 } = zone;
+            const offsetL = cx1 - Math.ceil(cx1 / colStep) * colStep;
+            const offsetR = cx2 - Math.floor(cx2 / colStep) * colStep;
             const totalCols = Math.ceil(W / colStep) + 2;
             const NEAR_COLS = 3;
             const rowMin = Math.floor((H * 0.3) / rowStep);
             const rowMax = Math.ceil((H * 0.7) / rowStep);
             const validCols = new Set();
             const available = [];
+
             for (let col = -1; col < totalCols; col++) {
-                const x = offset + col * colStep - colStep;
-                if (x + CELL > cx1 && x < cx2) continue;
-                const distToZone = x + CELL <= cx1 ? cx1 - (x + CELL) : x - cx2;
-                if (distToZone > NEAR_COLS * colStep) continue;
-                validCols.add(col);
-                for (let row = rowMin; row < rowMax; row++) {
-                    available.push({ col, row });
+                // Try left band first
+                const xL = offsetL + col * colStep;
+                if (xL + CELL <= cx1) {
+                    const distToZone = cx1 - (xL + CELL);
+                    if (distToZone <= NEAR_COLS * colStep) {
+                        validCols.add(`L:${col}`);
+                        for (let row = rowMin; row < rowMax; row++) available.push({ col, row, band: 'L' });
+                    }
+                }
+                // Right band
+                const xR = offsetR + col * colStep;
+                if (xR >= cx2) {
+                    const distToZone = xR - cx2;
+                    if (distToZone <= NEAR_COLS * colStep) {
+                        validCols.add(`R:${col}`);
+                        for (let row = rowMin; row < rowMax; row++) available.push({ col, row, band: 'R' });
+                    }
                 }
             }
+
             shuffle(available);
             const occupied = new Set();
-            const key = (col, row) => `${col},${row}`;
+            const key = (band, col, row) => `${band}:${col},${row}`;
+
             for (let gi = 0; gi < groups.length; gi++) {
                 const chars = [...groups[gi]];
                 let placed = false;
                 for (const cell of available) {
-                    const allColsValid = chars.every((_, ci) => validCols.has(cell.col + ci));
+                    const allColsValid = chars.every((_, ci) => validCols.has(`${cell.band}:${cell.col + ci}`));
                     if (!allColsValid) continue;
-                    const fits = chars.every((_, ci) => !occupied.has(key(cell.col + ci, cell.row)));
+                    const fits = chars.every((_, ci) => !occupied.has(key(cell.band, cell.col + ci, cell.row)));
                     if (!fits) continue;
                     chars.forEach((ch, ci) => {
                         const col = cell.col + ci;
-                        occupied.add(key(col, cell.row));
-                        placedChars.push({ char: ch, gridCol: col, gridRow: cell.row, groupIdx: gi });
+                        occupied.add(key(cell.band, col, cell.row));
+                        const offset = cell.band === 'L' ? offsetL : offsetR;
+                        placedChars.push({ char: ch, gridCol: col, gridRow: cell.row, groupIdx: gi, offset });
                     });
                     placed = true;
                     break;
@@ -127,7 +142,7 @@
             const container = document.getElementById("genko-overlays");
             if (!container) return;
             container.innerHTML = "";
-            const offset = ((W / 2) % colStep) - CELL / 2;
+            const offset = zone.cx1 - Math.ceil(zone.cx1 / colStep) * colStep;
             const byGroup = {};
             placedChars.forEach((c) => {
                 if (!byGroup[c.groupIdx]) byGroup[c.groupIdx] = [];
@@ -137,8 +152,8 @@
                 const minCol = Math.min(...chars.map((c) => c.gridCol));
                 const maxCol = Math.max(...chars.map((c) => c.gridCol));
                 const row = chars[0].gridRow;
-                const x = offset + minCol * colStep - colStep;
-                const y = row * rowStep;
+                const x = chars[0].offset + minCol * colStep;
+                const y = chars[0].gridRow * rowStep;
                 const w = (maxCol - minCol + 1) * colStep;
                 const a = document.createElement("a");
                 a.href = hrefs[gi] ?? "/";
@@ -163,56 +178,83 @@
             // Only called on true window resize events.
             W = canvas.width = window.innerWidth;
             H = canvas.height = window.innerHeight;
+            zone = getZone();
             placeCharacters();
             updateOverlays();
         }
 
+        function refreshOffsets() {
+            const { cx1, cx2 } = zone;
+            const offsetL = cx1 - Math.ceil(cx1 / colStep) * colStep;
+            const offsetR = cx2 - Math.floor(cx2 / colStep) * colStep;
+            placedChars.forEach((c) => {
+                // Determine band by which side of cx1 the char was on
+                const xL = offsetL + c.gridCol * colStep;
+                c.offset = xL + CELL <= cx1 ? offsetL : offsetR;
+            });
+        }
+
         function refreshOverlays() {
-            // Navigation resize: update canvas dimensions and overlay hit areas
-            // WITHOUT re-placing characters — keeps them in the same grid position.
             W = canvas.width = window.innerWidth;
             H = canvas.height = window.innerHeight;
+            zone = getZone();
+            refreshOffsets();
             updateOverlays();
         }
 
+        function drawCell(x, y, ink, baseAlpha) {
+            ctx.strokeStyle = `rgba(${ink}, ${baseAlpha})`;
+            ctx.beginPath();
+            ctx.rect(x, y, CELL, CELL);
+            ctx.stroke();
+            const inset = CELL * 0.15;
+            ctx.strokeStyle = `rgba(${ink}, ${baseAlpha * 0.4})`;
+            ctx.beginPath();
+            ctx.rect(x + inset, y + inset, CELL - inset * 2, CELL - inset * 2);
+            ctx.stroke();
+        }
+
         function draw() {
-            ctx.clearRect(0, 0, W, H);
-            time += 0.004;
-            const ink = getInkRgb();
-            const baseAlpha = 0.2 + Math.sin(time) * 0.02;
-            const rows = Math.ceil(H / rowStep) + 1;
-            const cols = Math.ceil(W / colStep) + 2;
-            const offset = ((W / 2) % colStep) - CELL / 2;
-            const zoneWidth = getZoneWidth();
-            const centerX1 = W / 2 - zoneWidth / 2;
-            const centerX2 = W / 2 + zoneWidth / 2;
-            ctx.lineWidth = 0.5;
-            for (let r = 0; r < rows; r++) {
-                for (let c = -1; c < cols; c++) {
-                    const x = offset + c * colStep - colStep;
-                    const y = r * rowStep;
-                    if (x + CELL > centerX1 && x < centerX2) continue;
-                    ctx.strokeStyle = `rgba(${ink}, ${baseAlpha})`;
-                    ctx.beginPath();
-                    ctx.rect(x, y, CELL, CELL);
-                    ctx.stroke();
-                    const inset = CELL * 0.15;
-                    ctx.strokeStyle = `rgba(${ink}, ${baseAlpha * 0.4})`;
-                    ctx.beginPath();
-                    ctx.rect(x + inset, y + inset, CELL - inset * 2, CELL - inset * 2);
-                    ctx.stroke();
-                }
-            }
-            placedChars.forEach((c) => {
-                const cx = offset + c.gridCol * colStep - colStep + CELL / 2;
-                const cy = c.gridRow * rowStep + CELL / 2;
-                ctx.font = `${CELL * 0.55}px Mori, serif`;
-                ctx.fillStyle = `rgba(${ink}, 0.27)`;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(c.char, cx, cy);
-            });
-            requestAnimationFrame(draw);
+          ctx.clearRect(0, 0, W, H);
+          time += 0.004;
+          const ink = getInkRgb();
+          const baseAlpha = 0.2 + Math.sin(time) * 0.02;
+          const rows = Math.ceil(H / rowStep) + 1;
+          const { cx1, cx2 } = zone;
+
+          // Left band: anchor grid to cx1 (cells end flush at cx1)
+          const offsetL = cx1 - Math.ceil(cx1 / colStep) * colStep;
+          // Right band: anchor grid to cx2 (cells start flush at cx2)
+          const offsetR = cx2 - Math.floor(cx2 / colStep) * colStep;
+
+          ctx.lineWidth = 0.5;
+          for (let r = 0; r < rows; r++) {
+              const y = r * rowStep;
+
+              // Left columns
+              for (let c = -1; c * colStep + offsetL < cx1; c++) {
+                  const x = offsetL + c * colStep;
+                  if (x + CELL > cx1) continue;
+                  drawCell(x, y, ink, baseAlpha);
+              }
+
+              // Right columns
+              for (let c = 0; offsetR + c * colStep < W; c++) {
+                  const x = offsetR + c * colStep;
+                  if (x < cx2) continue;
+                  drawCell(x, y, ink, baseAlpha);
+              }
+          }
+          placedChars.forEach((c) => {
+              const charX = c.offset + c.gridCol * colStep + CELL / 2;
+              const charY = c.gridRow * rowStep + CELL / 2;
+              ctx.font = `${CELL * 0.55}px Mori, serif`;
+              ctx.fillStyle = `rgba(${ink}, 0.27)`;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(c.char, charX, charY);
+          });
+          requestAnimationFrame(draw);
         }
 
         window.__genkoRefresh = refreshOverlays;
@@ -225,7 +267,6 @@
             window.__genkoRefresh();
         });
     } else {
-        // Script re-ran due to navigation — characters stay, just update overlays.
         window.__genkoRefresh && window.__genkoRefresh();
     }
 </script>
