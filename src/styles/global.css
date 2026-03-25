@@ -14,6 +14,16 @@
     /* animations */
     --animate-pulse-opacity: pulse-opacity 3s ease-in-out infinite;
     --animate-flicker: flicker 5s ease-in-out 1s infinite;
+
+    /* font sizes */
+    --text-xs: 0.7rem;
+    --text-sm: 0.8rem;
+    --text-base: 0.95rem;
+    --text-lg: 1.05rem;
+    --text-xl: 1.15rem;
+    --text-2xl: 1.35rem;
+    --text-3xl: 1.65rem;
+    --text-4xl: 2rem;
 }
 
 @keyframes pulse-opacity {
@@ -34,13 +44,13 @@
     font-weight: 500;
 }
 
-.mdx-content h1 { font-size: 1.5rem; margin-bottom: 0.5rem; margin-top: 2rem; font-weight: 700; }
-.mdx-content h2 { font-size: 1.2rem; margin-bottom: 0.4rem; margin-top: 1.5rem; opacity: 0.75; font-weight: 700;}
-.mdx-content h3 { font-size: 1rem;   margin-bottom: 0.3rem; margin-top: 1.25rem; opacity: 0.6; font-weight: 700;}
+.mdx-content h1 { font-size: 1.4rem; margin-bottom: 0.5rem; margin-top: 2rem; font-weight: 700; }
+.mdx-content h2 { font-size: 1.1rem; margin-bottom: 0.4rem; margin-top: 1.5rem; opacity: 0.75; font-weight: 700;}
+.mdx-content h3 { font-size: 0.95rem;   margin-bottom: 0.3rem; margin-top: 1.25rem; opacity: 0.6; font-weight: 700;}
 
 .mdx-content p {
     font-family: var(--font-serif, serif);
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--color-ink);
     opacity: 0.75;
     line-height: 1.75;
