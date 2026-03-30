@@ -3,9 +3,10 @@ import BreadCrumbs from "../../components/BreadCrumbs.astro";
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import DetectionCard from "../../layouts/DetectionCard.astro";
 import MainLayout from "../../layouts/MainLayout.astro";
+import BackToTop from "../../components/miscellaneous/BackToTop.astro";
+
 import { getCollection, render } from "astro:content";
 import { stackUrls } from "../../data/stacksUrls";
-import BackToTop from "../../components/miscellaneous/BackToTop.astro";
 import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
