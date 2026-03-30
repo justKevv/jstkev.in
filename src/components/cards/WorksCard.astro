@@ -3,7 +3,7 @@ import type { WorkItem } from "../../types/work";
 const props = Astro.props as WorkItem;
 ---
 
-<div class="work-item py-6 cursor-pointer group not-last:border-b border-ink/10" onclick="this.classList.toggle('open')">
+<div class="work-item py-6 cursor-pointer group not-last:border-b border-ink/20" onclick="this.classList.toggle('open')">
     <div class="flex items-start gap-4">
         <!-- arrow always top right -->
         <svg class="toggle-icon text-ink/60 transition-transform duration-300 w-2 h-2 shrink-0 mt-1.5" viewBox="0 0 6 6" fill="currentColor">
@@ -12,9 +12,9 @@ const props = Astro.props as WorkItem;
 
         <!-- everything on the left -->
         <div class="flex flex-col gap-0.5 min-w-0">
-            <span class="text-[14px] text-ink/60 tracking-[0.15em] uppercase font-mono">{props.company}</span>
-            <span class="text-2xl text-ink/80 tracking-tight capitalize font-serif group-hover:text-ink transition-opacity duration-250">{props.role}</span>
-            <span class="text-[14px] border-2 border-ink/15 w-fit px-2 py-0.5 text-ink/65 font-mono">{props.type}</span>
+            <span class="text-[14px] text-ink/70 tracking-[0.15em] uppercase font-mono">{props.company}</span>
+            <span class="text-2xl text-ink/90 tracking-tight capitalize font-serif group-hover:text-ink transition-opacity duration-250">{props.role}</span>
+            <span class="text-[14px] border border-ink/35 w-fit px-2 py-0.5 text-ink/65 font-mono">{props.type}</span>
             <div class="text-[14px] flex flex-wrap gap-x-2 mt-1.5">
                 <span class="text-ink/55 font-mono">{props.location}</span>
                 <span class="text-ink/40 font-mono">·</span>
@@ -22,7 +22,7 @@ const props = Astro.props as WorkItem;
             </div>
             <div class="flex flex-wrap gap-x-1 mt-1">
                 {props.stack.map((s: string, i: number) => (
-                    <span class="text-[14px] text-accent/60 font-mono">{s}{i < props.stack.length - 1 ? ' ·' : ''}</span>
+                    <span class="text-[14px] text-accent font-mono">{s}{i < props.stack.length - 1 ? ' ·' : ''}</span>
                 ))}
             </div>
         </div>
@@ -33,7 +33,7 @@ const props = Astro.props as WorkItem;
         <div class="overflow-hidden">
             <ul class="list-disc ml-5 mt-4 space-y-1 pb-1">
                 {props.highlights.map((point: string) => (
-                    <li class="font-serif text-md text-ink/55 leading-relaxed">
+                    <li class="font-serif text-md text-ink/75 leading-relaxed">
                         {point}
                     </li>
                 ))}
