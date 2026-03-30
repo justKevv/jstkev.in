@@ -61,9 +61,9 @@ const { Content } = await render(project);
             <hr class="border-t-[0.5px] border-ink/15 mb-8"/>
 
             <!-- mdx body -->
-            <div class="mdx-content">
-                <Content/>
-            </div>
+            <article class="prose prose-md max-w-none prose-orange font-serif">
+              <Content />
+            </article>
         </DetectionCard>
         <BackToTop/>
     </ContentLayout>
