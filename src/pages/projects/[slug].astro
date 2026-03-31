@@ -8,11 +8,12 @@ import BackToTop from "../../components/miscellaneous/BackToTop.astro";
 import { getCollection, render } from "astro:content";
 import { stackUrls } from "../../data/stacksUrls";
 import { Image } from "astro:assets";
+import generateSlug from "../../lib/generateSlug";
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
   return projects.map((project) => ({
-    params: { slug: project.slug },
+    params: { slug: generateSlug(project.data.name) },
     props: { project }
   }));
 }
