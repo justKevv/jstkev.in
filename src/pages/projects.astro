@@ -7,6 +7,7 @@ import BreadCrumbs from "../components/BreadCrumbs.astro";
 import BackToTop from "../components/miscellaneous/BackToTop.astro";
 
 import { category, type Project } from "../data/projects";
+import generateSlug from "../lib/generateSlug";
 ---
 
 <MainLayout>
@@ -26,7 +27,7 @@ import { category, type Project } from "../data/projects";
                         image={project.data.image}
                         live_link={project.data.live_link}
                         date={project.data.date}
-                        content_link={`/projects/${project.slug}`}
+                        content_link={`projects/${generateSlug(project.data.name)}`}
                     />
                 ))}
             </DetectionCard>
