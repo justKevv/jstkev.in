@@ -8,6 +8,7 @@ import ProjectsCard from '../components/cards/ProjectsCard.astro';
 
 import { works } from '../data/works';
 import { featured, type Project } from '../data/projects';
+import generateSlug from '../lib/generateSlug';
 
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
 ---
@@ -55,7 +56,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
                           github={project.data.github}
                           live_link={project.data.live_link}
                           date={project.data.date}
-                          content_link={`projects/${project.slug}`}
+                          content_link={`projects/${generateSlug(project.data.name)}`}
                       />
                     ))}
                     <a href="/projects" class="flex items-center justify-center font-mono text-[13px] tracking-wider text-ink/70 border border-ink/20 py-2 transition-all duration-300 hover:text-ink hover:border-ink/70 hover:bg-ink/3 group">
@@ -74,7 +75,7 @@ import { EMAIL, GITHUB_URL, LINKEDIN_URL } from '../config';
                       github={project.data.github}
                       live_link={project.data.live_link}
                       date={project.data.date}
-                      content_link={`projects/${project.slug}`}
+                      content_link={`projects/${generateSlug(project.data.name)}`}
                   />
               ))
             )}
