@@ -19,7 +19,7 @@ export const stackUrls: Record<string, string> = {
   imagekit: "https://imagekit.io",
   slim: "https://www.slimframework.com",
   sqlserver: "https://www.microsoft.com/en-us/sql-server",
-  go: "https://golang.org",
+  golang: "https://golang.org",
   "flow launcher": "https://www.flowlauncher.com",
   "notion api": "https://developers.notion.com",
   fastapi: "https://fastapi.tiangolo.com",
