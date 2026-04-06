@@ -77,7 +77,7 @@
             const rect = layout
                 ? layout.getBoundingClientRect()
                 : { left: W / 2 - Math.min(W * 0.85, 700) / 2, right: W / 2 + Math.min(W * 0.85, 700) / 2 };
-            return { cx1: rect.left, cx2: rect.right };
+            return { cx1: Math.round(rect.left), cx2: Math.round(rect.right) };
         }
 
         function placeCharacters() {
@@ -176,8 +176,8 @@
         function resize() {
             // Full resize: recalculate dimensions, re-place chars, update overlays.
             // Only called on true window resize events.
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
+            W = canvas.width = Math.round(window.innerWidth);
+            H = canvas.height = Math.round(window.visualViewport?.height ?? window.innerHeight);
             zone = getZone();
             placeCharacters();
             updateOverlays();
@@ -195,8 +195,8 @@
         }
 
         function refreshOverlays() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
+            W = canvas.width = Math.round(window.innerWidth);
+            H = canvas.height = Math.round(window.visualViewport?.height ?? window.innerHeight);
             zone = getZone();
             refreshOffsets();
             updateOverlays();
