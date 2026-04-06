@@ -2,7 +2,7 @@
 const { class: className } = Astro.props;
 ---
 
-<div class={`content-layout${className ?? ''}`}>
+<div class={`content-layout ${className ?? ''}`.trim()}>
     <slot />
 </div>
 
@@ -10,7 +10,7 @@ const { class: className } = Astro.props;
     .content-layout {
         position: relative;
         z-index: 1;
-        width: min(100vw, 750px);
+        width: min(100%, 750px);
         margin: 0 auto;
         min-height: 100vh;
         padding: 2rem;
