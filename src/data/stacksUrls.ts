@@ -32,5 +32,6 @@ export const stackUrls: Record<string, string> = {
   langchain: "https://langchain-ai.github.io",
   react: "https://react.dev",
   vite: "https://vitejs.dev",
+  mongodb: "https://www.mongodb.com/"
   // add more
 }
