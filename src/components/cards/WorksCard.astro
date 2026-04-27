@@ -1,55 +1,55 @@
 ---
+import { stackUrls } from "../../data/stacksUrls";
 import type { WorkItem } from "../../types/work";
-const props = Astro.props as WorkItem;
+const props = Astro.props as WorkItem & { index: number };
 ---
 
-<div class="work-item py-6 cursor-pointer group not-last:border-b border-ink/20" onclick="this.classList.toggle('open')">
-    <div class="flex items-start gap-4">
-        <!-- arrow always top right -->
-        <svg class="toggle-icon text-ink/60 transition-transform duration-300 w-2 h-2 shrink-0 mt-1.5" viewBox="0 0 6 6" fill="currentColor">
-            <polygon points="0,0 6,3 0,6"/>
-        </svg>
+<details class="group work-split">
+  <summary class="list-none [&::-webkit-details-marker]:hidden cursor-pointer py-3">
+    <div class="grid gap-3 sm:flex sm:items-start sm:gap-6">
+      <div class="flex items-center justify-between sm:w-10 sm:block">
+        <p class="m-0 text-sm text-black/60 sm:text-base">{String(props.index).padStart(2, "0")}</p>
 
-        <!-- everything on the left -->
-        <div class="flex flex-col gap-0.5 min-w-0">
-            <span class="text-[14px] text-ink/70 tracking-[0.15em] uppercase font-mono">{props.company}</span>
-            <span class="text-2xl text-ink/90 tracking-tight capitalize font-serif group-hover:text-ink transition-opacity duration-250">{props.role}</span>
-            <span class="text-[14px] border border-ink/35 w-fit px-2 py-0.5 text-ink/65 font-mono">{props.type}</span>
-            <div class="text-[14px] flex flex-wrap gap-x-2 mt-1.5">
-                <span class="text-ink/65 font-mono">{props.location}</span>
-                <span class="text-ink/40 font-mono">·</span>
-                <span class="text-ink/65 font-mono">{props.date}</span>
-            </div>
-            <div class="flex flex-wrap gap-x-1 mt-1">
-                {props.stack.map((s: string, i: number) => (
-                    <span class="text-[14px] text-accent font-mono">{s}{i < props.stack.length - 1 ? ' ·' : ''}</span>
-                ))}
-            </div>
+        <div class="flex items-center gap-3 sm:hidden">
+          <p class="m-0 text-xs text-black/60 capitalize">{props.date}</p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 transition-transform duration-200 group-open:rotate-180">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </div>
+      </div>
 
-    </div>
+      <div class="min-w-0 flex-1 grid gap-2">
+        <h2 class="m-0 text-base font-family-playfair leading-snug capitalize sm:text-lg">{props.role}</h2>
 
-    <div class="work-details grid transition-all duration-300 ease-in-out">
-        <div class="overflow-hidden">
-            <ul class="list-disc ml-5 mt-4 space-y-1 pb-1">
-                {props.highlights.map((point: string) => (
-                    <li class="font-serif text-md text-ink/75 leading-relaxed">
-                        {point}
-                    </li>
-                ))}
-            </ul>
+        <div class="flex flex-wrap gap-2 capitalize text-[11px] sm:text-xs text-black/70">
+          <p class="m-0 border rounded-full py-1 px-3">{props.company}</p>
+          <p class="m-0 border rounded-full py-1 px-3">{props.type}</p>
+          <p class="m-0 border rounded-full py-1 px-3">{props.location}</p>
         </div>
-    </div>
-</div>
+      </div>
 
-<style>
-    .work-details {
-        grid-template-rows: 0fr;
-    }
-    .work-item.open .work-details {
-        grid-template-rows: 1fr;
-    }
-    .work-item.open .toggle-icon {
-        transform: rotate(90deg);
-    }
-</style>
+      <p class="m-0 hidden sm:block shrink-0 text-right text-black/60 capitalize">{props.date}</p>
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden sm:block shrink-0 transition-transform duration-200 group-open:rotate-180">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </div>
+  </summary>
+
+  <div class="pb-5 pt-1 text-sm text-black/80 sm:pl-16 sm:pr-8">
+    {props.highlights?.length ? (
+      <ul class="m-0 mb-4 pl-5 space-y-1">
+        {props.highlights.map((item) => <li class="list-disc">{item}</li>)}
+      </ul>
+    ) : null}
+
+    {props.stack?.length ? (
+      <div class="flex flex-wrap gap-2">
+        {props.stack.map((tech) => (
+          <a href={stackUrls[tech]} target="_blank" class="border hover:bg-neutral-100 transition duration-200 rounded-full py-1 px-3 text-xs">
+            {tech}
+          </a>
+        ))}
+      </div>
+    ) : null}
+  </div>
+</details>

@@ -1,63 +1,22 @@
 ---
 import type { ProjectItem } from "../../types/project";
 const props = Astro.props as ProjectItem;
-import { SITE_URL } from "../../config";
-import { stackUrls } from "../../data/stacksUrls";
 import { Image } from "astro:assets";
 ---
 
-<div class="flex flex-col sm:flex-row gap-5 py-8 not-last:border-b border-ink/20">
+<article class="project-card h-full">
+    <a href={`/projects/${props.content_link}`} class="flex h-full min-h-72 flex-col gap-3 rounded-xl border border-black/60 p-5 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
+        {props.image ? <Image class="h-40 w-full object-cover rounded-lg bg-black/60" src={props.image} alt={props.name}/>
+          : <div class="h-40 w-full rounded-lg bg-black/60" aria-hidden="true"></div>
+        }
 
-  <!-- preview -->
-  {props.image ? (
-    <a href={props.content_link ?? "/"} aria-label={props.name}>
-        <Image src={props.image} alt={`${props.name} preview`} class="shrink-0 w-full sm:w-55 h-32.5 object-cover rounded-sm border border-ink/30 hover:border-accent transition-colors duration-250 block"/>
-    </a>
-    ) : (
-    <a href={props.content_link ?? "/"} aria-label={props.name}>
-      <div class="shrink-0 w-full sm:w-55 h-32.5 bg-ink rounded-sm border border-ink/30 hover:border-accent transition-colors duration-250 block"></div>
-    </a>
-  )}
-  <!-- content -->
-  <div class="flex flex-col justify-between gap-3 flex-1">
-    <div class="flex flex-col gap-1.5">
+        <h3 class="text-base capitalize font-medium">{props.name}</h3>
+        <p class="text-sm text-zinc-700">{props.description}</p>
 
-        <!-- name + date -->
-        <div class="flex justify-start gap-3 items-center">
-            <a href={props.content_link ?? "/"} class="font-serif text-2xl text-ink tracking-tight hover:text-accent transition-colors duration-200">{props.name}</a>
-                {props.github && (
-                    <a href={props.github} target="_blank" aria-label="View on GitHub" class="font-mono text-[13px] text-ink/50 hover:text-ink transition-colors duration-200 flex items-center gap-2">
-                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-                    </a>
-                )}
-        </div>
-        <span class="font-mono text-[13px] text-ink/65 tracking-widest whitespace-nowrap">{props.date}</span>
-
-        <p class="font-serif text-[16px] text-ink/75 leading-relaxed max-w-md">{props.description}</p>
-    </div>
-
-    <!-- bottom row: stack + links -->
-    <div class="flex flex-wrap justify-between items-center gap-2">
-        <div class="flex flex-wrap gap-x-2 gap-y-1">
-            {props.stack.map((s: string) => (
-              stackUrls[s] ? (
-                <a href={stackUrls[s]} target="_blank" class="font-mono text-[14px] border py-0.5 px-2 text-accent/60 hover:text-accent tracking-wide transition-colors duration-200">
-                    {s}
-                </a>
-              ) : (
-                <span class="font-mono text-[14px] text-accent/60 tracking-wide">{s}</span>
-              )
+        <ul class="flex flex-wrap gap-2" aria-label="Tech stack">
+            {props.stack.map((tech) => (
+              <li class="inline-flex select-none items-center rounded-full border px-3 py-1 border-black/60 text-black/60 text-sm">{tech}</li>
             ))}
-        </div>
-        <div class="flex gap-4 mt-1 items-center">
-            {props.live_link && (
-              <a href={props.live_link === SITE_URL ? "/" : props.live_link} target={props.live_link === SITE_URL ? "_self" : "_blank"} onclick={props.live_link === SITE_URL ? "window.scrollTo({top:0,behavior:'smooth'});return false;" : undefined} class="group font-mono text-[14px] text-ink/60 hover:text-ink transition-colors duration-200 flex items-center gap-2">
-                  <svg class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="9" x2="9" y2="1"/><polyline points="3,1 9,1 9,7"/></svg>
-                  {props.live_link === SITE_URL ? "you are here, dude" : "live"}
-              </a>
-            )}
-        </div>
-    </div>
-  </div>
-
-</div>
+        </ul>
+    </a>
+</article>

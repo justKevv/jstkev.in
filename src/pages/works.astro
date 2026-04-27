@@ -1,0 +1,25 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import { works } from "../data/works";
+import WorksCard from "../components/cards/WorksCard.astro";
+---
+
+<MainLayout>
+    <section class="flex flex-col justify-start py-6 px-10 gap-8">
+        <h1 class="split font-family-playfair text-5xl">Works</h1>
+        <hr class="line-works border-t border-current opacity-20 my-0" />
+        {works.map((work, index) => (
+          <WorksCard
+            index={index+1}
+            company={work.company}
+            type={work.type}
+            location={work.location}
+            role={work.role}
+            date={work.date}
+            highlights={work.highlights}
+            stack={work.stack}
+          />
+          <hr class="line-works border-t border-current opacity-20 my-0" />
+        ))}
+    </section>
+</MainLayout>

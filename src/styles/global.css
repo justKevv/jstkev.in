@@ -2,37 +2,26 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-    /* colors */
-    --color-ink: #1a1a1a;
-    --color-ink-muted: #1a1a1a66;
-    --color-ink-rgb: 26, 26, 26;
-    --color-bg: #f5f5f5;
-    --color-accent: #EA580C;
-    --color-accent-rgb: 234, 88, 12;
-    --color-danger: #DC2626;
-    --color-surface: #F9FAFB;
-
-    /* animations */
-    --animate-pulse-opacity: pulse-opacity 3s ease-in-out infinite;
-    --animate-flicker: flicker 5s ease-in-out 1s infinite;
-
-    /* font sizes */
-    --text-xs: 0.7rem;
-    --text-sm: 0.8rem;
-    --text-base: 0.95rem;
-    --text-lg: 1.05rem;
-    --text-xl: 1.15rem;
-    --text-2xl: 1.35rem;
-    --text-3xl: 1.65rem;
-    --text-4xl: 2rem;
+    --font-family-playfair: "Playfair Display", serif;
 }
 
-@keyframes pulse-opacity {
-    0%, 100% { opacity: 0.5; }
-    50%       { opacity: 0.2; }
+.hero-canvas {
+  aspect-ratio: 16 / 9; /* or whatever ratio fits your layout */
+  contain: strict;       /* tells browser nothing outside will be affected */
 }
 
-@keyframes flicker {
-    0%, 90%, 100% { opacity: 0.4; }
-    95%           { opacity: 0.15; }
+.split,
+.split-paraf,
+.nav-split,
+.footer-line,
+.latest,
+.line-works,
+.project-card,
+.project-detail,
+.work-split,
+.split-project,
+.project-slide,
+#hero-canvas {
+  opacity: 0;
+  visibility: hidden;
 }
