@@ -1,37 +1,46 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import ContentLayout from "../layouts/ContentLayout.astro";
-import DetectionCard from "../layouts/DetectionCard.astro";
 import ProjectsCard from "../components/cards/ProjectsCard.astro";
-import BreadCrumbs from "../components/BreadCrumbs.astro";
-import BackToTop from "../components/miscellaneous/BackToTop.astro";
 
 import { category, type Project } from "../data/projects";
 import generateSlug from "../lib/generateSlug";
+const categoryDescription: Record<string, string> = {
+  personal: "Things I built for fun or to scratch my own itch.",
+  academics: "Coursework projects from university. Maybe it could helps someone.",
+};
 ---
 
 <MainLayout>
-    <ContentLayout>
-        <BreadCrumbs current="projects" />
-        {Object.entries(category).map(([cat, projects]) => (
-            <DetectionCard subject={cat}>
-                {cat === 'academics' && (
-                    <h2 class="text-ink/70 font-serif text-lg leading-7">these are my assignment projects through out my college. maybe it could help someone.</h2>
-                )}
-                {projects!.map((project: Project) => (
+    <section class="flex flex-col justify-start py-6 px-10 gap-10">
+      <h1 class="split font-family-playfair text-5xl">Projects</h1>
+      <hr class="line-works border-t border-current opacity-20 my-0" />
+
+      {Object.entries(category).map(([cat, projects], index, arr) => (
+        <>
+          <section aria-labelledby={`projects-${cat}`} class="space-y-3">
+            <header class="space-y-1">
+              <h2 id={`projects-${cat}`} class="split-paraf text-xl font-semibold capitalize">{cat}</h2>
+              <p class="split-paraf text-sm text-zinc-600">{categoryDescription[cat] ?? "Projects in this category."}</p>
+            </header>
+
+            <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {projects!.map((project: Project) => (
+                <li>
                     <ProjectsCard
                         name={project.data.name}
                         description={project.data.description}
                         stack={project.data.stack}
-                        github={project.data.github}
                         image={project.data.image}
-                        live_link={project.data.live_link}
-                        date={project.data.date}
-                        content_link={`projects/${generateSlug(project.data.name)}`}
-                    />
-                ))}
-            </DetectionCard>
-        ))}
-        <BackToTop />
-    </ContentLayout>
+                        content_link={generateSlug(project.data.name)}/>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {index < arr.length - 1 && (
+            <hr class="line-works border-t border-current opacity-20 my-0" />
+          )}
+        </>
+      ))}
+    </section>
 </MainLayout>

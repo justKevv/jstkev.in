@@ -4,9 +4,9 @@ export const works: WorkItem[] = [
   {
     company: "sekolah alam indonesia",
     role: "full stack developer",
-    stack: ['next.js', 'react', 'tailwind', 'sanity.io', 'lenis', 'framer-motion'],
+    stack: ['next.js', 'react', 'tailwindcss', 'sanity.io', 'lenis', 'framer-motion'],
     type: "freelance",
-    date: "oct 2025 - ongoing",
+    date: "oct 2025 - mar 2026",
     location: "indonesia",
     highlights: [
       "built a multi-page school profile website using Next.js 15 and Sanity CMS for content management",
@@ -18,7 +18,7 @@ export const works: WorkItem[] = [
   {
     company: "independent",
     role: "full stack developer",
-    stack: ['php', 'laravel', 'filament', 'livewire', 'tailwind', 'mysql'],
+    stack: ['php', 'laravel', 'filament', 'livewire', 'tailwindcss', 'mysql'],
     type: "freelance",
     date: "dec 2025 - feb 2026",
     location: "indonesia",
