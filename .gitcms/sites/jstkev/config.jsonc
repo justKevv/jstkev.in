@@ -1,0 +1,65 @@
+{
+  "version": "1",
+  "media_path": "/public",
+  "ssg_framework": "astro",
+  "frontmatter_format": "toml",
+  "sitemap_url": "https://jstkev.in/sitemap-index.xml",
+  "publishing_mode": "editorial_workflow",
+  "collections": [
+    {
+      "name": "projects",
+      "git_path": "/src/content/projects/",
+      "file_extension": ".mdx",
+      "filename_pattern": "",
+      "collection_type": "flat",
+      "frontmatter_schema": [
+        {
+          "name": "name",
+          "type": "title",
+          "label": "Name"
+        },
+        {
+          "name": "order",
+          "type": "number",
+          "label": "Order"
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "label": "Category"
+        },
+        {
+          "name": "description",
+          "type": "richtext",
+          "label": "Description"
+        },
+        {
+          "name": "image",
+          "type": "image",
+          "label": "Image"
+        },
+        {
+          "name": "stack",
+          "type": "multiselect",
+          "label": "Stack",
+          "options": [
+            "php",
+            "slim",
+            "sqlserver"
+          ],
+          "color": "blue"
+        },
+        {
+          "name": "date",
+          "type": "datetime",
+          "label": "Date"
+        },
+        {
+          "name": "github",
+          "type": "url",
+          "label": "Github"
+        }
+      ]
+    }
+  ]
+}
