@@ -11,6 +11,9 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: "https://jstkev.in",
   trailingSlash: "never",
+  build: {
+    format: "file"
+  },
   vite: {
     plugins: [tailwindcss()]
   },
