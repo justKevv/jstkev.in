@@ -6,9 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.2.1",
     "@astrojs/mdx": "5.0.3",
     "@astrojs/sitemap": "3.7.2",
     "@astrojs/upgrade": "^0.7.2",
@@ -17,9 +19,13 @@
     "gsap": "^3.15.0",
     "tailwindcss": "^4.2.4",
     "three": "^0.184.0",
-    "vite": "^6"
+    "vite": "^6",
+    "wrangler": "^4.85.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
