@@ -1,7 +1,7 @@
 {
 	"compatibility_date": "2026-04-28",
 	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "portfolio",
+	"name": "jstkev-in",
 	"assets": {
 		"directory": "./dist",
 		"html_handling": "drop-trailing-slash"
