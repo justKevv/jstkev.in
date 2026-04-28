@@ -14,11 +14,8 @@ export default defineConfig({
   site: "https://jstkev.in",
   output: 'static',
   trailingSlash: 'never',
-
   vite: {
     plugins: [tailwindcss()]
   },
-
   integrations: [mdx(), sitemap()],
-  adapter: cloudflare()
 });
