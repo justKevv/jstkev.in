@@ -198,3 +198,23 @@ const hasHeadings = headings && headings.length > 0;
     )}
   </section>
 </MainLayout>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = anchor.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      const scrollContainer = document.querySelector('.overflow-y-auto');
+      if (target && scrollContainer) {
+        scrollContainer.scrollTo({
+          top: target.offsetTop,
+          behavior: 'smooth'
+        });
+      }
+      // close TOC
+      document.getElementById('toc-pop')?.classList.add('hidden');
+      document.getElementById('toc-backdrop')?.classList.add('hidden');
+    });
+  });
+</script>
