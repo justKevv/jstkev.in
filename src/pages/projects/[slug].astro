@@ -207,12 +207,14 @@ const hasHeadings = headings && headings.length > 0;
       const target = document.getElementById(id);
       const scrollContainer = document.querySelector('.overflow-y-auto');
       if (target && scrollContainer) {
+        const containerTop = scrollContainer.getBoundingClientRect().top;
+        const targetTop = target.getBoundingClientRect().top;
+        const offset = targetTop - containerTop + scrollContainer.scrollTop - 24; // 24px breathing room
         scrollContainer.scrollTo({
-          top: target.offsetTop,
+          top: offset,
           behavior: 'smooth'
         });
       }
-      // close TOC
       document.getElementById('toc-pop')?.classList.add('hidden');
       document.getElementById('toc-backdrop')?.classList.add('hidden');
     });
