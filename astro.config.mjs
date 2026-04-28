@@ -13,10 +13,12 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: "https://jstkev.in",
   output: 'static',
-  adapter: cloudflare,
   trailingSlash: 'never',
+
   vite: {
     plugins: [tailwindcss()]
   },
-  integrations: [mdx(), sitemap()]
+
+  integrations: [mdx(), sitemap()],
+  adapter: cloudflare()
 });
