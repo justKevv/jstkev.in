@@ -4,7 +4,6 @@
 	"name": "portfolio",
 	"assets": {
 		"directory": "./dist",
-		"binding": "ASSETS"
 	},
 	"observability": {
 		"enabled": true
