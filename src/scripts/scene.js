@@ -83,6 +83,7 @@ loader.load('/models/computer.glb', ({ scene: model }) => {
   scene.add(model)
   model.scale.multiplyScalar(1.5)
   model.position.y = 0.5
+  model.rotation.y = -Math.PI / 1.6
 
   const box = new THREE.Box3().setFromObject(model)
   const center = box.getCenter(new THREE.Vector3())
@@ -90,6 +91,7 @@ loader.load('/models/computer.glb', ({ scene: model }) => {
   camera.position.set(center.x, center.y, center.z + Math.max(size.x, size.y, size.z) * 2)
   controls.target.copy(center)
   controls.update()
+
   modelReady = true
 }, undefined, console.error)
 
