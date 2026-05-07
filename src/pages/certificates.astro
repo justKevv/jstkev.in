@@ -2,6 +2,7 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import { Image } from 'astro:assets';
 import { certifications } from "../data/certifications";
+import { Masonry } from "astro-masonry";
 ---
 
 <MainLayout>
@@ -9,7 +10,15 @@ import { certifications } from "../data/certifications";
         <h1 class="split font-family-playfair text-5xl">Certificates</h1>
         <hr class="line-works border-t border-current opacity-20 my-0" />
 
-        <div class="columns-2 xl:columns-3 gap-2 [column-fill:balance]">
+        <Masonry
+            breakpointCols={{
+            default: 3,
+            1100: 2,
+            700: 2,
+            500: 2
+            }}
+            class="gap-4 flex"
+        >
             {Object.entries(certifications.grouped).flatMap(([groupName, certs]) =>
               certs.map(({ image, caption }) => (
                 <figure class="project-card group relative mb-3 break-inside-avoid overflow-hidden rounded-sm">
@@ -34,7 +43,6 @@ import { certifications } from "../data/certifications";
                 </figure>
               ))
             )}
-        </div>
-
+        </Masonry>
     </section>
 </MainLayout>
