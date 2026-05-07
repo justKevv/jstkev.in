@@ -6,11 +6,11 @@ import { Image } from "astro:assets";
 
 <article class="project-card h-full">
     <a href={`/projects/${props.content_link}`} class="flex h-full min-h-72 flex-col gap-3 rounded-xl border border-black/60 p-5 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
-        {props.image ? <Image class="h-40 w-full object-cover rounded-lg bg-black/60" src={props.image} alt={props.name}/>
+        {props.image ? <Image class="h-40 w-full object-cover rounded-lg border border-neutral-300 bg-black/60" src={props.image} alt={props.name}/>
           : <div class="h-40 w-full rounded-lg bg-black/60" aria-hidden="true"></div>
         }
 
-        <h3 class="text-base capitalize font-medium">{props.name}</h3>
+        <h3 class="text-base font-medium">{props.name}</h3>
         <p class="text-sm text-zinc-700">{props.description}</p>
 
         <ul class="flex flex-wrap gap-2" aria-label="Tech stack">
