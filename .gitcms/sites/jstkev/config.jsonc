@@ -2,7 +2,7 @@
   "version": "1",
   "media_path": "/public",
   "ssg_framework": "astro",
-  "frontmatter_format": "toml",
+  "frontmatter_format": "yaml",
   "sitemap_url": "https://jstkev.in/sitemap-index.xml",
   "publishing_mode": "editorial_workflow",
   "collections": [
