@@ -16,6 +16,7 @@
     "@astrojs/upgrade": "^0.7.2",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "6.1.8",
+    "astro-masonry": "^1.2.2",
     "gsap": "^3.15.0",
     "tailwindcss": "^4.2.4",
     "three": "^0.184.0",
