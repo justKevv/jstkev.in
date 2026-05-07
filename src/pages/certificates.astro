@@ -18,6 +18,7 @@ import { Masonry } from "astro-masonry";
             500: 2
             }}
             class="gap-4 flex"
+            sortByHeight={true}
         >
             {Object.entries(certifications.grouped).flatMap(([groupName, certs]) =>
               certs.map(({ image, caption }) => (
