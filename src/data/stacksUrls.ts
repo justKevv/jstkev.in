@@ -31,7 +31,7 @@ export const stackUrls: Record<string, string> = {
   supabase: "https://supabase.com",
   langchain: "https://langchain-ai.github.io",
   react: "https://react.dev",
-  vite: "https://vitejs.dev",
+  vite: "https://vite.dev",
   mongodb: "https://www.mongodb.com/"
   // add more
 }
