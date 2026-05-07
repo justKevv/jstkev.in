@@ -4,152 +4,99 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 const canvas = document.getElementById('hero-canvas')
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false)
 renderer.outputColorSpace = THREE.SRGBColorSpace
-renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1
+renderer.setClearColor(0xffffff, 0)
 
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100)
 
-scene.add(new THREE.AmbientLight(0xffffff, 1.5))
-const dirLight = new THREE.DirectionalLight(0xffffff, 4)
-dirLight.position.set(5, 5, 5)
-scene.add(dirLight)
-
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
-controls.dampingFactor = 0.05
 controls.enableZoom = false
 controls.enablePan = false
 controls.autoRotate = true
 controls.autoRotateSpeed = 0.9
-
-let isUserInteracting = false
-const HORIZONTAL_POLAR = Math.PI / 2 - 0.3
-controls.addEventListener('start', () => { isUserInteracting = true })
-controls.addEventListener('end', () => { isUserInteracting = false })
+controls.minPolarAngle = controls.maxPolarAngle = Math.PI / 2 - 0.3
 
 new ResizeObserver(() => {
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false)
-  camera.aspect = canvas.clientWidth / canvas.clientHeight
+  const w = canvas.clientWidth, h = canvas.clientHeight
+  renderer.setSize(w, h, false)
+  camera.aspect = w / h
   camera.updateProjectionMatrix()
 }).observe(canvas)
 
-const manager = new THREE.LoadingManager()
-let modelReady = false
+const wireMaterial = new THREE.ShaderMaterial({
+  uniforms: { thickness: { value: 1 } },
+  vertexShader: `
+    attribute vec3 center;
+    varying vec3 vCenter;
+    void main() {
+      vCenter = center;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float thickness;
+    varying vec3 vCenter;
+    void main() {
+      vec3 afwidth = fwidth(vCenter.xyz);
+      vec3 edge3 = smoothstep((thickness - 1.0) * afwidth, thickness * afwidth, vCenter.xyz);
+      float edge = 1.0 - min(min(edge3.x, edge3.y), edge3.z);
+      gl_FragColor.rgb = vec3(0.0, 0.0, 0.0);
+      gl_FragColor.a = edge;
+    }
+  `,
+  side: THREE.DoubleSide,
+  alphaToCoverage: true,
+  transparent: true,
+})
 
-manager.onLoad = () => {
-  modelReady = true
-  // force texture upload & shader warmup once everything is loaded
-  renderer.compile(scene, camera)
-  renderer.render(scene, camera)
-}
-
-manager.onError = (url) => {
-  console.error('Failed to load asset:', url)
-}
-
-const dracoLoader = new DRACOLoader(manager)
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
-dracoLoader.preload()
-
-const loader = new GLTFLoader(manager)
-loader.setDRACOLoader(dracoLoader)
-
-function touchTexture(tex, color = false) {
-  if (!tex) return
-  tex.colorSpace = color ? THREE.SRGBColorSpace : THREE.NoColorSpace
-  tex.anisotropy = renderer.capabilities.getMaxAnisotropy()
-  tex.needsUpdate = true
-}
-
-function fixMaterial(material) {
-  if (!material) return
-
-  touchTexture(material.map, true)
-  touchTexture(material.emissiveMap, true)
-
-  touchTexture(material.normalMap, false)
-  touchTexture(material.roughnessMap, false)
-  touchTexture(material.metalnessMap, false)
-  touchTexture(material.aoMap, false)
-
-  material.needsUpdate = true
-}
-
-loader.load(
-  '/models/computer_terminal.glb',
-  (gltf) => {
-    const model = gltf.scene
-
-    model.traverse((obj) => {
-      if (!obj.isMesh) return
-      if (Array.isArray(obj.material)) obj.material.forEach(fixMaterial)
-      else fixMaterial(obj.material)
-    })
-
-    scene.add(model)
-
-    const box = new THREE.Box3().setFromObject(model)
-    const center = box.getCenter(new THREE.Vector3())
-    const size = box.getSize(new THREE.Vector3())
-    const maxDim = Math.max(size.x, size.y, size.z)
-
-    model.position.y = 0.5
-    camera.position.set(center.x, center.y, center.z + maxDim * 2.3)
-    controls.target.copy(center)
-    controls.update()
-  },
-  undefined,
-  (err) => {
-    console.error('GLTF load error:', err)
+function setupAttributes(geometry) {
+  const vectors = [new THREE.Vector3(1,0,0), new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,1)]
+  const position = geometry.attributes.position
+  const centers = new Float32Array(position.count * 3)
+  for (let i = 0; i < position.count; i++) {
+    vectors[i % 3].toArray(centers, i * 3)
   }
-)
+  geometry.setAttribute('center', new THREE.BufferAttribute(centers, 3))
+}
 
-let lastTime = performance.now()
-let acc = 0
-const FPS = 70
-const STEP = 1 / FPS
+const draco = new DRACOLoader()
+draco.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+const loader = new GLTFLoader()
+loader.setDRACOLoader(draco)
+
+let modelReady = false
+loader.load('/models/computer.glb', ({ scene: model }) => {
+  model.traverse((child) => {
+    if (!child.isMesh) return
+    child.geometry = child.geometry.toNonIndexed()
+    child.geometry.deleteAttribute('normal')
+    setupAttributes(child.geometry)
+    child.material = wireMaterial.clone()
+  })
+
+  scene.add(model)
+  model.scale.multiplyScalar(1.5)
+  model.position.y = 0.5
+
+  const box = new THREE.Box3().setFromObject(model)
+  const center = box.getCenter(new THREE.Vector3())
+  const size = box.getSize(new THREE.Vector3())
+  camera.position.set(center.x, center.y, center.z + Math.max(size.x, size.y, size.z) * 2)
+  controls.target.copy(center)
+  controls.update()
+  modelReady = true
+}, undefined, console.error)
 
 function animate() {
   requestAnimationFrame(animate)
-
-  // skip until all assets are fully ready (prevents bad first frame)
   if (!modelReady) return
-
-  const now = performance.now()
-  const delta = Math.min((now - lastTime) / 1000, 0.05)
-  lastTime = now
-
-  acc += delta
-  if (acc < STEP) return
-  acc = 0
-
-  if (!isUserInteracting) {
-    const current = controls.getPolarAngle()
-    if (Math.abs(current - HORIZONTAL_POLAR) > 0.001) {
-      const t = 1 - Math.pow(0.94, delta * 60)
-      const locked = THREE.MathUtils.lerp(current, HORIZONTAL_POLAR, t)
-      controls.minPolarAngle = locked
-      controls.maxPolarAngle = locked
-    } else {
-      controls.minPolarAngle = HORIZONTAL_POLAR
-      controls.maxPolarAngle = HORIZONTAL_POLAR
-    }
-  } else {
-    controls.minPolarAngle = 0
-    controls.maxPolarAngle = Math.PI
-  }
-
   controls.update()
   renderer.render(scene, camera)
 }
-
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') lastTime = performance.now()
-})
-
 animate()
