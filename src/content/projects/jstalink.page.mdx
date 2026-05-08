@@ -1,0 +1,25 @@
+---
+name: "jstalink.page"
+description: "a dead simple url shortener built on cloudflare workers and kv. no accounts, no tracking, just short links."
+image: "../../assets/projects/jstalink.page.png"
+stack: ['react', 'vite', 'typescript', 'tailwindcss', 'hono', 'bun', 'cloudflare kv']
+date: "apr 30 - may 05"
+live_link: "https://jstalink.page/"
+---
+
+Honestly this project started as me just wanting to learn [Cloudflare Workers](https://workers.cloudflare.com/) and [Hono](https://hono.dev) but then I thought, why not make something actually useful out of it.
+
+The idea is simple -- paste a long url, get a short one. no accounts, no tracking, everything saved locally in your browser. that's it.
+
+So originally, I built the backend as a completely separate worker project, and the frontend as a separate [React](https://react.dev) + [Vite](https://vite.dev) deployment on pages. and then I realized -- how the hell does the redirect work if they're on different urls? And funny story, I originally tried to use [Vite+](https://viteplus.dev) -- didn't work. So I have to resort back to using [Bun](https://bun.sh) as my package manager. Idk maybe it could work but maybe it's a skill issues.
+
+Ended up combining everything into one worker deployment. [Hono](https://hono.dev) serves the api, handles the redirects, and the [React](https://react.dev) build gets served as static assets.
+
+What I learned is that:
+
+- [Cloudflare Workers](https://workers.cloudflare.com/) is genuinely insane for this kind of project. zero cold starts, runs on the edge, free tier is more than enough
+- [Hono](https://hono.dev) feels like express but actually works on workers
+- [Cloudflare KV](https://www.cloudflare.com/en-gb/developer-platform/products/workers-kv/) is stupid simple to use. put a key, get a key, done
+- Sometimes the architecture decision you make at the start will come back to bite you later -- plan it out first
+
+Would i do it again? Yeah, probably.

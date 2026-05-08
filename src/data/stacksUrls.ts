@@ -32,6 +32,9 @@ export const stackUrls: Record<string, string> = {
   langchain: "https://langchain-ai.github.io",
   react: "https://react.dev",
   vite: "https://vite.dev",
-  mongodb: "https://www.mongodb.com/"
+  mongodb: "https://www.mongodb.com/",
+  hono: "https://hono.dev/",
+  bun: "https://bun.sh/",
+  "cloudflare kv": "https://developers.cloudflare.com/kv/"
   // add more
 }
