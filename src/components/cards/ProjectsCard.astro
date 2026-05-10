@@ -4,7 +4,7 @@ const props = Astro.props as ProjectItem;
 import { Image } from "astro:assets";
 ---
 
-<article class="project-card h-full">
+<article class="project-card h-full bg-white">
     <a href={`/projects/${props.content_link}`} class="flex h-full min-h-72 flex-col gap-3 rounded-xl border border-black/60 p-5 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
         {props.image ? <Image class="h-40 w-full object-cover rounded-lg border border-neutral-300 bg-black/60" src={props.image} alt={props.name}/>
           : <div class="h-40 w-full rounded-lg bg-black/60" aria-hidden="true"></div>
