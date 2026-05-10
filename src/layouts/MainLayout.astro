@@ -19,7 +19,7 @@ globalThis.__detectionCount = 0;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-loading">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -37,11 +37,13 @@ globalThis.__detectionCount = 0;
     </head>
     <body class="overflow-hidden">
         <main class="relative w-full max-w-360 mx-auto h-dvh flex flex-col overflow-hidden">
-            <Navbar />
-            <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
-                <slot />
+            <div class="page-content flex flex-col min-h-0 flex-1">
+                <Navbar />
+                <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+                    <slot />
+                </div>
+                <Footer />
             </div>
-            <Footer />
             <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         </main>
     </body>
@@ -72,6 +74,7 @@ globalThis.__detectionCount = 0;
 
     // Wait for fonts before SplitText so line/chars split is accurate
     await document.fonts.ready;
+    document.documentElement.classList.remove('is-loading');
 
     SplitText.create('.split', {
       type: 'chars,words',

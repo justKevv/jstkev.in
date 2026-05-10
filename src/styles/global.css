@@ -10,6 +10,11 @@
   contain: strict;       /* tells browser nothing outside will be affected */
 }
 
+.is-loading .page-content {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .split,
 .split-paraf,
 .nav-split,
