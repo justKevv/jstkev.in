@@ -5,7 +5,16 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 const canvas = document.getElementById('hero-canvas')
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
+if (!canvas) {
+  throw new Error('Hero canvas not found')
+}
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  powerPreference: 'high-performance',
+})
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false)
 renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -28,6 +37,42 @@ new ResizeObserver(() => {
   camera.aspect = w / h
   camera.updateProjectionMatrix()
 }).observe(canvas)
+
+let rafId = 0
+let isAnimating = true
+let isVisible = true
+
+function startRenderLoop() {
+  if (isAnimating) return
+  isAnimating = true
+  render()
+}
+
+function stopRenderLoop() {
+  isAnimating = false
+  if (rafId) cancelAnimationFrame(rafId)
+}
+
+function render() {
+  if (!isAnimating || !isVisible) return
+  rafId = requestAnimationFrame(render)
+  if (!modelReady) return
+  controls.update()
+  renderer.render(scene, camera)
+}
+
+const visibilityObserver = new IntersectionObserver(([entry]) => {
+  isVisible = entry?.isIntersecting ?? true
+  if (isVisible) startRenderLoop()
+  else stopRenderLoop()
+}, { threshold: 0.1 })
+
+visibilityObserver.observe(canvas)
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopRenderLoop()
+  else if (isVisible) startRenderLoop()
+})
 
 const wireMaterial = new THREE.ShaderMaterial({
   uniforms: { thickness: { value: 1 } },
@@ -95,10 +140,4 @@ loader.load('/models/computer.glb', ({ scene: model }) => {
   modelReady = true
 }, undefined, console.error)
 
-function animate() {
-  requestAnimationFrame(animate)
-  if (!modelReady) return
-  controls.update()
-  renderer.render(scene, camera)
-}
-animate()
+render()

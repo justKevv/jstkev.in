@@ -27,6 +27,12 @@ globalThis.__detectionCount = 0;
         <meta name="generator" content={Astro.generator} />
         <script defer is:inline src="https://cloud.umami.is/script.js" data-website-id="67a8fb86-ca7a-40ad-9d0a-828e794826cc"></script>
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+        <style is:inline>
+          html.is-loading .page-content {
+            opacity: 0;
+            visibility: hidden;
+          }
+        </style>
         <SEO
             title={title}
             description={description}
@@ -51,9 +57,28 @@ globalThis.__detectionCount = 0;
 
 <script>
   async function initAnimations() {
+    document.documentElement.classList.remove('is-loading');
+
+    const animationSelectors = [
+      '.split',
+      '.split-paraf',
+      '.nav-split',
+      '.footer-line',
+      '.latest',
+      '.line-works',
+      '.project-card',
+      '.project-detail',
+      '.work-split',
+      '.split-project',
+      '.on-this-page',
+      '.project-slide',
+      '#hero-canvas',
+    ];
+
+    const shouldAnimate = animationSelectors.some((selector) => document.querySelector(selector));
+    if (!shouldAnimate) return;
+
     const { default: gsap } = await import('gsap');
-    const { SplitText } = await import('gsap/SplitText');
-    gsap.registerPlugin(SplitText);
 
     // Immediately reveal elements for GSAP control (autoAlpha = opacity + visibility)
     gsap.set(['.split', '.split-paraf', '.nav-split', '.footer-line', '.latest', '.line-works', '.project-card', '.project-detail', '.work-split', '.split-project', '.on-this-page'], { autoAlpha: 1 });
@@ -72,42 +97,64 @@ globalThis.__detectionCount = 0;
       });
     }
 
-    // Wait for fonts before SplitText so line/chars split is accurate
-    await document.fonts.ready;
-    document.documentElement.classList.remove('is-loading');
+    const needsSplitText = document.querySelector('.split, .split-paraf, .split-project');
+    if (needsSplitText) {
+      const { SplitText } = await import('gsap/SplitText');
+      gsap.registerPlugin(SplitText);
 
-    SplitText.create('.split', {
-      type: 'chars,words',
-      autoSplit: true,
-      mask: 'lines',
-      onSplit: (self) => {
-        return gsap.from(self.chars, {
-          yPercent: 120,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power4.out',
-          stagger: 0.04,
-          delay: 0.5,
-        });
-      },
-    });
+      // Wait for fonts before SplitText so line/chars split is accurate
+      await document.fonts.ready;
 
-    SplitText.create('.split-paraf', {
-      type: 'words,lines',
-      linesClass: 'line',
-      autoSplit: true,
-      mask: 'lines',
-      onSplit: (self) => {
-        return gsap.from(self.lines, {
-          duration: 1.1,
-          yPercent: 150,
-          opacity: 0,
-          stagger: 0.08,
-          ease: 'expo.out',
-          delay: 0.8,
-        });
-      },
-    });
+      SplitText.create('.split', {
+        type: 'chars,words',
+        autoSplit: true,
+        mask: 'lines',
+        onSplit: (self) => {
+          return gsap.from(self.chars, {
+            yPercent: 120,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power4.out',
+            stagger: 0.04,
+            delay: 0.5,
+          });
+        },
+      });
+
+      SplitText.create('.split-paraf', {
+        type: 'words,lines',
+        linesClass: 'line',
+        autoSplit: true,
+        mask: 'lines',
+        onSplit: (self) => {
+          return gsap.from(self.lines, {
+            duration: 1.1,
+            yPercent: 150,
+            opacity: 0,
+            stagger: 0.08,
+            ease: 'expo.out',
+            delay: 0.8,
+          });
+        },
+      });
+
+      SplitText.create('.split-project', {
+        type: 'words,lines',
+        linesClass: 'line',
+        autoSplit: true,
+        mask: 'lines',
+        onSplit: (self) => {
+          return gsap.from(self.lines, {
+            duration: 1.1,
+            yPercent: 150,
+            opacity: 0,
+            stagger: 0.1,
+            ease: 'expo.out',
+            delay: 0.5,
+          });
+        },
+      });
+    }
 
     gsap.from('.nav-split', {
       duration: 0.8,
@@ -195,24 +242,6 @@ globalThis.__detectionCount = 0;
       duration: 1.1,
       ease: 'expo.out',
       delay: 0.5,
-    });
-
-
-    SplitText.create('.split-project', {
-      type: 'words,lines',
-      linesClass: 'line',
-      autoSplit: true,
-      mask: 'lines',
-      onSplit: (self) => {
-        return gsap.from(self.lines, {
-          duration: 1.1,
-          yPercent: 150,
-          opacity: 0,
-          stagger: 0.1,
-          ease: 'expo.out',
-          delay: 0.5,
-        });
-      },
     });
   }
 
