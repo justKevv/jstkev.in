@@ -56,7 +56,7 @@ globalThis.__detectionCount = 0;
     </head>
     <body class="overflow-hidden">
         <main class="relative w-full max-w-360 mx-auto h-dvh flex flex-col overflow-hidden">
-            <div class="page-content flex flex-col min-h-0 flex-1">
+            <div class="page-content flex flex-col min-h-0 flex-1" style="opacity: 0; visibility: hidden;">
                 <Navbar />
                 <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
                     <slot />
@@ -70,7 +70,14 @@ globalThis.__detectionCount = 0;
 
 <script>
   async function initAnimations() {
-    document.documentElement.classList.remove('is-loading');
+    const revealContent = () => {
+      document.documentElement.classList.remove('is-loading');
+      const pageContent = document.querySelector('.page-content');
+      if (pageContent) {
+        pageContent.style.removeProperty('opacity');
+        pageContent.style.removeProperty('visibility');
+      }
+    };
 
     const animationSelectors = [
       '.split',
@@ -89,7 +96,10 @@ globalThis.__detectionCount = 0;
     ];
 
     const shouldAnimate = animationSelectors.some((selector) => document.querySelector(selector));
-    if (!shouldAnimate) return;
+    if (!shouldAnimate) {
+      revealContent();
+      return;
+    }
 
     const { default: gsap } = await import('gsap');
 
@@ -168,6 +178,8 @@ globalThis.__detectionCount = 0;
         },
       });
     }
+
+    revealContent();
 
     gsap.from('.nav-split', {
       duration: 0.8,
