@@ -24,14 +24,15 @@ const categoryDescription: Record<string, string> = {
             </header>
 
             <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {projects!.map((project: Project) => (
+              {projects!.map((project: Project, projectIndex: number) => (
                 <li>
                     <ProjectsCard
                         name={project.data.name}
                         description={project.data.description}
                         stack={project.data.stack}
                         image={project.data.image}
-                        content_link={generateSlug(project.data.name)}/>
+                        content_link={generateSlug(project.data.name)}
+                        priority={index === 0 && projectIndex === 0}/>
                 </li>
               ))}
             </ul>
