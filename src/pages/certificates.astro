@@ -3,6 +3,10 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { Image } from 'astro:assets';
 import { certifications } from "../data/certifications";
 import { Masonry } from "astro-masonry";
+
+const certificateItems = Object.entries(certifications.grouped).flatMap(([groupName, certs]) =>
+  certs.map(({ image, caption }) => ({ groupName, image, caption }))
+);
 ---
 
 <MainLayout>
@@ -20,20 +24,26 @@ import { Masonry } from "astro-masonry";
             class="gap-4 flex"
             sortByHeight={true}
         >
-            {Object.entries(certifications.grouped).flatMap(([groupName, certs]) =>
-              certs.map(({ image, caption }) => (
+            {certificateItems.map(({ groupName, image, caption }, index) => {
+              const isLcp = index === 0;
+              return (
                 <figure class="project-card group relative mb-3 break-inside-avoid overflow-hidden rounded-sm">
-                  <span class="absolute top-2 left-2 z-10 inline-flex items-center rounded-full border border-black/15 bg-white/85 px-2.5 py-1 text-[12px] tracking-widest text-black backdrop-blur-sm">
-                    {groupName}
+                  <span class="absolute top-2 left-2 z-10 inline-flex max-w-[65%] items-center rounded-full border border-black/15 bg-white/85 px-2.5 py-1 text-[10px] tracking-widest text-black backdrop-blur-sm sm:text-[12px]">
+                    <span class="block truncate">
+                      {groupName}
+                    </span>
                   </span>
 
                   <Image
                     src={image}
                     alt={caption}
-                    quality={80}
-                    data-lightbox
+                    widths={[320, 480, 640, 800]}
+                    sizes="(max-width: 700px) 50vw, (max-width: 1100px) 50vw, 33vw"
+                    quality={60}
                     data-src={image.src}
-                    loading="eager"
+                    loading={isLcp ? "eager" : "lazy"}
+                    decoding="async"
+                    fetchpriority={isLcp ? "high" : undefined}
                     data-caption={caption}
                     class="w-full h-auto object-cover border rounded-sm"
                   />
@@ -42,8 +52,8 @@ import { Masonry } from "astro-masonry";
                     {caption}
                   </figcaption>
                 </figure>
-              ))
-            )}
+              );
+            })}
         </Masonry>
     </section>
 </MainLayout>

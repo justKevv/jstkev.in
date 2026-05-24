@@ -14,6 +14,7 @@
     "@astrojs/mdx": "5.0.3",
     "@astrojs/sitemap": "3.7.2",
     "@astrojs/upgrade": "^0.7.2",
+    "@playform/compress": "^0.2.3",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "6.1.8",
     "astro-masonry": "^1.2.2",
