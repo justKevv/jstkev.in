@@ -26,7 +26,17 @@ globalThis.__detectionCount = 0;
         <link rel="icon" type="image/png" sizes="128x128" href="/文.png" />
         <meta name="generator" content={Astro.generator} />
         <script defer is:inline src="https://cloud.umami.is/script.js" data-website-id="67a8fb86-ca7a-40ad-9d0a-828e794826cc"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'"
+        />
+        <noscript>
+          <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+        </noscript>
         <style is:inline>
           html.is-loading .page-content,
           .split,
@@ -101,173 +111,193 @@ globalThis.__detectionCount = 0;
       return;
     }
 
-    const { default: gsap } = await import('gsap');
-
-    // Immediately reveal elements for GSAP control (autoAlpha = opacity + visibility)
-    gsap.set(['.split', '.split-paraf', '.nav-split', '.footer-line', '.latest', '.line-works', '.project-card', '.project-detail', '.work-split', '.split-project', '.on-this-page'], { autoAlpha: 1 });
-    gsap.set('.project-slide', { willChange: 'transform,opacity' });
-
-    const canvas = document.querySelector('#hero-canvas');
-    if (canvas) {
-      gsap.set(canvas, { autoAlpha: 0 });
-      requestAnimationFrame(() => {
-        gsap.to(canvas, {
-          autoAlpha: 1,
-          duration: 1.1,
-          ease: 'power2.out',
-          delay: 0.7,
-        });
-      });
-    }
-
-    const needsSplitText = document.querySelector('.split, .split-paraf, .split-project');
-    if (needsSplitText) {
-      const { SplitText } = await import('gsap/SplitText');
-      gsap.registerPlugin(SplitText);
-
-      // Wait for fonts before SplitText so line/chars split is accurate
-      await document.fonts.ready;
-
-      SplitText.create('.split', {
-        type: 'chars,words',
-        autoSplit: true,
-        mask: 'lines',
-        onSplit: (self) => {
-          return gsap.from(self.chars, {
-            yPercent: 120,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power4.out',
-            stagger: 0.04,
-            delay: 0.5,
-          });
-        },
-      });
-
-      SplitText.create('.split-paraf', {
-        type: 'words,lines',
-        linesClass: 'line',
-        autoSplit: true,
-        mask: 'lines',
-        onSplit: (self) => {
-          return gsap.from(self.lines, {
-            duration: 1.1,
-            yPercent: 150,
-            opacity: 0,
-            stagger: 0.08,
-            ease: 'expo.out',
-            delay: 0.8,
-          });
-        },
-      });
-
-      SplitText.create('.split-project', {
-        type: 'words,lines',
-        linesClass: 'line',
-        autoSplit: true,
-        mask: 'lines',
-        onSplit: (self) => {
-          return gsap.from(self.lines, {
-            duration: 1.1,
-            yPercent: 150,
-            opacity: 0,
-            stagger: 0.1,
-            ease: 'expo.out',
-            delay: 0.5,
-          });
-        },
-      });
-    }
-
     revealContent();
 
-    gsap.from('.nav-split', {
-      duration: 0.8,
-      y: 8,
-      opacity: 0,
-      scale: 0.6,
-      stagger: 0.08,
-      ease: 'expo.out',
-      delay: 0.3,
-    });
+    const runAnimations = async () => {
+      const [{ gsap }, { CSSPlugin }] = await Promise.all([
+        import('gsap/gsap-core'),
+        import('gsap/CSSPlugin'),
+      ]);
+      gsap.registerPlugin(CSSPlugin);
 
-    gsap.from('.footer-line', {
-      yPercent: 120,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'expo.out',
-      stagger: -0.12,
-      delay: 0.6,
-    });
+      // Immediately reveal elements for GSAP control (autoAlpha = opacity + visibility)
+      gsap.set(['.split', '.split-paraf', '.nav-split', '.footer-line', '.latest', '.line-works', '.project-card', '.project-detail', '.work-split', '.split-project', '.on-this-page'], { autoAlpha: 1 });
+      gsap.set('.project-slide', { willChange: 'transform,opacity' });
 
-    gsap.from('.latest', {
-      yPercent: 120,
-      opacity: 0,
-      duration: 1.1,
-      ease: 'expo.out',
-      delay: 1.6,
-    });
+      const canvas = document.querySelector('#hero-canvas');
+      if (canvas) {
+        gsap.set(canvas, { autoAlpha: 0 });
+        requestAnimationFrame(() => {
+          gsap.to(canvas, {
+            autoAlpha: 1,
+            duration: 1.1,
+            ease: 'power2.out',
+            delay: 0.7,
+          });
+        });
+      }
 
-    gsap.from('.line-works', {
-      scaleX: 0,
-      transformOrigin: 'left center',
-      opacity: 1,
-      duration: 1.1,
-      ease: 'expo.out',
-      delay: 0.4,
-      stagger: 0.1
-    })
+      const needsSplitText = document.querySelector('.split, .split-paraf, .split-project');
+      if (needsSplitText) {
+        const { SplitText } = await import('gsap/SplitText');
+        gsap.registerPlugin(SplitText);
 
-    gsap.from('.project-card', {
-      yPercent: 120,
-      opacity: 0,
-      duration: 1.3,
-      ease: 'expo.out',
-      stagger: 0.11,
-      delay: 0.55
-    })
+        // Wait for fonts before SplitText so line/chars split is accurate
+        await document.fonts.ready;
 
-    gsap.from('.project-detail', {
-      yPercent: 120,
-      opacity: 0,
-      duration: 1.3,
-      ease: 'expo.out',
-      stagger: 0,
-      delay: 0.2
-    })
+        SplitText.create('.split', {
+          type: 'chars,words',
+          autoSplit: true,
+          mask: 'lines',
+          onSplit: (self) => {
+            return gsap.from(self.chars, {
+              yPercent: 120,
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power4.out',
+              stagger: 0.04,
+              delay: 0.5,
+            });
+          },
+        });
 
-    gsap.from('.work-split', {
-      duration: 0.9,
-      y: 8,
-      opacity: 0,
-      scale: 0.6,
-      stagger: 0.08,
-      ease: 'expo.out',
-      delay: 0.65,
-    });
+        SplitText.create('.split-paraf', {
+          type: 'words,lines',
+          linesClass: 'line',
+          autoSplit: true,
+          mask: 'lines',
+          onSplit: (self) => {
+            return gsap.from(self.lines, {
+              duration: 1.1,
+              yPercent: 150,
+              opacity: 0,
+              stagger: 0.08,
+              ease: 'expo.out',
+              delay: 0.8,
+            });
+          },
+        });
 
-    gsap.fromTo(
-      '.project-slide',
-      { xPercent: -40, autoAlpha: 0 },
-      {
-        xPercent: 0,
-        autoAlpha: 1,
+        SplitText.create('.split-project', {
+          type: 'words,lines',
+          linesClass: 'line',
+          autoSplit: true,
+          mask: 'lines',
+          onSplit: (self) => {
+            return gsap.from(self.lines, {
+              duration: 1.1,
+              yPercent: 150,
+              opacity: 0,
+              stagger: 0.1,
+              ease: 'expo.out',
+              delay: 0.5,
+            });
+          },
+        });
+      }
+
+      gsap.from('.nav-split', {
+        duration: 0.8,
+        y: 8,
+        opacity: 0,
+        scale: 0.6,
+        stagger: 0.08,
+        ease: 'expo.out',
+        delay: 0.3,
+      });
+
+      gsap.from('.footer-line', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'expo.out',
+        stagger: -0.12,
+        delay: 0.6,
+      });
+
+      gsap.from('.latest', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'expo.out',
+        delay: 1.6,
+      });
+
+      gsap.from('.line-works', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        opacity: 1,
+        duration: 1.1,
+        ease: 'expo.out',
+        delay: 0.4,
+        stagger: 0.1
+      })
+
+      gsap.from('.project-card', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1.3,
+        ease: 'expo.out',
+        stagger: 0.11,
+        delay: 0.55
+      })
+
+      gsap.from('.project-detail', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1.3,
+        ease: 'expo.out',
+        stagger: 0,
+        delay: 0.2
+      })
+
+      gsap.from('.work-split', {
         duration: 0.9,
-        stagger: 0.03,
+        y: 8,
+        opacity: 0,
+        scale: 0.6,
+        stagger: 0.08,
         ease: 'expo.out',
         delay: 0.65,
-        immediateRender: false,
-        clearProps: 'transform,willChange',
-      }
-    );
+      });
 
-    gsap.from('.on-this-page', {
-      yPercent: 120,
-      opacity: 0,
-      duration: 1.1,
-      ease: 'expo.out',
-      delay: 0.5,
-    });
+      gsap.fromTo(
+        '.project-slide',
+        { xPercent: -40, autoAlpha: 0 },
+        {
+          xPercent: 0,
+          autoAlpha: 1,
+          duration: 0.9,
+          stagger: 0.03,
+          ease: 'expo.out',
+          delay: 0.65,
+          immediateRender: false,
+          clearProps: 'transform,willChange',
+        }
+      );
+
+      gsap.from('.on-this-page', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'expo.out',
+        delay: 0.5,
+      });
+    };
+
+    const scheduleAnimations = () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => runAnimations(), { timeout: 2000 });
+      } else {
+        setTimeout(() => runAnimations(), 500);
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      scheduleAnimations();
+    } else {
+      window.addEventListener('load', scheduleAnimations, { once: true });
+    }
   }
 
   if (document.readyState === 'loading') {
