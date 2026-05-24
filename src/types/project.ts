@@ -9,4 +9,5 @@ export interface ProjectItem {
   github?: string;
   live_link?: string;
   content_link: string;
+  priority?: boolean;
 }
