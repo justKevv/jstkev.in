@@ -138,7 +138,11 @@ globalThis.__detectionCount = 0;
       }
 
       const needsSplitText = document.querySelector('.split, .split-paraf, .split-project');
-      if (needsSplitText) {
+      const allowSplitText =
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+        window.innerWidth >= 768;
+
+      if (needsSplitText && allowSplitText) {
         const { SplitText } = await import('gsap/SplitText');
         gsap.registerPlugin(SplitText);
 
