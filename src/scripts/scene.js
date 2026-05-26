@@ -35,6 +35,7 @@ function initHeroScene() {
 
   const canvas = document.getElementById('hero-canvas')
   if (!canvas) return
+  if (!isCanvasReady(canvas)) return
 
   let rafId = 0
   let isAnimating = false
@@ -43,12 +44,23 @@ function initHeroScene() {
   let modelReady = false
   let loadedModel = null
 
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true,
-    powerPreference: 'high-performance',
-  })
+  let renderer
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    })
+  } catch (error) {
+    console.error('Failed to create WebGL renderer:', error)
+    return
+  }
+  
+  if (!renderer.getContext('webgl2') && !renderer.getContext('webgl')) {
+    console.error('WebGL not supported')
+    return
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false)
   renderer.outputColorSpace = THREE.SRGBColorSpace
