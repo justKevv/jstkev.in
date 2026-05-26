@@ -2,6 +2,7 @@
 import MainLayout from "../../layouts/MainLayout.astro";
 import { getCollection, render } from "astro:content";
 import { stackUrls } from "../../data/stacksUrls";
+import { stackIcons } from "../../data/stackIcons";
 import { Image } from "astro:assets";
 import generateSlug from "../../lib/generateSlug";
 
@@ -54,14 +55,22 @@ const hasHeadings = headings && headings.length > 0;
             <p class="split-project text-[12px] uppercase tracking-widest text-neutral-400 mb-2">Stack</p>
             <div class="flex flex-wrap gap-2">
                 {project.data.stack.map((tech: string) => (
-                <div class="project-slide">
+                <div class="project-slide flex flex-row gap-2">
                     <a
                         href={stackUrls[tech]}
                         target="_blank"
-                        class="inline-flex items-center rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
+                        class="inline-flex items-center gap-2 rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
                     >
+                        <Image
+                            src={`https://api.iconify.design/${stackIcons[tech]}.svg`}
+                            alt={`${tech} preview`}
+                            width={16}
+                            height={16}
+                            class="w-5 h-5"
+                        />
                         {tech}
                     </a>
+
                 </div>
                 ))}
             </div>
@@ -123,8 +132,15 @@ const hasHeadings = headings && headings.length > 0;
                         <a
                             href={stackUrls[tech]}
                             target="_blank"
-                            class="inline-flex items-center rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
+                            class="inline-flex items-center gap-2 rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
                         >
+                            <Image
+                                src={`https://api.iconify.design/${stackIcons[tech]}.svg`}
+                                alt={`${tech} preview`}
+                                width={16}
+                                height={16}
+                                class="w-5 h-5"
+                            />
                             {tech}
                         </a>
                     </div>

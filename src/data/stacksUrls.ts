@@ -35,6 +35,7 @@ export const stackUrls: Record<string, string> = {
   mongodb: "https://www.mongodb.com/",
   hono: "https://hono.dev/",
   bun: "https://bun.sh/",
-  "cloudflare kv": "https://developers.cloudflare.com/kv/"
+  "cloudflare kv": "https://developers.cloudflare.com/kv/",
+  threejs: "https://threejs.org/"
   // add more
 }
