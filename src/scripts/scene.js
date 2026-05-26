@@ -4,6 +4,40 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 let activeCleanup = null
+let shaderPrecisionPatched = false
+
+function ensureShaderPrecisionFallback() {
+  if (shaderPrecisionPatched || typeof window === 'undefined') return
+  const patch = (Context) => {
+    if (!Context?.prototype) return
+    if (Context.prototype.getShaderPrecisionFormat) {
+      const original = Context.prototype.getShaderPrecisionFormat
+      Context.prototype.getShaderPrecisionFormat = function (...args) {
+        const result = original.call(this, ...args)
+        if (!result) return { precision: 0, rangeMin: 0, rangeMax: 0 }
+        return result
+      }
+    }
+    if (Context.prototype.getParameter) {
+      const originalGetParameter = Context.prototype.getParameter
+      Context.prototype.getParameter = function (parameter) {
+        const result = originalGetParameter.call(this, parameter)
+        if (result == null) {
+          if (parameter === this.VERSION || parameter === this.SHADING_LANGUAGE_VERSION) {
+            return ''
+          }
+          if (parameter === this.SCISSOR_BOX || parameter === this.VIEWPORT) {
+            return new Int32Array(4)
+          }
+        }
+        return result
+      }
+    }
+  }
+  patch(window.WebGLRenderingContext)
+  patch(window.WebGL2RenderingContext)
+  shaderPrecisionPatched = true
+}
 
 function setupAttributes(geometry) {
   const vectors = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1)]
@@ -37,12 +71,54 @@ function initHeroScene() {
   if (!canvas) return
   if (!isCanvasReady(canvas)) return
 
+  ensureShaderPrecisionFallback()
+
   let rafId = 0
   let isAnimating = false
   let isVisible = true
   let isDisposed = false
   let modelReady = false
   let loadedModel = null
+
+  const contextAttributes = {
+    antialias: true,
+    alpha: true,
+    powerPreference: 'high-performance',
+  }
+  const testCanvas = document.createElement('canvas')
+  const testContext =
+    testCanvas.getContext('webgl2', contextAttributes) ||
+    testCanvas.getContext('webgl', contextAttributes)
+  if (!testContext) {
+    console.error('WebGL not supported')
+    return
+  }
+
+  const getPrecision = (shaderType, precisionType) =>
+    testContext.getShaderPrecisionFormat?.(shaderType, precisionType)
+  const highpVertex = getPrecision(testContext.VERTEX_SHADER, testContext.HIGH_FLOAT)
+  const highpFragment = getPrecision(testContext.FRAGMENT_SHADER, testContext.HIGH_FLOAT)
+  const mediumpVertex = getPrecision(testContext.VERTEX_SHADER, testContext.MEDIUM_FLOAT)
+  const mediumpFragment = getPrecision(testContext.FRAGMENT_SHADER, testContext.MEDIUM_FLOAT)
+
+  let precision = 'highp'
+  if (
+    !highpVertex ||
+    !highpFragment ||
+    highpVertex.precision === 0 ||
+    highpFragment.precision === 0
+  ) {
+    precision = 'mediump'
+  }
+
+  if (
+    precision === 'mediump' &&
+    mediumpVertex &&
+    mediumpFragment &&
+    (mediumpVertex.precision === 0 || mediumpFragment.precision === 0)
+  ) {
+    precision = 'lowp'
+  }
 
   let renderer
   try {
@@ -51,14 +127,10 @@ function initHeroScene() {
       antialias: true,
       alpha: true,
       powerPreference: 'high-performance',
+      precision,
     })
   } catch (error) {
     console.error('Failed to create WebGL renderer:', error)
-    return
-  }
-  
-  if (!renderer.getContext('webgl2') && !renderer.getContext('webgl')) {
-    console.error('WebGL not supported')
     return
   }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
