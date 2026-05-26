@@ -182,9 +182,34 @@ function initHeroScene() {
   }
 }
 
+let pendingInit = 0
+
+function isCanvasReady(canvas) {
+  if (!canvas) return false
+  const styles = window.getComputedStyle(canvas)
+  if (styles.display === 'none') return false
+  return canvas.clientWidth > 0 && canvas.clientHeight > 0
+}
+
+function waitForCanvasReady() {
+  const token = ++pendingInit
+  const check = () => {
+    if (token !== pendingInit) return
+    const canvas = document.getElementById('hero-canvas')
+    if (!canvas) return
+    if (isCanvasReady(canvas)) {
+      initHeroScene()
+      return
+    }
+    requestAnimationFrame(check)
+  }
+  requestAnimationFrame(check)
+}
+
 function handlePageLoad() {
-  if (document.getElementById('hero-canvas')) {
-    initHeroScene()
+  const canvas = document.getElementById('hero-canvas')
+  if (canvas) {
+    waitForCanvasReady()
   } else if (activeCleanup) {
     activeCleanup()
     activeCleanup = null
@@ -199,4 +224,8 @@ document.addEventListener('astro:before-swap', () => {
   }
 })
 
-handlePageLoad()
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', handlePageLoad, { once: true })
+} else {
+  handlePageLoad()
+}
