@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import type { ImageMetadata } from "astro";
+import { ClientRouter } from "astro:transitions";
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
@@ -25,6 +26,7 @@ globalThis.__detectionCount = 0;
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/png" sizes="128x128" href="/文.png" />
         <meta name="generator" content={Astro.generator} />
+        <ClientRouter />
         <script defer is:inline src="https://cloud.umami.is/script.js" data-website-id="67a8fb86-ca7a-40ad-9d0a-828e794826cc"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -302,9 +304,5 @@ globalThis.__detectionCount = 0;
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAnimations, { once: true });
-  } else {
-    initAnimations();
-  }
+  document.addEventListener('astro:page-load', initAnimations);
 </script>
