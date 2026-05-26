@@ -111,8 +111,6 @@ globalThis.__detectionCount = 0;
       return;
     }
 
-    revealContent();
-
     const runAnimations = async () => {
       const [{ gsap }, { CSSPlugin }] = await Promise.all([
         import('gsap/gsap-core'),
@@ -197,6 +195,8 @@ globalThis.__detectionCount = 0;
           },
         });
       }
+
+      revealContent();
 
       gsap.from('.nav-split', {
         duration: 0.8,
