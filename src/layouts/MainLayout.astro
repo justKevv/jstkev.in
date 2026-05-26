@@ -138,11 +138,9 @@ globalThis.__detectionCount = 0;
       }
 
       const needsSplitText = document.querySelector('.split, .split-paraf, .split-project');
-      const allowSplitText =
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
-        window.innerWidth >= 768;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      if (needsSplitText && allowSplitText) {
+      if (needsSplitText && !prefersReducedMotion) {
         const { SplitText } = await import('gsap/SplitText');
         gsap.registerPlugin(SplitText);
 
