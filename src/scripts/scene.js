@@ -262,7 +262,6 @@ function initHeroScene() {
     if (loadedModel) scene.remove(loadedModel)
     disposeScene(scene)
     renderer.dispose()
-    renderer.forceContextLoss()
   }
 }
 
