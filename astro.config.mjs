@@ -17,5 +17,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  integrations: [mdx(), sitemap(), playformCompress()],
+  integrations: [mdx(), sitemap()],
 });
