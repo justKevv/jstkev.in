@@ -10,13 +10,13 @@
     "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.2.1",
-    "@astrojs/mdx": "5.0.3",
-    "@astrojs/sitemap": "3.7.2",
+    "@astrojs/cloudflare": "14.1.1",
+    "@astrojs/mdx": "7.0.2",
+    "@astrojs/sitemap": "3.7.3",
     "@astrojs/upgrade": "^0.7.2",
     "@playform/compress": "^0.2.3",
     "@tailwindcss/vite": "^4.2.4",
-    "astro": "6.1.8",
+    "astro": "7.0.6",
     "astro-masonry": "^1.2.2",
     "gsap": "^3.15.0",
     "tailwindcss": "^4.2.4",
@@ -26,8 +26,5 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19"
-  },
-  "overrides": {
-    "vite": "^7"
   }
 }
