@@ -12,9 +12,10 @@ interface Props {
     image?: string | ImageMetadata;
     type?: "website" | "article";
     noindex?: boolean;
+    isPinnedFooter?: boolean;
 }
 
-const { title, description, image, type, noindex } = Astro.props;
+const { title, description, image, type, noindex, isPinnedFooter = false } = Astro.props;
 
 globalThis.__detectionCount = 0;
 ---
@@ -70,10 +71,23 @@ globalThis.__detectionCount = 0;
         <main class="relative w-full max-w-360 mx-auto h-dvh flex flex-col overflow-hidden">
             <div class="page-content flex flex-col min-h-0 flex-1" style="opacity: 0; visibility: hidden;">
                 <Navbar />
-                <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
-                    <slot />
-                </div>
-                <Footer />
+                {isPinnedFooter ? (
+                    <>
+                        <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+                            <slot />
+                        </div>
+                        <Footer />
+                    </>
+                ) : (
+                    <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+                        <div class="min-h-full flex flex-col">
+                            <div class="flex-1 flex flex-col">
+                                <slot />
+                            </div>
+                            <Footer />
+                        </div>
+                    </div>
+                )}
             </div>
             <div class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         </main>
