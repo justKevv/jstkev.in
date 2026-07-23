@@ -10,7 +10,7 @@ interface Props {
 
 const {
   title = "jst.kevv place.",
-  description = "Kevin Bramasta Arvyto Wardhana — building for the web, training models, and figuring out the design engineer thing along the way.",
+  description = "Kevin Bramasta Arvyto Wardhana — a developer from Malang, Indonesia with 2+ years in software development and machine learning.",
   image = "/og-image.png",
   url = Astro.url.href,
   type = "website",
@@ -20,8 +20,8 @@ const {
 // Handle both Astro image objects and plain string paths
 const imageSrc = typeof image === "string" ? image : image.src;
 
-const siteName = "jst.kevv";
-const fullTitle = title === "jst.kevv place." ? title : `${title} · jst.kevv`;
+const siteName = "jstkev.in";
+const fullTitle = title === "jst.kevv place." ? title : `${title} · jstkev.in`;
 const canonicalURL = new URL(url, Astro.site);
 const ogImage = new URL(imageSrc, Astro.site);
 ---
