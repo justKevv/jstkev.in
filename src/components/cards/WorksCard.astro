@@ -8,7 +8,7 @@ const props = Astro.props as WorkItem & { index: number };
   <summary class="list-none [&::-webkit-details-marker]:hidden cursor-pointer py-3">
     <div class="grid gap-3 sm:flex sm:items-start sm:gap-6">
       <div class="flex items-center justify-between sm:w-10 sm:block">
-        <p class="m-0 text-sm text-black/60 sm:text-base">{String(props.index).padStart(2, "0")}</p>
+        <p class="m-0 text-sm text-black/60 select-none sm:text-base">{String(props.index).padStart(2, "0")}</p>
 
         <div class="flex items-center gap-3 sm:hidden">
           <p class="m-0 text-xs text-black/60 capitalize">{props.date}</p>
@@ -19,16 +19,16 @@ const props = Astro.props as WorkItem & { index: number };
       </div>
 
       <div class="min-w-0 flex-1 grid gap-2">
-        <h2 class="m-0 text-base font-family-playfair leading-snug capitalize sm:text-lg">{props.role}</h2>
+        <h2 class="m-0 text-base font-family-playfair select-none leading-snug capitalize sm:text-lg">{props.role}</h2>
 
-        <div class="flex flex-wrap gap-2 capitalize text-[11px] sm:text-xs text-black/70">
-          <p class="m-0 border rounded-full py-1 px-3">{props.company}</p>
-          <p class="m-0 border rounded-full py-1 px-3">{props.type}</p>
-          <p class="m-0 border rounded-full py-1 px-3">{props.location}</p>
+        <div class="flex flex-wrap gap-2 select-none capitalize text-[11px] sm:text-xs text-black/70">
+          <p class="m-0 border rounded-full bg-white py-1 px-3">{props.company}</p>
+          <p class="m-0 border rounded-full bg-white py-1 px-3">{props.type}</p>
+          <p class="m-0 border rounded-full bg-white py-1 px-3">{props.location}</p>
         </div>
       </div>
 
-      <p class="m-0 hidden sm:block shrink-0 text-right text-black/60 capitalize">{props.date}</p>
+      <p class="m-0 hidden sm:block shrink-0 select-none text-right text-black/60 capitalize">{props.date}</p>
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden sm:block shrink-0 transition-transform duration-200 group-open:rotate-180">
         <path d="m6 9 6 6 6-6" />
       </svg>
