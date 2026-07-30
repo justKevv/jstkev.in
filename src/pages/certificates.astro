@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import SectionLayout from "../layouts/SectionLayout.astro";
 import { Image } from 'astro:assets';
 import { certifications } from "../data/certifications";
 import { Masonry } from "astro-masonry";
@@ -10,10 +11,7 @@ const certificateItems = Object.entries(certifications.grouped).flatMap(([groupN
 ---
 
 <MainLayout>
-    <section class="flex flex-col justify-start py-6 px-10 gap-8">
-        <h1 class="split font-family-playfair text-5xl">Certificates</h1>
-        <hr class="line-works border-t border-current opacity-20 my-0" />
-
+    <SectionLayout title="Certificates">
         <Masonry
             breakpointCols={{
             default: 3,
@@ -55,5 +53,5 @@ const certificateItems = Object.entries(certifications.grouped).flatMap(([groupN
               );
             })}
         </Masonry>
-    </section>
+    </SectionLayout>
 </MainLayout>

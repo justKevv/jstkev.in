@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import SectionLayout from "../layouts/SectionLayout.astro";
 import ProjectsCard from "../components/cards/ProjectsCard.astro";
 
 import { category, type Project } from "../data/projects";
@@ -11,10 +12,7 @@ const categoryDescription: Record<string, string> = {
 ---
 
 <MainLayout>
-    <section class="flex flex-col justify-start py-6 px-10 gap-10">
-      <h1 class="split font-family-playfair text-5xl">Projects</h1>
-      <hr class="line-works border-t border-current opacity-20 my-0" />
-
+    <SectionLayout title="Projects">
       {Object.entries(category).map(([cat, projects], index, arr) => (
         <>
           <section aria-labelledby={`projects-${cat}`} class="space-y-3">
@@ -43,5 +41,5 @@ const categoryDescription: Record<string, string> = {
           )}
         </>
       ))}
-    </section>
+    </SectionLayout>
 </MainLayout>

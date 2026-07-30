@@ -1,0 +1,9 @@
+---
+const { title } = Astro.props;
+---
+
+<section class="flex flex-col justify-start py-6 px-10 gap-8">
+    <h1 class="split font-family-playfair text-5xl">{title}</h1>
+    <hr class="line-works border-t border-current opacity-20 my-0" />
+    <slot/>
+</section>

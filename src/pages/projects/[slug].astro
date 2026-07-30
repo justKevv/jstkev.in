@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import SectionLayout from "../../layouts/SectionLayout.astro";
 import { getCollection, render } from "astro:content";
 import { stackUrls } from "../../data/stacksUrls";
 import { stackIcons } from "../../data/stackIcons";
@@ -25,9 +26,7 @@ const hasHeadings = headings && headings.length > 0;
   image={project.data.image}
   type="article"
 >
-  <section class="flex flex-col justify-start py-6 px-10 gap-10">
-    <h1 class="split font-family-playfair text-5xl">{project.data.name}</h1>
-    <hr class="line-works border-t border-current opacity-20 my-0" />
+  <SectionLayout title={project.data.name}>
     <div class="flex gap-10 items-start">
         <!-- SIDEBAR (desktop only) -->
         <aside class="hidden md:flex flex-col w-74 shrink-0 sticky top-10">
@@ -214,7 +213,7 @@ const hasHeadings = headings && headings.length > 0;
             </button>
         </>
     )}
-  </section>
+  </SectionLayout>
 </MainLayout>
 
 <script>
