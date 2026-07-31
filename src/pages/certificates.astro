@@ -25,7 +25,7 @@ const certificateItems = Object.entries(certifications.grouped).flatMap(([groupN
             {certificateItems.map(({ groupName, image, caption }, index) => {
               const isLcp = index === 0;
               return (
-                <figure class="project-card group relative mb-3 break-inside-avoid overflow-hidden rounded-sm">
+                <figure class="card group relative mb-3 break-inside-avoid overflow-hidden rounded-sm">
                   <span class="absolute top-2 left-2 z-10 inline-flex max-w-[65%] items-center rounded-full border border-black/15 bg-white/85 px-2.5 py-1 text-[10px] tracking-widest text-black backdrop-blur-sm sm:text-[12px]">
                     <span class="block truncate">
                       {groupName}
