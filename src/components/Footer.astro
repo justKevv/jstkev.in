@@ -6,6 +6,10 @@ const footItems = [
   { href: "mailto:kevinbramastaa@gmail.com", label: "Email" },
   { href: "/kevin_bramasta_softwaredeveloper.pdf", label: "Resume" },
 ];
+
+const latestLink = "/archives/first-post-why-i-built-this-site"
+const latestTitle = "New Archive!"
+
 const showFooter = ["/"].includes(currentPath);
 ---
 
@@ -18,7 +22,7 @@ const showFooter = ["/"].includes(currentPath);
           {currentPath === "/" ? <span class="footer-line text-black/50">Model by <a class="underline" href="https://sketchfab.com/SketchyB0t_3D_Fabrication" target="_blank">SketchyBot</a></span> : ""}
       </section>
       {currentPath === "/" ?
-        <a class="latest border py-3 px-5 rounded-full whitespace-nowrap self-end-safe" href="/projects/jstalinkpage">Latest Project</a>
+        <a class="latest border py-3 px-5 rounded-full whitespace-nowrap self-end-safe" href={latestLink}>{latestTitle}</a>
         : ""
       }
   </footer>
@@ -30,9 +34,5 @@ const showFooter = ["/"].includes(currentPath);
           ))}
           {currentPath === "/" ? <span class="footer-line text-black/50">Model by <a class="underline" href="https://sketchfab.com/SketchyB0t_3D_Fabrication" target="_blank">SketchyBot</a></span> : ""}
       </section>
-      {currentPath === "/" ?
-        <a class="latest border py-3 px-5 rounded-full whitespace-nowrap self-end-safe" href="/projects/jstalinkpage">Latest Project</a>
-        : ""
-      }
   </footer>
 }
