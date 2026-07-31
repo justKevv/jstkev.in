@@ -1,6 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import { unified } from '@astrojs/markdown-remark';
+
+import { remarkReadingTime } from './remark-reading-time.mjs';
+
 import tailwindcss from '@tailwindcss/vite';
 
 import mdx from '@astrojs/mdx';
@@ -14,6 +18,11 @@ export default defineConfig({
   trailingSlash: 'never',
   vite: {
     plugins: [tailwindcss()]
+  },
+  markdown: {
+    processor: unified({
+      remarkPlugins: [remarkReadingTime],
+    }),
   },
   integrations: [mdx(), sitemap()],
 });
