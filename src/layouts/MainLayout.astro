@@ -135,7 +135,7 @@ globalThis.__detectionCount = 0;
       gsap.registerPlugin(CSSPlugin);
 
       // Immediately reveal elements for GSAP control (autoAlpha = opacity + visibility)
-      gsap.set(['.split', '.split-paraf', '.nav-split', '.footer-line', '.latest', '.line-works', '.project-card', '.project-detail', '.work-split', '.split-project', '.on-this-page'], { autoAlpha: 1 });
+      gsap.set(['.split', '.split-paraf', '.nav-split', '.footer-line', '.latest', '.line-works', '.card-detail', '.work-split', '.split-project', '.on-this-page', '.card'], { autoAlpha: 1 });
       gsap.set('.project-slide', { willChange: 'transform,opacity' });
 
       const canvas = document.querySelector('#hero-canvas');
@@ -251,23 +251,23 @@ globalThis.__detectionCount = 0;
         stagger: 0.1
       })
 
-      gsap.from('.project-card', {
-        yPercent: 120,
-        opacity: 0,
-        duration: 1.3,
-        ease: 'expo.out',
-        stagger: 0.11,
-        delay: 0.55
-      })
-
-      gsap.from('.project-detail', {
+      gsap.from('.card-detail', {
         yPercent: 120,
         opacity: 0,
         duration: 1.3,
         ease: 'expo.out',
         stagger: 0,
         delay: 0.2
-      })
+      });
+
+      gsap.from('.card', {
+        yPercent: 120,
+        opacity: 0,
+        duration: 1.2,
+        ease: 'expo.out',
+        stagger: 0.11,
+        delay: 0.5
+      });
 
       gsap.from('.work-split', {
         duration: 0.9,
