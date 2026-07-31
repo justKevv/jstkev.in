@@ -1,0 +1,36 @@
+---
+import ArchiveCard from '../components/cards/ArchiveCard.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionLayout from '../layouts/SectionLayout.astro';
+
+import { archives } from '../data/archives';
+import generateSlug from '../lib/generateSlug';
+import { render } from 'astro:content';
+
+const archiveCards = await Promise.all(
+  archives.map(async (archive) => {
+    const {remarkPluginFrontmatter} = await render(archive)
+
+    return {
+      archive,
+      minutesRead: remarkPluginFrontmatter.minutesRead,
+    };
+  })
+)
+---
+
+<MainLayout>
+    <SectionLayout
+        title="Archives">
+            {archiveCards.map(({ archive, minutesRead }) => (
+              <ArchiveCard
+                title={archive.data.title}
+                description={archive.data.description}
+                category={archive.data.category}
+                date={archive.data.date}
+                link={generateSlug(archive.data.title)}
+                duration={minutesRead}
+              />
+            ))}
+    </SectionLayout>
+</MainLayout>

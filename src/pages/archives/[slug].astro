@@ -1,0 +1,52 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import SectionLayout from "../../layouts/SectionLayout.astro";
+import { getCollection } from "astro:content";
+import generateSlug from "../../lib/generateSlug";
+import { render } from "astro:content";
+
+export async function getStaticPaths() {
+  const archives = await getCollection("archives");
+  return archives.map((archive) => ({
+    params: {slug: generateSlug(archive.data.title)},
+    props: {archive}
+  }));
+};
+
+const { archive } = Astro.props
+const { Content, remarkPluginFrontmatter } = await render(archive);
+const dateObject = new Date(archive.data.date);
+
+const formattedDate = dateObject.toLocaleDateString('en-SG', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<MainLayout>
+    <SectionLayout>
+        <article class="mx-40 px-4">
+        
+          <div class="card-detail relative w-full h-56 md:h-72 rounded-lg border border-neutral-400 bg-neutral-100 overflow-hidden mb-8">
+            <!-- <img src="/placeholder.jpg" alt="" class="w-full h-full object-cover" /> -->
+            <span class="absolute capitalize top-3 left-3 text-[10px] px-2.5 py-1 rounded-md border border-neutral-500 bg-white text-neutral-900">
+              {archive.data.category}
+            </span>
+          </div>
+        
+          <div class="card-detail text-[11px] text-neutral-500 mb-2">
+            <time datetime={dateObject.toISOString()}>{formattedDate}</time> &nbsp;&middot;&nbsp; {remarkPluginFrontmatter.minutesRead}
+          </div>
+        
+          <h1 class="card-detail font-serif text-3xl md:text-4xl leading-tight mb-4">
+            {archive.data.title}
+          </h1>
+        
+          <article class="card-detail prose prose-sm **:text-[15px] max-w-none">
+            <Content />
+          </article>
+        
+        </article>
+    </SectionLayout>
+</MainLayout>
