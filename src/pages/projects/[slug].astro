@@ -18,6 +18,39 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content, headings } = await render(project);
 const hasHeadings = headings && headings.length > 0;
+
+const projectUrl = new URL(Astro.url.pathname, Astro.site);
+const projectSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": project.data.name,
+  "description": project.data.description,
+  "image": project.data.image 
+    ? new URL(project.data.image.src, Astro.site).href
+    : new URL("/og-image.png", Astro.site).href,
+  // date is a human-readable display string (e.g. "aug 2025 - jan 2026"), not an ISO date
+  "temporalCoverage": project.data.date,
+  "author": {
+    "@type": "Person",
+    "name": "Kevin Bramasta Arvyto Wardhana",
+    "url": Astro.site
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "jstkev.in",
+    "logo": {
+      "@type": "ImageObject",
+      "url": new URL("/文.png", Astro.site).href
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": projectUrl.href
+  },
+  "programmingLanguage": project.data.stack || [],
+  "codeRepository": project.data.github,
+  "url": project.data.live_link
+};
 ---
 
 <MainLayout
@@ -25,6 +58,10 @@ const hasHeadings = headings && headings.length > 0;
   description={project.data.description}
   image={project.data.image}
   type="article"
+  jsonLd={projectSchema}
+  author="Kevin Bramasta Arvyto Wardhana"
+  section="Projects"
+  tags={project.data.stack || []}
 >
   <SectionLayout title={project.data.name}>
     <div class="flex gap-10 items-start">
@@ -220,7 +257,9 @@ const hasHeadings = headings && headings.length > 0;
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
       e.preventDefault();
-      const id = anchor.getAttribute('href').slice(1);
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+      const id = href.slice(1);
       const target = document.getElementById(id);
       const scrollContainer = document.querySelector('.overflow-y-auto');
       if (target && scrollContainer) {

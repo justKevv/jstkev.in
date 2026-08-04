@@ -5,7 +5,11 @@ import { works } from "../data/works";
 import WorksCard from "../components/cards/WorksCard.astro";
 ---
 
-<MainLayout>
+<MainLayout
+  title="Works"
+  description="Professional experience and work history of Kevin Bramasta, software developer and machine learning engineer from Malang, Indonesia."
+  image="/og-image.png"
+>
     <SectionLayout title="Works">
         {works.map((work, index) => (
           <WorksCard

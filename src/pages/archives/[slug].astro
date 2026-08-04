@@ -22,9 +22,48 @@ const formattedDate = dateObject.toLocaleDateString('en-SG', {
   month: 'short',
   day: 'numeric',
 });
+
+const articleUrl = new URL(Astro.url.pathname, Astro.site);
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": archive.data.title,
+  "description": archive.data.description,
+  "image": new URL("/og-image.png", Astro.site).href,
+  "datePublished": dateObject.toISOString(),
+  "dateModified": dateObject.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Kevin Bramasta Arvyto Wardhana",
+    "url": Astro.site
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "jstkev.in",
+    "logo": {
+      "@type": "ImageObject",
+      "url": new URL("/文.png", Astro.site).href
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": articleUrl.href
+  }
+};
 ---
 
-<MainLayout>
+<MainLayout
+  title={archive.data.title}
+  description={archive.data.description}
+  image="/og-image.png"
+  type="article"
+  jsonLd={articleSchema}
+  publishedTime={dateObject.toISOString()}
+  modifiedTime={dateObject.toISOString()}
+  author="Kevin Bramasta Arvyto Wardhana"
+  section={archive.data.category}
+  tags={[]}
+>
     <SectionLayout>
         <article class="mx-1 md:mx-10 lg:mx-40">
         

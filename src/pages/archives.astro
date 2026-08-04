@@ -19,7 +19,11 @@ const archiveCards = await Promise.all(
 )
 ---
 
-<MainLayout>
+<MainLayout
+  title="Archives"
+  description="Blog posts and articles by Kevin Bramasta covering software development, machine learning, and technology insights."
+  image="/og-image.png"
+>
     <SectionLayout
         title="Archives">
             {archiveCards.map(({ archive, minutesRead }) => (

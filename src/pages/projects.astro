@@ -11,7 +11,11 @@ const categoryDescription: Record<string, string> = {
 };
 ---
 
-<MainLayout>
+<MainLayout
+  title="Projects"
+  description="Personal and academic projects by Kevin Bramasta, showcasing software development, machine learning, and creative coding experiments."
+  image="/og-image.png"
+>
     <SectionLayout title="Projects">
       {Object.entries(category).map(([cat, projects], index, arr) => (
         <>
