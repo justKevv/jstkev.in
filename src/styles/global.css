@@ -10,24 +10,4 @@
   contain: strict;       /* tells browser nothing outside will be affected */
 }
 
-.is-loading .page-content {
-  opacity: 0;
-  visibility: hidden;
-}
 
-.split,
-.split-paraf,
-.nav-split,
-.footer-line,
-.latest,
-.line-works,
-.project-card,
-.project-detail,
-.work-split,
-.split-project,
-.project-slide,
-.on-this-page,
-#hero-canvas {
-  opacity: 0;
-  visibility: hidden;
-}
