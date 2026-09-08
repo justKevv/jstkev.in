@@ -5,5 +5,5 @@ export interface WorkItem {
   type: string;
   date: string;
   location: string;
-  highlights: string[];
+  highlights: string;
 }
