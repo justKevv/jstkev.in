@@ -11,18 +11,19 @@ import WorksCard from "../components/cards/WorksCard.astro";
   image="/og-image.png"
 >
     <SectionLayout title="Works">
-        {works.map((work, index) => (
-          <WorksCard
-            index={index+1}
-            company={work.company}
-            type={work.type}
-            location={work.location}
-            role={work.role}
-            date={work.date}
-            highlights={work.highlights}
-            stack={work.stack}
-          />
-          <hr class="line-works border-t border-current opacity-20 my-0" />
-        ))}
+        <section class="[&>details]:border-b [&>details]:border-black/20">           
+            {works.map((work, index) => (
+              <WorksCard
+                  index={index}
+                  company={work.company}
+                  type={work.type}
+                  location={work.location}
+                  role={work.role}
+                  date={work.date}
+                  highlights={work.highlights}
+                  stack={work.stack}
+              />
+            ))}
+        </section>
     </SectionLayout>
 </MainLayout>

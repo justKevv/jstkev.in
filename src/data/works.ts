@@ -18,7 +18,7 @@ export const works: WorkItem[] = [
     highlights: "Built a multi-page school profile website with Next.js 15 and Sanity CMS, translating Figma designs into pixel-accurate, responsive components and implementing scroll-driven parallax animations, smooth scrolling, and custom spring physics.",
   },
   {
-    company: "independent",
+    company: "<undisclosed>",
     role: "full stack developer",
     stack: [
       "php",
