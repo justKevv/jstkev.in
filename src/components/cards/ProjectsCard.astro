@@ -4,8 +4,8 @@ const props = Astro.props as ProjectItem;
 import { Image } from "astro:assets";
 ---
 
-<article data-cuelume-hover="press" class="h-full hover:bg-amber-50 duration-200 transition bg-white">
-    <a href={`/projects/${props.content_link}`} class="-mr-px -mb-px -mt-px flex h-full min-h-72 flex-col gap-5 border px-5 py-8 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
+<article data-cuelume-hover="press" class="h-full hover:bg-orange-50/50 duration-200 transition bg-white">
+    <a href={`/projects/${props.content_link}`} class="-mr-px -mb-px flex h-full min-h-72 flex-col gap-5 border px-5 py-8 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
         <div class="w-fit rounded-full self-end border px-3 py-1 text-xs">{props.about}</div>
 
         {props.image ? (
