@@ -207,7 +207,7 @@ function initHeroScene() {
       varying vec3 vCenter;
       void main() {
         vec3 afwidth = fwidth(vCenter.xyz);
-        vec3 edge3 = smoothstep((thickness - 1.0) * afwidth, thickness * afwidth, vCenter.xyz);
+        vec3 edge3 = smoothstep((thickness - 0.7) * afwidth, thickness * afwidth, vCenter.xyz);
         float edge = 1.0 - min(min(edge3.x, edge3.y), edge3.z);
         gl_FragColor.rgb = vec3(0.0, 0.0, 0.0);
         gl_FragColor.a = edge;
