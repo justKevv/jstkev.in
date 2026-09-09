@@ -25,16 +25,18 @@ const categoryDescription: Record<string, string> = {
               <p class="split-paraf text-sm text-zinc-600">{categoryDescription[cat] ?? "Projects in this category."}</p>
             </header>
 
-            <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
               {projects!.map((project: Project, projectIndex: number) => (
                 <li>
                     <ProjectsCard
                         name={project.data.name}
+                        about={project.data.about}
                         description={project.data.description}
                         stack={project.data.stack}
                         image={project.data.image}
                         content_link={generateSlug(project.data.name)}
-                        priority={index === 0 && projectIndex === 0}/>
+                        priority={index === 0 && projectIndex === 0}
+                        index={projectIndex}/>
                 </li>
               ))}
             </ul>

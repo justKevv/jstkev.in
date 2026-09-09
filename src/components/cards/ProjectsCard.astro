@@ -4,11 +4,13 @@ const props = Astro.props as ProjectItem;
 import { Image } from "astro:assets";
 ---
 
-<article class="card h-full bg-white">
-    <a href={`/projects/${props.content_link}`} class="flex h-full min-h-72 flex-col gap-3 rounded-xl border border-black/60 p-5 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
+<article data-cuelume-hover="press" class="h-full hover:bg-amber-50 duration-200 transition bg-white">
+    <a href={`/projects/${props.content_link}`} class="-mr-px -mb-px -mt-px flex h-full min-h-72 flex-col gap-5 border px-5 py-8 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
+        <div class="w-fit rounded-full self-end border px-3 py-1 text-xs">{props.about}</div>
+
         {props.image ? (
           <Image
-            class="h-40 w-full object-cover rounded-lg border border-neutral-300 bg-black/60"
+            class="h-60 w-full object-cover border border-neutral-200 bg-black/60"
             src={props.image}
             alt={props.name}
             loading={props.priority ? "eager" : "lazy"}
@@ -16,16 +18,11 @@ import { Image } from "astro:assets";
             decoding={props.priority ? "sync" : "async"}
           />
         ) : (
-          <div class="h-40 w-full rounded-lg bg-black/60" aria-hidden="true"></div>
+          <div class="h-60 w-full bg-black/60" aria-hidden="true"></div>
         )}
-
-        <h3 class="text-base font-medium">{props.name}</h3>
-        <p class="text-sm text-zinc-700">{props.description}</p>
-
-        <ul class="flex flex-wrap gap-2" aria-label="Tech stack">
-            {props.stack.map((tech) => (
-              <li class="inline-flex select-none items-center rounded-full border px-3 py-1 border-black/60 text-black/60 text-sm">{tech}</li>
-            ))}
-        </ul>
+        <div class="flex flex-col">
+            <h3 class="text-base font-medium">{props.name}</h3>
+            <p class="text-sm text-zinc-700">{props.description}</p>
+        </div>
     </a>
 </article>
