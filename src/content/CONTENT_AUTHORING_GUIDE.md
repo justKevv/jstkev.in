@@ -53,7 +53,7 @@ const projects = defineCollection({
 | `category` | ❌ | `'personal' \| 'academics'` | Defaults to `'personal'`. Must be exactly one of the two. |
 | `image` | ❌ | `ImageMetadata` | Relative path from this file: `../../assets/projects/your-image.png` |
 | `description` | ✅ | string | One sentence, plain text. Shown on index cards & meta tags. |
-| `stack` | ✅ | `string[]` | **Lowercase** keys that exist in **both** `src/data/stackIcons.ts` AND `src/data/stacksUrls.ts`. |
+| `stack` | ✅ | `string[]` | Keys in `src/data/stacks.ts` (case-insensitive, unknown keys render with fallback icon and no link). |
 | `date` | ✅ | string | Free-form: `"Feb 2025"`, `"2024"`, `"Jan–Mar 2023"`, `"always ongoing"`. |
 | `github` | ❌ | string (URL) | Full HTTPS GitHub repo URL. |
 | `live_link` | ❌ | string (URL) | Full HTTPS live demo URL. |
@@ -62,12 +62,11 @@ const projects = defineCollection({
 
 ### 2.3 Stack Keys — Critical Constraint
 
-Every entry in `stack` **must** be a key present in **both** data files:
+Every entry in `stack` **should** be a key in `src/data/stacks.ts`:
 
-- `src/data/stackIcons.ts` → `key: "iconify-icon-name"`
-- `src/data/stacksUrls.ts` → `key: "https://docs.url"`
+- `src/data/stacks.ts` → `key: { url: "https://docs.url", icon: "iconify-icon-name" }`
 
-If you need a new technology, **add it to both files first**, then use the key here.
+If you need a new technology, **add one entry to `stacks.ts` first**, then use the key here. Lookup is case-insensitive; unknown keys render with a fallback icon and no link instead of breaking the build.
 
 Common keys (check files for full list):
 
@@ -270,7 +269,7 @@ Before committing, run `npm run build` and confirm:
 - [ ] File is `.mdx` in correct directory
 - [ ] Filename matches slugified `name`
 - [ ] Frontmatter passes Zod schema (no type errors)
-- [ ] `projects.stack` keys all exist in **both** `stackIcons.ts` AND `stacksUrls.ts`
+- [ ] `projects.stack` keys all exist in `src/data/stacks.ts` (unknown keys fall back, but add them for proper URL/icon)
 - [ ] `image` paths (if present) resolve to real files
 - [ ] `github`, `live_link`, `link` are valid HTTPS URLs
 - [ ] Body MDX compiles without errors
@@ -282,7 +281,7 @@ Before committing, run `npm run build` and confirm:
 
 | Pitfall | Symptom | Fix |
 |---------|---------|-----|
-| `stack` key missing from data files | Build error: "Iconify icon not found" / broken link | Add key to **both** `stackIcons.ts` and `stacksUrls.ts` |
+| `stack` key missing from `stacks.ts` | Fallback icon + no link (no build error) | Add one entry to `src/data/stacks.ts` |
 | `image` path wrong | Missing hero image, build warning | Use `../../assets/<collection>/filename.ext` relative to `.mdx` |
 | `date` parsed as YAML date | Schema expects string, gets `Date` object | Quote it: `date: "Feb 2025"` or keep as bare string |
 | `projects.category` typo | Silently defaults to `'personal'` | Use exactly `'personal'` or `'academics'` |
@@ -297,7 +296,7 @@ Before committing, run `npm run build` and confirm:
 **When you change any of the following, update this file:**
 
 - Zod schemas in `src/content.config.ts`
-- Stack keys in `src/data/stackIcons.ts` / `stacksUrls.ts`
+- Stack keys in `src/data/stacks.ts`
 - Slug generation logic in `src/lib/generateSlug.ts`
 - Asset directory structure
 - New fields, components, or conventions

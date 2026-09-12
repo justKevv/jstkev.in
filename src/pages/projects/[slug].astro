@@ -2,8 +2,7 @@
 import MainLayout from "../../layouts/MainLayout.astro";
 import SectionLayout from "../../layouts/SectionLayout.astro";
 import { getCollection, render } from "astro:content";
-import { stackUrls } from "../../data/stacksUrls";
-import { stackIcons } from "../../data/stackIcons";
+import { getStackUrl, getStackIcon } from "../../data/stacks";
 import { Image } from "astro:assets";
 import generateSlug from "../../lib/generateSlug";
 
@@ -93,12 +92,12 @@ const projectSchema = {
                 {project.data.stack.map((tech: string) => (
                 <div class="project-slide flex flex-row gap-2">
                     <a
-                        href={stackUrls[tech]}
+                        href={getStackUrl(tech)}
                         target="_blank"
                         class="inline-flex items-center gap-2 rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
                     >
                         <Image
-                            src={`https://api.iconify.design/${stackIcons[tech]}.svg`}
+                            src={`https://api.iconify.design/${getStackIcon(tech)}.svg`}
                             alt={`${tech} preview`}
                             width={16}
                             height={16}
@@ -167,12 +166,12 @@ const projectSchema = {
                     {project.data.stack.map((tech: string) => (
                     <div class="card-detail">
                         <a
-                            href={stackUrls[tech]}
+                            href={getStackUrl(tech)}
                             target="_blank"
                             class="inline-flex items-center gap-2 rounded-full border px-3 py-1 select-none text-sm hover:bg-neutral-100 transition duration-300"
                         >
                             <Image
-                                src={`https://api.iconify.design/${stackIcons[tech]}.svg`}
+                                src={`https://api.iconify.design/${getStackIcon(tech)}.svg`}
                                 alt={`${tech} preview`}
                                 width={16}
                                 height={16}

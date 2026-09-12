@@ -1,7 +1,7 @@
 ---
-import { stackUrls } from "../../data/stacksUrls";
+import { getStackUrl } from "../../data/stacks";
 const { name } = Astro.props;
-const url = stackUrls[name.toLowerCase()];
+const url = getStackUrl(name);
 ---
 
 {url ? (
