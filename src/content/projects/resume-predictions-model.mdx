@@ -1,0 +1,32 @@
+---
+name: "Resume Role Classification"
+about: "Machine Learning"
+description: "A prediction model to predict the role of a candidate based on their resume."
+stack: ["python", "scikit-learn", "pandas"]
+date: "apr 2025 - dec 2025"
+live_link: "https://resume-classification-app.streamlit.app/"
+---
+
+import secondPlaceAchievement from '../../assets/certifications/achievements/second-place-innovation-competition.png';
+
+
+This project was originally part of the [Student Internship Recommendation System](/projects/student-internship-recommendation-system) project. Originally, this project's dataset uses a lot (and I mean a lot) of synthetic data. I use [Grok](https://www.grok.com/) to generate my data. I think this grok was version 3.x if I remember it correctly. The original dataset was (if I believed to be correct) was [Resume Dataset's by Snehaan Bhawal](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset) (I just literally search "resume dataset" on google). This was I think the best dataset I could've found back then.
+
+But there is one problem, the project needs to be about the IT jobs, and so this is where the LLM comes in. I get all the data from the original dataset that might be relevant to the IT field, and use the LLM to generate more job descriptions that are more relevant to the IT field. It might not be the best dataset, but it was good enough for this project.
+
+One of the reasons that I use [Random Forest](https://www.geeksforgeeks.org/machine-learning/random-forest-algorithm-in-machine-learning/) as the algorithm was because this algorithm is relatively simple to understand, works well with classification problems, and does not require me to manually define a lot of complicated rules. Instead of relying on a single decision tree, Random Forest combines multiple trees and uses their collective predictions to make a final decision.
+
+But then I went to China to continue my bachelor's degree and coincidentally me and my 3 other roommates went ahead to participate in a competition and this model was the center of it. Basically, we made a Resume Analysis Website that used this model to predict what kind of job a candidate was likely to get based on their resume. After that, we use LLM to generate what points need to be improved in the candidate's resume. And finally, the candidate will be present multiple job that is fitting with his/her resume.
+
+In this competition, since it's for a broad use case, I cannot exactly use the dataset that I used before, so I had to search for another. I found this GitHub [Resume Classification Dataset's by Noran Mohamed](https://github.com/noran-mohamed/Resume-Classification-Dataset) which is perfect for my use case. I basically just change the dataset, tweak some values, and retrain the model.
+
+And you know, we won 2nd place! Not too bad tbh.
+
+<img
+  src={secondPlaceAchievement.src}
+  alt="Certificate showing second place in the innovation competition"
+  class="my-8 h-auto w-100"
+/>
+
+Sorry for the yapping :| You can try the app. I left a link on the sidebar
+
