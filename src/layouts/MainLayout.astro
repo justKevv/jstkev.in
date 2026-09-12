@@ -5,6 +5,7 @@ import type { ImageMetadata } from "astro";
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import DotGrid from "../components/react/DotGrid";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
     title?: string;
@@ -26,7 +27,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="none">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -57,6 +58,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
             section={section}
             tags={tags}
         />
+        <ClientRouter />
     </head>
     <body class="overflow-hidden">
         <main class:list={["relative w-full h-dvh flex flex-col overflow-hidden", isPinnedFooter && "max-w-360 mx-auto"]}>
