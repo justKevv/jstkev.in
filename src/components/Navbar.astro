@@ -1,23 +1,80 @@
----
-const navItems = [
-  { href: "/certificates", label: "certf" },
-  { href: "/projects", label: "projects" },
-  { href: "/works", label: "works" },
-];
----
-
 <header class="w-full h-fit relative z-999 bg-white">
-    <nav class="flex justify-between items-center py-6 px-10">
-        <a data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch class="select-none text-lg font-medium lg:text-xl">文</a>
-        <div class="flex items-center gap-4">
-            {navItems.map((item, i) => (
-              <>
-                  <a data-cuelume-press="toggle" data-cuelume-release="tick" data-astro-prefetch class="select-none capitalize font-medium relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-px after:w-full after:bg-current after:origin-left after:scale-x-0 after:transition-transform after:duration-250 hover:after:scale-x-100 text-[12px] md:text-[13.5px] lg:text-[15px]" href={item.href}>{item.label}</a>
-                {i < navItems.length - 1 && (
-                  <span class="w-1 h-1 rounded-full bg-black" />
-                )}
-              </>
-            ))}
-        </div>
+    <nav class="flex justify-center items-center gap-10 py-6 px-10">
+        <a href="">projects</a>
+        <a id="logo-switch" data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch aria-label="Home" class="relative inline-flex size-8 select-none items-center justify-center">
+            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-3xl opacity-100 transition-opacity duration-1000">文</span>
+            <video id="logo-video" class="pointer-events-none absolute inset-0 size-8 object-contain opacity-0 transition-opacity duration-1000"
+                muted playsinline preload="metadata" aria-hidden="true">
+                <source src="/icons/wen.webm" type="video/webm" />
+            </video>
+        </a>
+        <a href="">gallery</a>
     </nav>
 </header>
+
+<script>
+  const logo = document.querySelector("#logo-switch");
+  const text = document.querySelector("#logo-text");
+  const video = document.querySelector("#logo-video");
+
+  let fadeTimer;
+  let playTimer;
+  let hasStarted = false;
+  let isFinishing = false;
+
+  if (logo && text && video) {
+    logo.addEventListener("mouseenter", () => {
+      // Do not restart while the video is already playing.
+      if (hasStarted || isFinishing) return;
+
+      fadeTimer = window.setTimeout(() => {
+        text.classList.remove("opacity-100");
+        text.classList.add("opacity-0");
+      }, 5000);
+
+      // Start after the text has finished fading.
+      playTimer = window.setTimeout(() => {
+        hasStarted = true;
+        video.loop = true;
+        video.currentTime = 0;
+
+        video.classList.remove("opacity-0");
+        video.classList.add("opacity-100");
+
+        video.play();
+      }, 6000);
+    });
+
+    logo.addEventListener("mouseleave", () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(playTimer);
+
+      // If playback has not started, immediately restore the text.
+      if (!hasStarted) {
+        text.classList.remove("opacity-0");
+        text.classList.add("opacity-100");
+        return;
+      }
+
+      // Finish the current loop iteration, then let `ended` restore the text.
+      isFinishing = true;
+      video.loop = false;
+    });
+
+    video.addEventListener("ended", () => {
+      // This only restores the text after the final iteration.
+      if (!isFinishing) return;
+
+      hasStarted = false;
+      isFinishing = false;
+
+      video.classList.remove("opacity-100");
+      video.classList.add("opacity-0");
+
+      text.classList.remove("opacity-0");
+      text.classList.add("opacity-100");
+
+      video.currentTime = 0;
+    });
+  }
+</script>
