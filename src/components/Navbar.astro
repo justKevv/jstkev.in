@@ -2,11 +2,19 @@
     <nav class="flex justify-center items-center gap-10 py-6 px-10">
         <a href="">projects</a>
         <a id="logo-switch" data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch aria-label="Home" class="relative inline-flex size-8 select-none items-center justify-center">
-            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-3xl opacity-100 transition-opacity duration-1000">文</span>
-            <video id="logo-video" class="pointer-events-none absolute inset-0 size-8 object-contain opacity-0 transition-opacity duration-1000"
-                muted playsinline preload="metadata" aria-hidden="true">
-                <source src="/icons/wen.webm" type="video/webm" />
-            </video>
+            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[31px] opacity-100 transition-opacity duration-1500 ease-in-out">文</span>
+            <img
+              id="logo-out-video"
+              class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-6.5 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-none"
+              src="/icons/wen-out.fbf.svg"
+              alt=""
+            />
+            <img
+              id="logo-video"
+              class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-6.5 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-opacity duration-700 ease-in-out"
+              src="/icons/wen.fbf.svg"
+              alt=""
+            />
         </a>
         <a href="">gallery</a>
     </nav>
@@ -15,66 +23,101 @@
 <script>
   const logo = document.querySelector("#logo-switch");
   const text = document.querySelector("#logo-text");
-  const video = document.querySelector("#logo-video");
+  const outImage = document.querySelector("#logo-out-video");
+  const loopImage = document.querySelector("#logo-video");
 
-  let fadeTimer;
-  let playTimer;
-  let hasStarted = false;
-  let isFinishing = false;
+  const HOVER_DELAY = 5000;
+  const OUT_DURATION = 1560;
+  const LOOP_DURATION = 4680;
 
-  if (logo && text && video) {
+  let phase = "text";
+  let isHovering = false;
+  let hoverTimer;
+  let finishTimer;
+  let loopStartedAt = 0;
+
+  const show = (element) => {
+    element.classList.replace("opacity-0", "opacity-100");
+  };
+
+  const hide = (element) => {
+    element.classList.replace("opacity-100", "opacity-0");
+  };
+
+  const restartAnimation = (image, source) => {
+    image.src = `${source}?t=${Date.now()}`;
+  };
+
+  const resetLogo = () => {
+    clearTimeout(hoverTimer);
+    clearTimeout(finishTimer);
+
+    phase = "text";
+
+    hide(outImage);
+    hide(loopImage);
+    show(text);
+  };
+
+  const startLoop = () => {
+    phase = "loop";
+    loopStartedAt = performance.now();
+
+    hide(text);
+    hide(outImage);
+
+    restartAnimation(loopImage, "/icons/wen.fbf.svg");
+    show(loopImage);
+  };
+
+  if (logo && text && outImage && loopImage) {
     logo.addEventListener("mouseenter", () => {
-      // Do not restart while the video is already playing.
-      if (hasStarted || isFinishing) return;
+      isHovering = true;
 
-      fadeTimer = window.setTimeout(() => {
-        text.classList.remove("opacity-100");
-        text.classList.add("opacity-0");
-      }, 5000);
+      // Cancel a pending finish if the pointer comes back.
+      clearTimeout(finishTimer);
 
-      // Start after the text has finished fading.
-      playTimer = window.setTimeout(() => {
-        hasStarted = true;
-        video.loop = true;
-        video.currentTime = 0;
+      if (phase !== "text") return;
 
-        video.classList.remove("opacity-0");
-        video.classList.add("opacity-100");
+      hoverTimer = window.setTimeout(() => {
+        if (!isHovering) return;
 
-        video.play();
-      }, 5500);
+        phase = "out";
+
+        hide(text);
+        restartAnimation(outImage, "/icons/wen-out.fbf.svg");
+        show(outImage);
+
+        finishTimer = window.setTimeout(() => {
+          if (isHovering && phase === "out") {
+            startLoop();
+          }
+        }, OUT_DURATION);
+      }, HOVER_DELAY);
     });
 
     logo.addEventListener("mouseleave", () => {
-      window.clearTimeout(fadeTimer);
-      window.clearTimeout(playTimer);
+      isHovering = false;
+      clearTimeout(hoverTimer);
 
-      // If playback has not started, immediately restore the text.
-      if (!hasStarted) {
-        text.classList.remove("opacity-0");
-        text.classList.add("opacity-100");
+      if (phase === "text") {
+        resetLogo();
         return;
       }
 
-      // Finish the current loop iteration, then let `ended` restore the text.
-      isFinishing = true;
-      video.loop = false;
-    });
+      if (phase === "out") {
+        // Let the exit animation finish before restoring the text.
+        finishTimer = window.setTimeout(resetLogo, OUT_DURATION);
+        return;
+      }
 
-    video.addEventListener("ended", () => {
-      // This only restores the text after the final iteration.
-      if (!isFinishing) return;
+      if (phase === "loop") {
+        // Let the current loop finish before restoring the text.
+        const elapsed = performance.now() - loopStartedAt;
+        const remaining = LOOP_DURATION - (elapsed % LOOP_DURATION);
 
-      hasStarted = false;
-      isFinishing = false;
-
-      video.classList.remove("opacity-100");
-      video.classList.add("opacity-0");
-
-      text.classList.remove("opacity-0");
-      text.classList.add("opacity-100");
-
-      video.currentTime = 0;
+        finishTimer = window.setTimeout(resetLogo, remaining);
+      }
     });
   }
 </script>
