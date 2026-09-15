@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import { unified } from '@astrojs/markdown-remark';
 
@@ -26,5 +26,17 @@ export default defineConfig({
       remarkPlugins: [remarkReadingTime],
     }),
   },
+  fonts: [{
+    provider: fontProviders.local(),
+    name: "YRDZST",
+    cssVariable: "--font-yrdzst",
+    options: {
+      variants: [{
+        src: ['./src/assets/fonts/YRDZST.woff2'],
+        weight: 'normal',
+        style: 'normal',
+      }]
+    },
+  }],
   integrations: [mdx(), sitemap(), react()],
 });

@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import DotGrid from "../components/react/DotGrid";
 import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
 
 interface Props {
     title?: string;
@@ -42,6 +43,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
           onload="this.onload=null;this.rel='stylesheet'"
         />
+        <Font cssVariable="--font-yrdzst" preload />
         <noscript>
           <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
         </noscript>
@@ -63,27 +65,18 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
     <body class="overflow-hidden">
         <main class:list={["relative w-full h-dvh flex flex-col overflow-hidden", isPinnedFooter && "max-w-360 mx-auto"]}>
             <div class="page-content relative z-10 flex min-h-0 flex-1 flex-col">
-                {isPinnedFooter ? <Navbar /> : <div class="w-full max-w-360 mx-auto"><Navbar /></div>}
-                {isPinnedFooter ? (
-                    <>
-                        <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+                <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+                    <div class="min-h-full w-full max-w-360 mx-auto flex flex-col">
+                        <Navbar />
+                        <div class="flex-1 flex flex-col">
                             <slot />
                         </div>
                         <Footer />
-                    </>
-                ) : (
-                    <div class="flex-1 min-h-0 overflow-y-auto scroll-smooth">
-                        <div class="min-h-full w-full max-w-360 mx-auto flex flex-col">
-                            <div class="flex-1 flex flex-col">
-                                <slot />
-                            </div>
-                            <Footer />
-                        </div>
                     </div>
-                )}
+                </div>
             </div>
             <div class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center" aria-hidden="true">
-            <DotGrid
+            <!-- <DotGrid
                 client:load
                 dotSize={3}
                 gap={18}
@@ -94,7 +87,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
                 shockStrength={5}
                 resistance={750}
                 returnDuration={0.8}
-                />
+                /> -->
             </div>
         </main>
     </body>
