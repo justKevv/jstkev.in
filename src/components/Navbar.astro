@@ -1,20 +1,16 @@
+---
+import { Image } from "astro:assets";
+---
+
 <header class="w-full h-fit relative z-999 bg-white">
-    <nav class="flex justify-center items-center gap-10 py-6 px-10">
+    <nav class="flex justify-center items-center gap-10 py-8 px-10">
         <a href="">projects</a>
         <a id="logo-switch" data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch aria-label="Home" class="relative inline-flex size-8 select-none items-center justify-center">
-            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[31px] opacity-100 transition-opacity duration-1500 ease-in-out">文</span>
-            <img
-              id="logo-out-video"
-              class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-6.5 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-none"
-              src="/icons/wen-out.fbf.svg"
-              alt=""
-            />
-            <img
-              id="logo-video"
-              class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-6.5 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-opacity duration-700 ease-in-out"
-              src="/icons/wen.fbf.svg"
-              alt=""
-            />
+            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[37px] opacity-100 transition-opacity duration-1500 ease-in-out">文</span>
+            <Image width={7.5} height={7.5} id="logo-out-video" class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 duration-1000 ease-in-out"
+                src="/icons/wen-out.fbf.svg" alt="" loading="eager"/>
+            <Image width={7.5} height={7.5} id="logo-video" class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-opacity duration-700 ease-in-out"
+                src="/icons/wen.fbf.svg" alt="" loading="eager"/>
         </a>
         <a href="">gallery</a>
     </nav>
@@ -51,23 +47,42 @@
   const resetLogo = () => {
     clearTimeout(hoverTimer);
     clearTimeout(finishTimer);
-
+  
     phase = "text";
-
+  
     hide(outImage);
+    hideOutImmediately();
     hide(loopImage);
     show(text);
   };
-
+  
   const startLoop = () => {
     phase = "loop";
     loopStartedAt = performance.now();
-
+  
     hide(text);
     hide(outImage);
-
+    hideOutImmediately();
+  
     restartAnimation(loopImage, "/icons/wen.fbf.svg");
     show(loopImage);
+  };
+
+
+  const showOut = () => {
+    outImage.classList.remove("transition-none");
+    outImage.classList.add("transition-opacity");
+  
+    restartAnimation(outImage, "/icons/wen-out.fbf.svg");
+  
+    // Let the browser register opacity-0 before transitioning to opacity-100.
+    requestAnimationFrame(() => show(outImage));
+  };
+  
+  const hideOutImmediately = () => {
+    outImage.classList.remove("transition-opacity");
+    outImage.classList.add("transition-none");
+    hide(outImage);
   };
 
   if (logo && text && outImage && loopImage) {
@@ -85,8 +100,7 @@
         phase = "out";
 
         hide(text);
-        restartAnimation(outImage, "/icons/wen-out.fbf.svg");
-        show(outImage);
+        showOut();
 
         finishTimer = window.setTimeout(() => {
           if (isHovering && phase === "out") {
