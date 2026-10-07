@@ -44,6 +44,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
           onload="this.onload=null;this.rel='stylesheet'"
         />
         <Font cssVariable="--font-yrdzst" preload />
+        <Font cssVariable="--font-cause" preload />
         <noscript>
           <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
         </noscript>
@@ -60,7 +61,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
             section={section}
             tags={tags}
         />
-        <ClientRouter />
+        <!-- <ClientRouter /> -->
     </head>
     <body class="overflow-hidden">
         <main class:list={["relative w-full h-dvh flex flex-col overflow-hidden", isPinnedFooter && "max-w-360 mx-auto"]}>

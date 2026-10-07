@@ -37,6 +37,17 @@ export default defineConfig({
         style: 'normal',
       }]
     },
+  }, {
+    provider: fontProviders.local(),
+    name: "Cause",
+    cssVariable: "--font-cause",
+    options: {
+      variants: [{
+        src: ['./src/assets/fonts/cause/Cause[wght].woff2'],
+        weight: '100 900',
+        style: 'normal',
+      }]
+    },
   }],
   integrations: [mdx(), sitemap(), react()],
 });
