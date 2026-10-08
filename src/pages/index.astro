@@ -1,6 +1,5 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-const year = new Date().getFullYear() - 2024;
 ---
 
 <MainLayout
@@ -9,66 +8,27 @@ const year = new Date().getFullYear() - 2024;
   description="Kevin Bramasta Arvyto Wardhana — a developer from Malang, Indonesia with 2+ years in software development and machine learning."
   image="/og-image.png"
 >
-    <section class="h-full min-h-0 flex flex-col justify-between items-center py-6 gap-3">
-        <h1 aria-label="Kevin Bramasta" class="title text-[40px] sm:text-[47px] md:text-8xl lg:text-9xl text-center font-family-playfair">Kevin Bramasta</h1>
-        <p class="description text-[12px] md:text-[14.5px] lg:text-[16px] max-w-xs md:max-w-xl lg:max-w-3xl text-center">
-          I'm Kevin&mdash;obviously, a developer from Malang, Indonesia (currently in China) with {year}+ years in software development and machine learning.
-          Most days, I'm coding, but sometimes I overthink stuff at 3 AM.
-        </p>
-        <canvas id="hero-canvas" class="hero-canvas cursor-grab w-full lg:w-[40%] flex-1 min-h-0 block"></canvas>
+    <section class="h-full min-h-0 flex flex-col justify-between items-center gap-3">
+        <div
+            data-torii-artwork
+            class="relative aspect-video w-full max-w-160 my-4 overflow-hidden [mask-image:url('/Pixel.png')] [-webkit-mask-image:url('/Pixel.png')] [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-position:center] [-webkit-mask-position:center] [mask-size:108%_108%] [-webkit-mask-size:108%_108%]"
+            role="img"
+            aria-label="Watercolor torii gate artwork"
+        >
+            <canvas data-torii-canvas class="pointer-events-none absolute inset-y-0 block h-full w-auto"></canvas>
+        </div>
+        <div class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col gap-6 font-family-cause text-left sm:w-full">
+            <h1 class="text-sm font-semibold sm:text-[15px]">Kevin Bramasta</h1>
+            <p class="text-[13px] leading-5 text-neutral-700 sm:text-[14px] sm:leading-6">
+                Developer and student from Indonesia, currently studying in Shenyang.
+            </p>
+            <p class="text-[13px] leading-5 text-neutral-700 sm:text-[14px] sm:leading-6">
+                I build things with <span class="font-medium text-neutral-900">code</span>, and wander into <span class="font-medium text-neutral-900">design</span>, <span class="font-medium text-neutral-900">photography</span>, and whatever else catches my curiosity.
+            </p>
+        </div>
     </section>
 </MainLayout>
 
 <script>
-  import { gsap } from "gsap";
-  import { SplitText } from "gsap/SplitText";
-  
-  import "../scripts/scene.js";
-
-  gsap.registerPlugin(SplitText) 
-
-  let title = SplitText.create(".title", { 
-    type: "lines, chars",
-    mask: "lines",
-    onSplit(self) {
-      return gsap.from(self.chars, {
-        duration: 0.6,
-        ease: "back.out(1)",
-        y: 100,
-        autoAlpha: 0,
-        stagger: 0.03,
-      })
-    }
-  });
-
-  let description = SplitText.create(".description", { 
-    type: "lines",
-    mask: "lines",
-    onSplit(self) {
-      return gsap.from(self.lines, {
-        duration: 0.4,
-        y: 100,
-        autoAlpha: 0,
-        stagger: 0.05,
-      })
-    }
-  });
-
-  gsap.fromTo(
-    ".hero-canvas",
-    { opacity: 0 },
-    {
-      opacity: 1,
-      duration: 0.05,
-      repeat: 5,
-      yoyo: true,
-      ease: "steps(1)",
-      onComplete: () => {
-        gsap.to(".hero-canvas", {
-          opacity: 1,
-          duration: 0.2,
-        });
-      },
-    }
-  );
+    import '../scripts/torii-artwork.js';
 </script>
