@@ -1,14 +1,11 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import SectionLayout from "../layouts/SectionLayout.astro";
 import ProjectsCard from "../components/cards/ProjectsCard.astro";
-
-import { category, type Project } from "../data/projects";
+import { getCollection } from "astro:content";
 import generateSlug from "../lib/generateSlug";
-const categoryDescription: Record<string, string> = {
-  personal: "Things I built for fun or to scratch my own itch.",
-  academics: "Coursework projects from university. Maybe it could helps someone.",
-};
+import { sortProjects } from "../lib/sortProjects";
+
+const projects = sortProjects(await getCollection("projects"));
 ---
 
 <MainLayout
@@ -16,36 +13,26 @@ const categoryDescription: Record<string, string> = {
   description="Personal and academic projects by Kevin Bramasta, showcasing software development, machine learning, and creative coding experiments."
   image="/og-image.png"
 >
-    <SectionLayout title="Projects">
-      {Object.entries(category).map(([cat, projects], index, arr) => (
-        <>
-          <section aria-labelledby={`projects-${cat}`} class="space-y-3">
-            <header class="space-y-1">
-              <h2 id={`projects-${cat}`} class="split-paraf text-xl font-semibold capitalize">{cat}</h2>
-              <p class="split-paraf text-sm text-zinc-600">{categoryDescription[cat] ?? "Projects in this category."}</p>
-            </header>
+    <section class="font-family-cause mx-auto flex w-full max-w-2xl flex-col justify-start gap-8 px-10 py-6 max-md:px-5">
+        <header class="flex flex-col gap-3">
+            <div class="relative w-fit">
+                <h1 class="split-paraf text-xl font-semibold">Projects</h1>
+                <svg class="absolute -bottom-2 left-0 h-2.5 w-full" viewBox="0 0 100 10" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 6 C 12 1, 22 10, 34 5 S 56 2, 68 6 S 90 9, 99 4" vector-effect="non-scaling-stroke" /></svg>
+            </div>
+            <p class="split-paraf text-base text-zinc-700">Things I've built with <strong class="font-semibold text-black">code</strong>, newest first. Take a stroll through them.</p>
+        </header>
 
-            <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-              {projects!.map((project: Project, projectIndex: number) => (
-                <li>
-                    <ProjectsCard
-                        name={project.data.name}
-                        about={project.data.about}
-                        description={project.data.description}
-                        stack={project.data.stack}
-                        image={project.data.image}
-                        content_link={generateSlug(project.data.name)}
-                        priority={index === 0 && projectIndex === 0}
-                        index={projectIndex}/>
-                </li>
-              ))}
-            </ul>
-          </section>
 
-          {index < arr.length - 1 && (
-            <hr class="line-works border-t border-current opacity-20 my-0" />
-          )}
-        </>
-      ))}
-    </SectionLayout>
+        <ul class="border-t border-black/10">
+            {projects.map((project, index) => (
+                <ProjectsCard
+                    index={index}
+                    name={project.data.name}
+                    description={project.data.description}
+                    stack={project.data.stack}
+                    content_link={generateSlug(project.data.name)}
+                />
+            ))}
+        </ul>
+    </section>
 </MainLayout>

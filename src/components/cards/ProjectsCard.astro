@@ -1,35 +1,30 @@
 ---
-import type { ProjectItem } from "../../types/project";
-const props = Astro.props as ProjectItem;
-import { Image } from "astro:assets";
+const KANJI = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+
+interface Props {
+  index: number;
+  name: string;
+  description: string;
+  stack: string[];
+  content_link: string;
+}
+
+const { index, name, description, stack, content_link } = Astro.props;
+const marker = KANJI[index] ?? String(index + 1);
 ---
 
-<article data-cuelume-hover="press" class="h-full hover:bg-orange-50/50 duration-200 transition bg-white">
-    <a href={`/projects/${props.content_link}`} class="-mr-px -mb-px flex h-full min-h-72 flex-col gap-5 border px-5 py-8 transition hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40">
-        <div class="w-fit rounded-full self-end border px-3 py-1 text-xs">{props.about}</div>
+<li class="relative border-b border-black/10">
+    <a href={`/projects/${content_link}`} class="flex items-start gap-6 px-5 py-7 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 max-md:gap-4 max-md:px-3">
+        <span class="w-8 shrink-0 select-none text-lg text-neutral-400" aria-hidden="true">{marker}</span>
 
-        {props.image ? (
-          <Image
-            class="h-60 w-full object-cover border border-neutral-200 bg-black/60"
-            src={props.image}
-            alt={props.name}
-            loading={props.priority ? "eager" : "lazy"}
-            fetchpriority={props.priority ? "high" : undefined}
-            decoding={props.priority ? "sync" : "async"}
-          />
-        ) : (
-        <div
-          class="flex h-60 w-full items-center text-neutral-400 justify-center border border-neutral-200 text-center text-9xl font-bold bg-[linear-gradient(to_bottom_right,#e6e6e6_0%,#e6e6e6_50%,#ffffff_50%,#ffffff_100%),linear-gradient(to_bottom_right,#ffffff_0%,#ffffff_50%,#e6e6e6_50%,#e6e6e6_100%)] bg-clip-border [-webkit-background-clip:text,border-box]"
-          aria-hidden="true"
-        >
-          {props.name[0]}
-        </div>
-
-
-        )}
-        <div class="flex flex-col">
-            <h3 class="text-base font-medium">{props.name}</h3>
-            <p class="text-sm text-zinc-700">{props.description}</p>
+        <div class="flex min-w-0 flex-1 flex-col gap-2">
+            <h3 class="text-lg font-medium text-black max-md:text-base">{name}</h3>
+            <p class="text-sm text-zinc-700">{description}</p>
+            <div class="mt-1 flex flex-wrap gap-2">
+                {stack.map((tech) => (
+                    <span class="font-family-cause border border-neutral-200 bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600">{tech}</span>
+                ))}
+            </div>
         </div>
     </a>
-</article>
+</li>
