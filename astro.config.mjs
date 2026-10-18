@@ -18,6 +18,9 @@ export default defineConfig({
   site: "https://jstkev.in",
   output: 'static',
   trailingSlash: 'never',
+  image: {
+    domains: ['api.iconify.design'],
+  },
   vite: {
     plugins: [tailwindcss()]
   },

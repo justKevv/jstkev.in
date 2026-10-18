@@ -53,9 +53,9 @@ const style = `--hl-rotation: ${rotation}; --hl-duration: ${duration}; --hl-easi
     )}
     <span class="hover-logo-popup pointer-events-none absolute left-1/2 z-10 flex items-center justify-center rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg" aria-hidden="true">
         {typeof logo === "string" ? (
-            <img src={logo} alt="" width="36" height="36" loading="lazy" class="hover-logo-icon" />
+            <Image src={logo} alt="" width={36} height={36} loading="eager" class="hover-logo-icon" />
         ) : (
-            <Image src={logo} alt="" class="hover-logo-icon" />
+            <Image src={logo} alt="" loading="eager" class="hover-logo-icon" />
         )}
     </span>
 </span>
