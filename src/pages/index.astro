@@ -1,6 +1,10 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import WorkExperience from '../components/WorkExperience.astro';
+import HoverLogo from '../components/HoverLogo.astro';
+import kamarpelajarLogo from '../assets/logos/kamarpelajar.png';
+import indonesiaLogo from '../assets/logos/indonesia.png';
+import shenyangLogo from '../assets/logos/shenyang-aerospace-university.png';
 ---
 
 <link rel="preload" as="image" type="image/webp" href="/torii/materials/tori.webp" crossorigin="anonymous" fetchpriority="high" />
@@ -14,7 +18,7 @@ import WorkExperience from '../components/WorkExperience.astro';
     <section class="h-full min-h-0 flex flex-col justify-between items-center gap-3">
         <div
             data-torii-artwork
-            class="relative aspect-video w-full max-w-160 my-4 overflow-hidden [mask-image:url('/Pixel.webp')] [-webkit-mask-image:url('/Pixel.webp')] [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-position:center] [-webkit-mask-position:center] [mask-size:108%_108%] [-webkit-mask-size:108%_108%]"
+            class="relative aspect-video w-full max-w-160 my-4 overflow-hidden mask-[url('/Pixel.webp')] [-webkit-mask-image:url('/Pixel.webp')] [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-position:center] [-webkit-mask-position:center] [mask-size:108%_108%] [-webkit-mask-size:108%_108%]"
             role="img"
             aria-label="Watercolor torii gate artwork"
         >
@@ -23,7 +27,7 @@ import WorkExperience from '../components/WorkExperience.astro';
         <div class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col gap-6 font-family-cause text-left sm:w-full">
             <h1 class="text-sm font-semibold sm:text-[15px]">Kevin Bramasta</h1>
             <p class="text-[13px] leading-5 text-neutral-700 sm:text-[14px] sm:leading-6">
-                Developer and student from Indonesia, currently studying in Shenyang.
+                Software Developer @ <HoverLogo label="kamarpelajar.id" logo={kamarpelajarLogo} href="https://kamarpelajar.id" rotation="-6deg" /> and student from <HoverLogo label="Indonesia" logo={indonesiaLogo} rotation="5deg" />, currently studying in <HoverLogo label="Shenyang" logo={shenyangLogo} href="https://en.sau.edu.cn/" rotation="-2deg" />.
             </p>
             <p class="text-[13px] leading-5 text-neutral-700 sm:text-[14px] sm:leading-6">
                 I build things with <span class="font-medium text-neutral-900">code</span>, and wander into <span class="font-medium text-neutral-900">design</span>, <span class="font-medium text-neutral-900">photography</span>, and whatever else catches my curiosity.

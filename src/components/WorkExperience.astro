@@ -12,7 +12,8 @@ const photoPlaceholders = photoCompositions.slice(0, DEFAULT_PHOTO_COUNT);
 ---
 
     <section class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col justify-center py-12 font-family-cause sm:w-full" aria-label="Work experience">
-        <div class="flex items-center justify-end text-xs text-neutral-500">
+        <div class="flex items-center justify-between text-xs text-neutral-500">
+            <span class="text-[13px]">Previously</span>
             <span><span data-experience-count>01</span> / {String(works.length).padStart(2, '0')}</span>
         </div>
 
