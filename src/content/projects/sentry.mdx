@@ -10,9 +10,6 @@ live_link: "https://sentry-asset-guardian.vercel.app/"
 ---
 **Disclaimer:** the tech stack that listed above is only the technologies that my friend and I used to during the project, but the project itself is not limited to those technologies.
 
-import StackLink from "../../components/miscellaneous/StackLink.astro";
-
-
 before we start, shout out to this great engineer, couldn't have done it without them 
 
 ｡：ﾟﾟ(´∀｀)･｡
@@ -43,7 +40,7 @@ Let's divide this into three parts starting with:
 
 Since we don't have access to a real dataset, we were told to use this dataset called [machine-predictive-maintenance-classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification/data), which is a synthetic dataset that reflects real predictive maintenance encountered in the industry to the best of their knowledge.
 
-We use lstm rul and xgboost for the machine learning part, and we use <StackLink name="fastapi"/> to create an api for the machine learning model, and we also use fastcron to schedule the machine learning model to run every 30 minutes.
+We use lstm rul and xgboost for the machine learning part, and we use [fastapi](https://fastapi.tiangolo.com) to create an api for the machine learning model, and we also use fastcron to schedule the machine learning model to run every 30 minutes.
 
 ![machine learning](../../assets/projects/sentry/machine-learning.png)
 
@@ -51,17 +48,17 @@ For how it works, I'll create separate documentation later, but in short, the ma
 
 ### backend
 
-For the backend, our team (more like my backend team) decided to use <StackLink name="nestjs"/> and <StackLink name="socket.io"/> for communicating with the frontend with real-time monitoring. We also uses langchain for the ai copilot part.
+For the backend, our team (more like my backend team) decided to use [nestjs](https://nestjs.com) and [socket.io](https://socket.io) for communicating with the frontend with real-time monitoring. We also uses langchain for the ai copilot part.
 
 ![backend](../../assets/projects/sentry/backend.png)
 
-The backend will receive the data from the <StackLink name="supabase"/>, and then it will also send the data to the frontend for real-time monitoring. And for the ai copilot part, it will use <StackLink name="langchain"/> to generate insights and recommendations based on the data that it receives from the machine learning model.
+The backend will receive the data from the [supabase](https://supabase.com), and then it will also send the data to the frontend for real-time monitoring. And for the ai copilot part, it will use [langchain](https://langchain-ai.github.io) to generate insights and recommendations based on the data that it receives from the machine learning model.
 
 We also implement **rag (retrieval-augmented generation)** for the ai copilot, so that it can retrieve relevant information from the document that we create so it will follow the guidelines on how it will fix the machines.
 
 ### frontend
 
-Frontend is relatively simple, we use <StackLink name="react"/> and <StackLink name="vite"/> for the frontend part. The frontend will display the data that it receives from the backend in a dashboard format using <StackLink name="socket.io"/>, and it will also display the insights and recommendations from the ai copilot.
+Frontend is relatively simple, we use [react](https://react.dev) and [vite](https://vite.dev) for the frontend part. The frontend will display the data that it receives from the backend in a dashboard format using [socket.io](https://socket.io), and it will also display the insights and recommendations from the ai copilot.
 
 ![frontend](../../assets/projects/sentry/frontend.png)
 
