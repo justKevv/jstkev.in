@@ -4,9 +4,9 @@ import Email from "../../public/icons/mail.svg"
 import Resume from "../../public/icons/Document.svg"
 
 const footItems = [
-  { href: "/kevin_bramasta_softwaredeveloper.pdf", icon: Resume },
-  { href: "https://github.com/justKevv", icon: Github },
-  { href: "mailto:kevinbramastaa@gmail.com", icon: Email },
+  { href: "/kevin_bramasta_softwaredeveloper.pdf", icon: Resume, label: "Resume" },
+  { href: "https://github.com/justKevv", icon: Github, label: "GitHub" },
+  { href: "mailto:kevinbramastaa@gmail.com", icon: Email, label: "Email" },
 ];
 ---
 
@@ -17,8 +17,9 @@ const footItems = [
           const rotation = (index - (footItems.length - 1) / 2) * 3;
           
           return (
-            <a data-cuelume-press="success" href={item.href} target="_blank">
+            <a data-cuelume-press="success" href={item.href} target="_blank" aria-label={item.label}>
                 <Icon
+                    aria-hidden="true"
                     style={`--hover-rotation: ${rotation}deg`}
                     class="hover:scale-110 hover:-translate-y-1 hover:rotate-(--hover-rotation) transition-transform duration-200"
                 />
