@@ -1,0 +1,590 @@
+---
+import { works } from '../data/works';
+import { Image } from 'astro:assets';
+
+const DEFAULT_PHOTO_COUNT = 1;
+const photoCompositions = [
+    { size: 'h-auto w-[48%] max-w-[10rem] aspect-[89/100] sm:w-[48%] sm:max-w-none sm:aspect-[114/100]', maxWidth: 160, transform: 'translate(-37%, 14%) rotate(-7deg) scale(1)' },
+    { size: 'h-auto w-[59%] max-w-[11rem] aspect-[82/100] sm:w-[59%] sm:max-w-none sm:aspect-[105/100]', maxWidth: 176, transform: 'translate(0, -2%) rotate(1deg) scale(1)' },
+    { size: 'h-auto w-[46%] max-w-[10rem] aspect-[9/10] sm:w-[46%] sm:max-w-none sm:aspect-[115/100]', maxWidth: 160, transform: 'translate(43%, 17%) rotate(7deg) scale(1)' },
+];
+const photoPlaceholders = photoCompositions.slice(0, DEFAULT_PHOTO_COUNT);
+---
+
+    <section class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col justify-center py-12 font-family-cause sm:w-full" aria-label="Work experience">
+        <div class="flex items-center justify-end text-xs text-neutral-500">
+            <span><span data-experience-count>01</span> / {String(works.length).padStart(2, '0')}</span>
+        </div>
+
+        <div class="relative mx-auto flex w-full max-w-120 items-center justify-between text-neutral-500">
+            <button type="button" data-experience-previous class="p-2 text-lg transition-colors hover:text-neutral-950" aria-label="Previous experience">←</button>
+            <div data-experience-stage class="relative h-64 w-[min(72vw,22rem)] cursor-pointer touch-pan-y select-none transition-transform duration-700 ease-out hover:-translate-y-0.5 hover:scale-[1.015] [perspective:1000px] sm:h-80 sm:w-[min(70vw,27rem)]" role="button" tabindex="0" aria-label="Open experience details">
+                {works.map((work, experienceIndex) => (
+                    <article data-experience-slide data-experience-index={experienceIndex} data-role={work.role} data-company={work.company} data-date={work.date} data-highlights={work.highlights} data-stack={work.stack.join(' · ')} class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 blur-sm transition-[opacity,filter] duration-500 ease-out" aria-hidden="true">
+                        {(work.images.length
+                            ? work.images.map((image, index) => ({ ...photoCompositions[index], image }))
+                            : photoPlaceholders.map((photo) => ({ ...photo, image: null }))
+                        ).map((photo, photoIndex, photos) => (
+                            <div data-photo-flip data-mobile-max-width={photo.maxWidth} class:list={['absolute', photo.size]}>
+                                <div data-photo-visual data-rest-transform={photos.length === 1 ? 'rotate(-5deg) scale(1)' : photo.transform} data-rest-z={photoIndex + 1} class="h-full w-full overflow-hidden rounded-[2px] bg-white p-1 shadow-[0_5px_18px_rgba(0,0,0,0.12)] ring-1 ring-black/10">
+                                    {photo.image
+                                        ? <Image src={photo.image} alt={`${work.company} project image ${photoIndex + 1}`} class="h-full w-full object-cover" />
+                                        : <div class="h-full w-full bg-neutral-300" role="img" aria-label={`Image placeholder ${photoIndex + 1} for ${work.company}`}></div>}
+                                </div>
+                            </div>
+                        ))}
+                    </article>
+                ))}
+            </div>
+            <button type="button" data-experience-next class="p-2 text-lg transition-colors hover:text-neutral-950" aria-label="Next experience">→</button>
+        </div>
+
+        <div class="-mt-8 text-center sm:-mt-12">
+            <h2 data-experience-role class="text-sm font-medium capitalize text-neutral-900"></h2>
+            <p data-experience-company class="mt-1 text-[13px] capitalize text-neutral-600"></p>
+            <p data-experience-date class="mt-1 text-xs capitalize text-neutral-500"></p>
+        </div>
+    </section>
+
+    <div data-experience-expanded class="invisible pointer-events-none fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto bg-black/5 text-neutral-900 backdrop-blur-[1px]" role="dialog" aria-modal="true" aria-label="Work experience details" aria-hidden="true">
+        <div class="flex min-h-full items-center justify-center p-0 sm:p-8">
+            <div data-experience-panel class="relative my-auto flex h-auto max-h-[85dvh] w-[calc(100vw-32px)] max-w-none flex-col overflow-x-hidden overflow-y-auto rounded-xl px-4 py-6 font-family-cause sm:max-h-[80vh] sm:min-h-[65vh] sm:w-[64vw] sm:max-w-[52rem] sm:px-12 sm:py-12">
+                <div data-panel-surface class="pointer-events-none absolute inset-0 z-0 rounded-xl border border-neutral-200 bg-white"></div>
+                <button type="button" data-experience-close class="absolute right-4 top-3 z-20 p-2 text-2xl leading-none text-neutral-500 opacity-0 transition-colors hover:text-neutral-950 sm:right-7 sm:top-5" aria-label="Close experience">×</button>
+                <div class="relative z-10 flex min-h-0 grow flex-col items-center justify-center">
+                    <div data-expanded-gallery class="relative h-auto min-h-[220px] max-h-[260px] w-full max-w-5xl shrink-0 aspect-[10/7] sm:aspect-auto sm:h-[min(34vh,22rem)] sm:min-h-0 sm:max-h-none"></div>
+                    <div data-expanded-details class="mt-4 w-full max-w-3xl text-center sm:mt-6">
+                        <div data-expanded-heading class="opacity-0">
+                            <h2 data-expanded-role class="text-[13px] font-medium capitalize sm:text-base">{works[0].role}</h2>
+                            <p class="mt-1 text-xs text-neutral-600 sm:text-sm"><span data-expanded-company class="capitalize">{works[0].company}</span><span aria-hidden="true"> · </span><span data-expanded-date class="text-[11px] capitalize text-neutral-500 sm:text-[13px]">{works[0].date}</span></p>
+                        </div>
+                        <div data-expanded-copy class="opacity-0">
+                        <p data-expanded-highlights class="mx-auto mt-4 max-w-72 text-xs leading-5 text-neutral-700 sm:mt-5 sm:max-w-90 sm:text-sm sm:leading-6">{works[0].highlights}</p>
+                        <p data-expanded-stack class="mt-4 text-xs capitalize text-neutral-700 sm:mt-5 sm:text-sm">{works[0].stack.join(' · ')}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+import { gsap } from 'gsap';
+import { Flip } from 'gsap/Flip';
+
+gsap.registerPlugin(Flip);
+
+const $ = (selector) => document.querySelector(selector);
+const experiences = Array.from(document.querySelectorAll('[data-experience-slide]'));
+const {
+    stage, expandedView, expandedPanel, panelSurface, expandedGallery,
+    expandedHeading, expandedCopy, expandedRole, expandedCompany,
+    expandedDate, expandedHighlights, expandedStack, closeButton,
+    previousButton, nextButton, counter, role, company, date,
+} = {
+    stage: $('[data-experience-stage]'), expandedView: $('[data-experience-expanded]'),
+    expandedPanel: $('[data-experience-panel]'), panelSurface: $('[data-panel-surface]'),
+    expandedGallery: $('[data-expanded-gallery]'), expandedHeading: $('[data-expanded-heading]'),
+    expandedCopy: $('[data-expanded-copy]'), expandedRole: $('[data-expanded-role]'),
+    expandedCompany: $('[data-expanded-company]'), expandedDate: $('[data-expanded-date]'),
+    expandedHighlights: $('[data-expanded-highlights]'), expandedStack: $('[data-expanded-stack]'),
+    closeButton: $('[data-experience-close]'), previousButton: $('[data-experience-previous]'),
+    nextButton: $('[data-experience-next]'), counter: $('[data-experience-count]'),
+    role: $('[data-experience-role]'), company: $('[data-experience-company]'), date: $('[data-experience-date]'),
+};
+let current = 0;
+let dragStartX = null;
+let dragged = false;
+let lastPointer = null;
+let lastPointerType = null;
+let isOpen = false;
+let openTimeline = null;
+let isClosing = false;
+let reducedMotion = false;
+let activeSlide = null;
+let originalSlideStyle = '';
+let overlayMarker = null;
+let returnMarker = null;
+let originalPhotos = [];
+let originalPhotoStyles = [];
+let originalVisuals = [];
+let originalVisualStyles = [];
+const TRANSITION_DURATION = 0.65;
+let overflowStyles = null;
+const restTransform = (visual) => window.matchMedia('(max-width: 639px)').matches
+    ? visual.dataset.mobileRestTransform || visual.dataset.restTransform
+    : visual.dataset.restTransform;
+const photoMotion = experiences.map((slide) => ({
+    slide,
+    photos: Array.from(slide.querySelectorAll('[data-photo-visual]')),
+    state: { x: 0, y: 0, hover: 0 },
+    quickX: null,
+    quickY: null,
+}));
+photoMotion.forEach(({ photos }) => {
+    photos.forEach((visual) => {
+        visual.style.transform = restTransform(visual);
+        visual.style.zIndex = visual.dataset.restZ;
+    });
+});
+
+const killPhotoTweens = (motion) => {
+    gsap.killTweensOf(motion.state);
+    motion.photos.forEach((visual) => gsap.killTweensOf(visual));
+};
+
+const renderPhotoMotion = (motion) => {
+    const photos = motion.photos;
+    const center = (photos.length - 1) / 2;
+    photos.forEach((photo, photoIndex) => {
+        const side = photoIndex - center;
+        const depth = photoIndex + 1;
+        const hover = motion.state.hover;
+        if (hover === 0 && motion.state.x === 0 && motion.state.y === 0) {
+            photo.style.transform = restTransform(photo);
+        } else {
+            const spreadX = side * 4 * hover;
+            const parallaxX = motion.state.x * depth * 5;
+            const parallaxY = motion.state.y * depth * 2;
+            const rotation = side * 1.2 * hover + motion.state.x * depth * 0.2;
+            const scale = 1 + hover * 0.012;
+            photo.style.transform = `perspective(1000px) ${restTransform(photo)} translate3d(${spreadX + parallaxX}px, ${parallaxY}px, 0) rotate(${rotation}deg) scale(${scale})`;
+        }
+    });
+};
+
+const stopPhotoMotion = (motion, reset = false, preparePointer = true) => {
+    killPhotoTweens(motion);
+    if (reset) {
+        gsap.set(motion.state, { x: 0, y: 0, hover: 0 });
+        renderPhotoMotion(motion);
+    }
+    motion.quickX = null;
+    motion.quickY = null;
+    if (!preparePointer) return;
+    motion.quickX = gsap.quickTo(motion.state, 'x', {
+        duration: 0.32,
+        ease: 'power2.out',
+        onUpdate: () => renderPhotoMotion(motion),
+    });
+    motion.quickY = gsap.quickTo(motion.state, 'y', {
+        duration: 0.32,
+        ease: 'power2.out',
+        onUpdate: () => renderPhotoMotion(motion),
+    });
+};
+
+const enterPhotoComposition = (motion, clientX, clientY) => {
+    if (isOpen) return;
+    if (Number(motion.slide.dataset.experienceIndex) !== current) return;
+    stopPhotoMotion(motion);
+    const bounds = motion.slide.getBoundingClientRect();
+    motion.quickX(((clientX - bounds.left) / bounds.width - 0.5) * 2);
+    motion.quickY(((clientY - bounds.top) / bounds.height - 0.5) * 2);
+    gsap.to(motion.state, {
+        hover: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+        overwrite: 'auto',
+        onUpdate: () => renderPhotoMotion(motion),
+    });
+};
+
+const movePhotoComposition = (motion, clientX, clientY) => {
+    if (isOpen) return;
+    if (Number(motion.slide.dataset.experienceIndex) !== current) return;
+    const bounds = motion.slide.getBoundingClientRect();
+    motion.quickX(((clientX - bounds.left) / bounds.width - 0.5) * 2);
+    motion.quickY(((clientY - bounds.top) / bounds.height - 0.5) * 2);
+};
+
+const rememberPointer = (event) => {
+    lastPointer = { x: event.clientX, y: event.clientY };
+    lastPointerType = event.pointerType;
+};
+
+const leavePhotoComposition = (motion) => {
+    if (isOpen) return;
+    killPhotoTweens(motion);
+    motion.quickX = null;
+    motion.quickY = null;
+    gsap.to(motion.state, {
+        x: 0,
+        y: 0,
+        hover: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        overwrite: 'auto',
+        onUpdate: () => renderPhotoMotion(motion),
+        onComplete: () => {
+            gsap.set(motion.state, { x: 0, y: 0, hover: 0 });
+            renderPhotoMotion(motion);
+        },
+    });
+};
+
+const showExperience = (index) => {
+    if (isOpen) return;
+    photoMotion.forEach((motion) => stopPhotoMotion(motion, true, false));
+    current = (index + experiences.length) % experiences.length;
+    experiences.forEach((slide, slideIndex) => {
+        const active = slideIndex === current;
+        slide.classList.toggle('opacity-100', active);
+        slide.classList.toggle('blur-none', active);
+        slide.classList.toggle('opacity-0', !active);
+        slide.classList.toggle('blur-sm', !active);
+        slide.classList.toggle('pointer-events-auto', active);
+        slide.classList.toggle('pointer-events-none', !active);
+        slide.setAttribute('aria-hidden', String(!active));
+    });
+    counter.textContent = String(current + 1).padStart(2, '0');
+    role.textContent = experiences[current].dataset.role;
+    company.textContent = experiences[current].dataset.company;
+    date.textContent = experiences[current].dataset.date;
+    expandedRole.textContent = experiences[current].dataset.role;
+    expandedCompany.textContent = experiences[current].dataset.company;
+    expandedDate.textContent = experiences[current].dataset.date;
+    expandedHighlights.textContent = experiences[current].dataset.highlights;
+    expandedStack.textContent = experiences[current].dataset.stack;
+    stage.setAttribute('aria-label', `Open ${role.textContent} at ${company.textContent}`);
+    if (lastPointerType === 'mouse' && lastPointer && stage.matches(':hover')) {
+        enterPhotoComposition(photoMotion[current], lastPointer.x, lastPointer.y);
+    }
+};
+
+const lockPageScroll = () => {
+    const scrollHost = document.querySelector('main .overflow-y-auto');
+    const elements = [document.documentElement, document.body, scrollHost].filter(Boolean);
+    overflowStyles = elements.map((element) => [element, element.style.overflow, element.style.scrollbarGutter]);
+    if (scrollHost) scrollHost.style.scrollbarGutter = 'stable';
+    elements.forEach((element) => { element.style.overflow = 'hidden'; });
+};
+
+const restorePageScroll = () => {
+    overflowStyles?.forEach(([element, overflow, scrollbarGutter]) => {
+        element.style.overflow = overflow;
+        element.style.scrollbarGutter = scrollbarGutter;
+    });
+    overflowStyles = null;
+};
+
+const panelSourceTransform = (sourceBounds, targetBounds) => {
+    const sourceCenterX = sourceBounds.left + sourceBounds.width / 2;
+    const sourceCenterY = sourceBounds.top + sourceBounds.height / 2;
+    const targetCenterX = targetBounds.left + targetBounds.width / 2;
+    const targetCenterY = targetBounds.top + targetBounds.height / 2;
+    return {
+        x: sourceCenterX - targetCenterX,
+        y: sourceCenterY - targetCenterY,
+        scaleX: sourceBounds.width / targetBounds.width,
+        scaleY: sourceBounds.height / targetBounds.height,
+        transformOrigin: 'center center',
+    };
+};
+
+const setExpandedPhotoLayout = (photos, visuals, aspectRatios, gallery) => {
+    const mobile = window.matchMedia('(max-width: 639px)').matches;
+    // Tuple order: center X (%), center Y (%), width (%), rotation (deg).
+    const layouts = mobile
+        ? { 1: [[50, 50, 58, -1]], 2: [[36, 46, 40, -4], [68, 56, 32, 4]], 3: [[22, 34, 26, -5], [50, 50, 44, 0], [78, 66, 26, 5]] }
+        : { 1: [[50, 50, 42, -1]], 2: [[39, 49, 41, -3], [65, 58, 32, 4]], 3: [[20, 33, 24, -5], [50, 50, 36, 0], [77, 68, 22, 5]] };
+    const positions = layouts[photos.length] || layouts[1];
+    const referenceWidth = 400;
+    const referenceHeight = 280;
+    let mobileScale = 1;
+    let mobileOffsetX = 0;
+    let mobileOffsetY = 0;
+    const photoWidths = positions.map(([, , width], index) => mobile
+        ? Math.min(referenceWidth * width / 100, Number(photos[index].dataset.mobileMaxWidth))
+        : null);
+
+    if (mobile) {
+        const bounds = positions.map(([x, y, , rotate], index) => {
+            const width = photoWidths[index];
+            const height = width / aspectRatios.get(photos[index]);
+            const radians = rotate * Math.PI / 180;
+            const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
+            const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));
+            const centerX = referenceWidth * x / 100;
+            const centerY = referenceHeight * y / 100;
+            return {
+                left: centerX - rotatedWidth / 2,
+                right: centerX + rotatedWidth / 2,
+                top: centerY - rotatedHeight / 2,
+                bottom: centerY + rotatedHeight / 2,
+            };
+        });
+        const minX = Math.min(...bounds.map((bound) => bound.left));
+        const maxX = Math.max(...bounds.map((bound) => bound.right));
+        const minY = Math.min(...bounds.map((bound) => bound.top));
+        const maxY = Math.max(...bounds.map((bound) => bound.bottom));
+        const compositionWidth = maxX - minX;
+        const compositionHeight = maxY - minY;
+        mobileScale = Math.min(
+            Math.max(0, gallery.clientWidth - 24) / compositionWidth,
+            Math.max(0, gallery.clientHeight - 24) / compositionHeight,
+            1,
+        );
+        mobileOffsetX = (gallery.clientWidth - compositionWidth * mobileScale) / 2 - minX * mobileScale;
+        mobileOffsetY = (gallery.clientHeight - compositionHeight * mobileScale) / 2 - minY * mobileScale;
+    }
+
+    photos.forEach((photo, index) => {
+        const [x, y, width, rotate] = positions[index];
+        photo.style.position = 'absolute';
+        photo.style.left = mobile
+            ? `${mobileOffsetX + referenceWidth * x / 100 * mobileScale}px`
+            : `${x}%`;
+        photo.style.top = mobile
+            ? `${mobileOffsetY + referenceHeight * y / 100 * mobileScale}px`
+            : `${y}%`;
+        photo.style.width = mobile ? `${photoWidths[index] * mobileScale}px` : `${width}%`;
+        photo.style.height = 'auto';
+        photo.style.aspectRatio = String(aspectRatios.get(photo));
+        photo.style.transform = 'none';
+        photo.style.zIndex = String(index + 1);
+        visuals[index].style.transform = `translate(-50%, -50%) rotate(${rotate}deg) scale(1)`;
+    });
+};
+
+const finishClose = () => {
+    returnMarker?.remove();
+    returnMarker = null;
+    activeSlide = null;
+    originalSlideStyle = '';
+    originalPhotos = [];
+    originalPhotoStyles = [];
+    originalVisuals = [];
+    originalVisualStyles = [];
+    expandedView.setAttribute('aria-hidden', 'true');
+    gsap.set(expandedView, { autoAlpha: 0, pointerEvents: 'none' });
+    gsap.set([expandedPanel, panelSurface, closeButton, expandedHeading, expandedCopy], { clearProps: 'all' });
+    if (overlayMarker?.parentNode) {
+        overlayMarker.parentNode.insertBefore(expandedView, overlayMarker);
+        overlayMarker.remove();
+    }
+    overlayMarker = null;
+    stage.classList.remove('pointer-events-none');
+    stage.classList.add('hover:-translate-y-0.5', 'hover:scale-[1.015]');
+    previousButton.disabled = false;
+    nextButton.disabled = false;
+    restorePageScroll();
+    isOpen = false;
+    isClosing = false;
+    openTimeline = null;
+    reducedMotion = false;
+    stage.focus({ preventScroll: true });
+};
+
+const openExperience = () => {
+    if (isOpen) return;
+    previousButton.disabled = true;
+    nextButton.disabled = true;
+    stopPhotoMotion(photoMotion[current], true, false);
+
+    const previousTransition = stage.style.transition;
+    stage.style.transition = 'none';
+    stage.classList.remove('hover:-translate-y-0.5', 'hover:scale-[1.015]');
+    stage.getBoundingClientRect();
+    stage.style.transition = previousTransition;
+    stage.classList.add('pointer-events-none');
+
+    activeSlide = experiences[current];
+    const originalParent = activeSlide.parentNode;
+    originalSlideStyle = activeSlide.style.cssText;
+    originalPhotos = Array.from(activeSlide.querySelectorAll('[data-photo-flip]'));
+    originalVisuals = Array.from(activeSlide.querySelectorAll('[data-photo-visual]'));
+    originalPhotoStyles = originalPhotos.map((photo) => photo.style.cssText);
+    originalVisualStyles = originalVisuals.map((visual) => visual.style.cssText);
+    originalPhotos.forEach((photo) => { photo.style.transition = 'none'; });
+    originalVisuals.forEach((visual) => { visual.style.transition = 'none'; });
+    const photoState = Flip.getState(originalPhotos, { props: 'transform' });
+    const sourceBounds = stage.getBoundingClientRect();
+    const aspectRatios = new Map(originalPhotos.map((photo) => [photo, photo.offsetWidth / photo.offsetHeight]));
+
+    overlayMarker = document.createComment('experience-overlay-return-point');
+    expandedView.parentNode.insertBefore(overlayMarker, expandedView);
+    document.body.appendChild(expandedView);
+    isOpen = true;
+    lockPageScroll();
+
+    expandedView.setAttribute('aria-hidden', 'false');
+    gsap.set(expandedView, {
+        autoAlpha: 1,
+        pointerEvents: 'auto',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        backdropFilter: 'blur(0px)',
+    });
+    gsap.set(panelSurface, { autoAlpha: 0 });
+
+    reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reducedMotion ? 0.01 : TRANSITION_DURATION;
+    const targetBounds = expandedPanel.getBoundingClientRect();
+    returnMarker = document.createComment('experience-return');
+    originalParent.insertBefore(returnMarker, activeSlide);
+    expandedGallery.appendChild(activeSlide);
+    setExpandedPhotoLayout(originalPhotos, originalVisuals, aspectRatios, expandedGallery);
+    gsap.set([expandedHeading, expandedCopy], { autoAlpha: 0 });
+    gsap.set(closeButton, { autoAlpha: 0, y: -6 });
+    gsap.set(expandedPanel, panelSourceTransform(sourceBounds, targetBounds));
+    const expandedVisualTransforms = originalVisuals.map((visual) => visual.style.transform);
+    const photoTween = Flip.from(photoState, {
+        duration, ease: 'power3.inOut', absolute: true, nested: true, scale: true,
+    });
+    openTimeline = gsap.timeline({ defaults: { duration, ease: 'power3.inOut' } });
+    openTimeline.add(photoTween, 0);
+    originalVisuals.forEach((visual, index) => {
+        openTimeline.fromTo(visual,
+            { transform: restTransform(visual) },
+            { transform: expandedVisualTransforms[index] },
+            0,
+        );
+    });
+    [
+        [panelSurface, { autoAlpha: 1 }],
+        [expandedView, { backgroundColor: 'rgba(0, 0, 0, 0.05)', backdropFilter: 'blur(1px)' }],
+        [expandedPanel, { x: 0, y: 0, scaleX: 1, scaleY: 1 }],
+    ].forEach(([target, vars]) => openTimeline.to(target, vars, 0));
+    openTimeline.to(closeButton, { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.01 : 0.16, ease: 'power2.out' }, reducedMotion ? 0 : 0.18);
+    openTimeline.to(expandedHeading, { autoAlpha: 1, duration: reducedMotion ? 0.01 : 0.1, ease: 'power2.out' }, reducedMotion ? 0 : TRANSITION_DURATION);
+    openTimeline.to(expandedCopy, { autoAlpha: 1, duration: reducedMotion ? 0.01 : 0.12, ease: 'power2.out' }, reducedMotion ? 0.08 : TRANSITION_DURATION + 0.08);
+
+    closeButton.focus({ preventScroll: true });
+};
+
+const closeExperience = () => {
+    if (!isOpen || isClosing || !openTimeline) return;
+    isClosing = true;
+    openTimeline.kill();
+    const closeOverflowStyles = [expandedView, expandedPanel, expandedGallery].map((element) => [element, element.style.overflow]);
+    closeOverflowStyles.forEach(([element]) => { element.style.overflow = 'visible'; });
+    const measurementSlide = activeSlide.cloneNode(true);
+    measurementSlide.removeAttribute('id');
+    measurementSlide.setAttribute('aria-hidden', 'true');
+    Object.assign(measurementSlide.style, {
+        cssText: originalSlideStyle,
+        visibility: 'hidden',
+        pointerEvents: 'none',
+        transition: 'none',
+    });
+    const measurementPhotos = Array.from(measurementSlide.querySelectorAll('[data-photo-flip]'));
+    const measurementVisuals = Array.from(measurementSlide.querySelectorAll('[data-photo-visual]'));
+    measurementPhotos.forEach((photo, index) => {
+        photo.style.cssText = originalPhotoStyles[index];
+        photo.style.transition = 'none';
+    });
+    measurementVisuals.forEach((visual, index) => {
+        visual.style.cssText = originalVisualStyles[index];
+        visual.style.transition = 'none';
+    });
+    returnMarker.parentNode.insertBefore(measurementSlide, returnMarker);
+    const targetRects = measurementPhotos.map((photo) => {
+        const rect = photo.getBoundingClientRect();
+        return { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+    });
+    measurementSlide.remove();
+
+    originalPhotos.forEach((photo) => { photo.style.transformOrigin = 'top left'; });
+    const currentRects = originalPhotos.map((photo) => photo.getBoundingClientRect());
+    const closeTimeline = gsap.timeline({ defaults: { duration: 0.85, ease: 'power3.inOut' }, onComplete: () => {
+        returnMarker.parentNode.insertBefore(activeSlide, returnMarker);
+        activeSlide.style.cssText = originalSlideStyle;
+        originalPhotos.forEach((photo, index) => {
+            gsap.set(photo, {
+                x: 0,
+                y: 0,
+                scaleX: 1,
+                scaleY: 1,
+                transformOrigin: '50% 50%',
+                clearProps: 'transform,transformOrigin',
+            });
+            photo.style.cssText = originalPhotoStyles[index];
+        });
+        originalVisuals.forEach((visual, index) => {
+            visual.style.cssText = originalVisualStyles[index];
+        });
+        closeOverflowStyles.forEach(([element, overflow]) => { element.style.overflow = overflow; });
+        finishClose();
+    } });
+
+    originalPhotos.forEach((photo, index) => {
+        const current = currentRects[index];
+        const target = targetRects[index];
+        const dx = target.left - current.left;
+        const dy = target.top - current.top;
+        const scaleX = target.width / current.width;
+        const scaleY = target.height / current.height;
+        closeTimeline.to(photo, {
+            x: `+=${dx}`,
+            y: `+=${dy}`,
+            scaleX,
+            scaleY,
+        }, 0);
+    });
+    originalVisuals.forEach((visual) => {
+        closeTimeline.to(visual, {
+            transform: restTransform(visual),
+        }, 0);
+    });
+    [
+        [[expandedHeading, expandedCopy], { autoAlpha: 0, duration: 0.2, ease: 'power2.in' }],
+        [closeButton, { autoAlpha: 0, y: 8, duration: 0.2, ease: 'power2.in' }],
+        [panelSurface, { autoAlpha: 0, duration: 0.45, ease: 'power2.inOut' }],
+        [expandedView, { backgroundColor: 'rgba(0, 0, 0, 0)', backdropFilter: 'blur(0px)', duration: 0.45, ease: 'power2.inOut' }],
+    ].forEach(([target, vars]) => closeTimeline.to(target, vars, 0));
+};
+
+showExperience(0);
+experiences.forEach((slide, index) => {
+    const motion = photoMotion[index];
+    const handleHover = (entering) => (event) => {
+        if (event.pointerType !== 'mouse') return;
+        rememberPointer(event);
+        (entering ? enterPhotoComposition : movePhotoComposition)(motion, event.clientX, event.clientY);
+    };
+    slide.addEventListener('pointerenter', handleHover(true));
+    slide.addEventListener('pointermove', handleHover(false));
+    slide.addEventListener('pointerleave', () => leavePhotoComposition(motion));
+});
+
+document.querySelector('[data-experience-previous]').addEventListener('click', () => showExperience(current - 1));
+document.querySelector('[data-experience-next]').addEventListener('click', () => showExperience(current + 1));
+stage.addEventListener('pointerdown', (event) => {
+    dragStartX = event.clientX;
+    dragged = false;
+    rememberPointer(event);
+    stage.setPointerCapture(event.pointerId);
+});
+stage.addEventListener('pointermove', (event) => {
+    rememberPointer(event);
+    if (dragStartX !== null && Math.abs(event.clientX - dragStartX) > 8) dragged = true;
+});
+stage.addEventListener('pointerup', (event) => {
+    const deltaX = dragStartX === null ? 0 : event.clientX - dragStartX;
+    dragStartX = null;
+    if (Math.abs(deltaX) > 45) {
+        showExperience(current + (deltaX < 0 ? 1 : -1));
+        dragged = true;
+    } else if (!dragged) {
+        openExperience();
+    }
+    if (!isOpen && Math.abs(deltaX) <= 45) leavePhotoComposition(photoMotion[current]);
+});
+stage.addEventListener('pointercancel', () => { dragStartX = null; leavePhotoComposition(photoMotion[current]); });
+stage.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openExperience();
+    }
+});
+closeButton.addEventListener('click', closeExperience);
+expandedView.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        event.preventDefault();
+        closeExperience();
+    }
+});
+expandedView.addEventListener('click', (event) => {
+    if (event.target === expandedView) closeExperience();
+});
+</script>

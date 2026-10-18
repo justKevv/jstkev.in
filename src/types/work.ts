@@ -1,4 +1,7 @@
+import type { ImageMetadata } from 'astro';
+
 export interface WorkItem {
+  id: string;
   company: string;
   role: string;
   stack: string[];
@@ -6,4 +9,5 @@ export interface WorkItem {
   date: string;
   location: string;
   highlights: string;
+  images: ImageMetadata[];
 }

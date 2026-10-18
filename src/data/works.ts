@@ -1,7 +1,27 @@
+import type { ImageMetadata } from "astro";
 import type { WorkItem } from "../types/work";
 
-export const works: WorkItem[] = [
+const workImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/works/*/*.{avif,gif,jpeg,jpg,png,webp}",
+  { eager: true },
+);
+
+function imagesForWork(id: string): ImageMetadata[] {
+  const images = Object.entries(workImages)
+    .filter(([path]) => path.split("/").slice(-2, -1)[0] === id)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, module]) => module.default);
+
+  if (images.length > 3) {
+    throw new Error(`Work "${id}" has ${images.length} images; the gallery supports up to 3.`);
+  }
+
+  return images;
+}
+
+const workDetails: Omit<WorkItem, "images">[] = [
   {
+    id: "sekolah-alam-indonesia",
     company: "sekolah alam indonesia",
     role: "full stack developer",
     stack: [
@@ -18,6 +38,7 @@ export const works: WorkItem[] = [
     highlights: "Built a multi-page school profile website with Next.js 15 and Sanity CMS, translating Figma designs into pixel-accurate, responsive components and implementing scroll-driven parallax animations, smooth scrolling, and custom spring physics.",
   },
   {
+    id: "hospital-nursing-workload",
     company: "<undisclosed>",
     role: "full stack developer",
     stack: [
@@ -34,6 +55,7 @@ export const works: WorkItem[] = [
     highlights: "Redesigned the database architecture of a growing hospital nursing workload application to support multiple hospitals and migrated its admin panel from Bootstrap to Filament, improving maintainability and development efficiency.",
   },
   {
+    id: "dicoding-asah-capstone",
     company: "dicoding indonesia",
     role: "asah capstone leader",
     stack: [
@@ -51,6 +73,7 @@ export const works: WorkItem[] = [
     highlights: "Led a cross-functional team of five engineers across machine learning, backend, and frontend development to deliver a production-ready predictive maintenance system within three months by establishing agile workflows and coordinating end-to-end machine learning integration.",
   },
   {
+    id: "stanford-code-in-place",
     company: "code in place, stanford university",
     role: "section leader",
     stack: [
@@ -64,3 +87,8 @@ export const works: WorkItem[] = [
     highlights: "Mentored more than 10 students in Python fundamentals through weekly lessons and collaborative projects, contributing to a 40% improvement in assessment scores and increased course engagement.",
   },
 ];
+
+export const works: WorkItem[] = workDetails.map((work) => ({
+  ...work,
+  images: imagesForWork(work.id),
+}));
