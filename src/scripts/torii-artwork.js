@@ -14,6 +14,7 @@ const CLICK_RIPPLE_BASE_DISPLACEMENT = 0.0022
 const CLICK_RIPPLE_LIFETIME = 2.2
 const CLICK_RIPPLE_SPEED = 0.26
 const IMPACT_DURATION = 0.35
+const ARTWORK_FADE_IN_DURATION = 1.0
 
 const CLICK_RIPPLE = {
   count: 3,
@@ -333,6 +334,7 @@ function mountArtwork() {
 
   let artwork = null
   let outputMaterial = null
+  let fadeTime = 0
   let artworkTexture = null
   let rippleMaskTexture = null
   let rippleNormalTexture = null
@@ -543,11 +545,18 @@ function mountArtwork() {
     if (!reduceMotion.matches) updateParallax(delta)
 
     if (pipelineReady) renderPipeline()
+    if (!reduceMotion.matches && fadeTime < ARTWORK_FADE_IN_DURATION) {
+      fadeTime = Math.min(fadeTime + delta, ARTWORK_FADE_IN_DURATION)
+    }
+    const fadeProgress = reduceMotion.matches ? 1 : fadeTime / ARTWORK_FADE_IN_DURATION
+    outputMaterial.opacity = 1 - (1 - fadeProgress) ** 3
+
     renderer.setRenderTarget(null)
     renderer.render(scene, camera)
 
+    const fading = !reduceMotion.matches && fadeTime < ARTWORK_FADE_IN_DURATION
     const parallaxIsMoving = !reduceMotion.matches && isParallaxMoving()
-    if (visible && ((animate && pipelineReady) || parallaxIsMoving)) {
+    if (visible && ((animate && pipelineReady) || parallaxIsMoving || fading)) {
       frame = requestAnimationFrame(renderFrame)
     } else {
       lastFrameTime = null
@@ -692,7 +701,7 @@ function mountArtwork() {
 
     artworkTexture = loadTexture('artwork', ARTWORK_URL, (texture) => {
       artworkTexture = texture
-      outputMaterial = new THREE.MeshBasicMaterial({ map: texture, toneMapped: false })
+      outputMaterial = new THREE.MeshBasicMaterial({ map: texture, toneMapped: false, transparent: true, opacity: 0 })
       artwork = new THREE.Mesh(artworkGeometry, outputMaterial)
       scene.add(artwork)
       loaded = true
