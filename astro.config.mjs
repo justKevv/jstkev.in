@@ -19,7 +19,7 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
   image: {
-    domains: ['api.iconify.design'],
+    domains: ['api.iconify.design', 'media.jstkev.in'],
   },
   vite: {
     plugins: [tailwindcss()]
