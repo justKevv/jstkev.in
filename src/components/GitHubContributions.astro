@@ -1,0 +1,57 @@
+---
+const GITHUB_USERNAME = 'justKevv';
+const LEVEL_CLASSES = [
+    'bg-neutral-200/70',
+    'bg-neutral-300',
+    'bg-neutral-400',
+    'bg-neutral-600',
+    'bg-neutral-900',
+];
+
+interface Contribution {
+    date: string;
+    count: number;
+    level: number;
+}
+
+let contributions: Contribution[] = [];
+let totalLastYear = 0;
+
+try {
+    const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`);
+    if (response.ok) {
+        const data = await response.json();
+        contributions = data.contributions ?? [];
+        totalLastYear = data.total?.lastYear ?? 0;
+    }
+} catch {
+    contributions = [];
+}
+
+const firstWeekday = contributions.length ? new Date(`${contributions[0].date}T00:00:00Z`).getUTCDay() : 0;
+const cells: (Contribution | null)[] = [
+    ...Array.from({ length: firstWeekday }, () => null),
+    ...contributions,
+];
+---
+
+<section class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col justify-center gap-4 py-12 font-family-cause sm:w-full" aria-label="GitHub contributions">
+    <div class="flex items-center justify-between text-xs text-neutral-500">
+        <span class="text-[13px]">GitHub</span>
+        <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-neutral-950">@{GITHUB_USERNAME}</a>
+    </div>
+
+    {contributions.length > 0 ? (
+        <div class="grid grid-flow-col grid-rows-7 auto-cols-fr gap-[3px]" role="img" aria-label={`${totalLastYear} GitHub contributions in the last year`}>
+            {cells.map((cell) =>
+                cell ? (
+                    <span class={`aspect-square rounded-[2px] ${LEVEL_CLASSES[cell.level] ?? LEVEL_CLASSES[0]}`} title={`${cell.count} contribution${cell.count === 1 ? '' : 's'} on ${cell.date}`}></span>
+                ) : (
+                    <span class="aspect-square"></span>
+                )
+            )}
+        </div>
+    ) : null}
+
+    <p class="text-center text-xs text-neutral-500">{totalLastYear} contributions in the last year</p>
+</section>
