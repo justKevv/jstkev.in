@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { Image } from "astro:assets";
 import { Masonry } from "astro-masonry";
 
 const response = await fetch("https://gallery-api.kevinbramastaa.workers.dev/media");
@@ -78,9 +79,10 @@ for (let i = items.length - 1; i > 0; i--) {
                       class="block h-auto w-full"
                     />
                   ) : (
-                    <img
+                    <Image
                       src={item.url}
                       alt=""
+                      inferSize
                       loading="lazy"
                       decoding="async"
                       class="block h-auto w-full"
