@@ -29,10 +29,12 @@
     "reading-time": "^1.5.0",
     "tailwindcss": "^4.2.4",
     "three": "^0.185.1",
-    "vite": "^6",
     "wrangler": "^4.85.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19"
+  },
+  "overrides": {
+    "@cloudflare/vite-plugin": "1.42.4"
   }
 }

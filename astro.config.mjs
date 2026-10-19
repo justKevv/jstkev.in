@@ -13,11 +13,14 @@ import sitemap from '@astrojs/sitemap';
 
 import react from '@astrojs/react';
 
+import cloudflare from '@astrojs/cloudflare'
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://jstkev.in",
   output: 'static',
   trailingSlash: 'never',
+  adapter: cloudflare(),
   image: {
     domains: ['api.iconify.design', 'media.jstkev.in'],
   },
