@@ -1,26 +1,67 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import { Image } from "astro:assets";
 import { Masonry } from "astro-masonry";
 
-const response = await fetch("https://gallery-api.kevinbramastaa.workers.dev/media");
+type ManifestItem = {
+  original: string; // filename of the original, e.g. "IMG_0042.jpg"
+  kind: "photo" | "video";
+  optimized: string; // filename of the optimized file
+  poster?: string; // filename of the poster (videos only)
+  w?: number; // optional: optimized width in px
+  h?: number; // optional: optimized height in px
+};
 
-if (!response.ok) {
+type GalleryItem = {
+  kind: "photo" | "video";
+  url: string;
+  originalUrl: string;
+  poster?: string;
+  w?: number;
+  h?: number;
+};
+
+// Custom domain attached to the R2 bucket, e.g. https://media.yoursite.com
+// Set PUBLIC_MEDIA_BASE_URL in .env and in your Cloudflare build variables.
+const base = (import.meta.env.PUBLIC_MEDIA_BASE_URL as string | undefined)?.replace(/\/$/, "");
+if (!base) {
+  throw new Error("PUBLIC_MEDIA_BASE_URL is not set");
+}
+
+// The manifest is a small static JSON file served through Cloudflare's CDN.
+// No bucket listing and no API worker hop on page render.
+const res = await fetch(`${base}/gallery-optimized/media-map.json`, {
+  cf: { cacheEverything: true, cacheTtl: 60 },
+} as RequestInit);
+
+if (!res.ok) {
   throw new Error("Failed to load gallery");
 }
 
-const media = await response.json();
+const manifest: ManifestItem[] = await res.json();
 
-const items = [
-  ...(media.videos ?? []).map((url: string) => ({
-    url,
-    kind: "video" as const,
-  })),
-  ...(media.photos ?? []).map((url: string) => ({
-    url,
-    kind: "photo" as const,
-  })),
-];
+const mediaUrl = (path: string) =>
+  `${base}/${path.split("/").map(encodeURIComponent).join("/")}`;
+
+const items: GalleryItem[] = manifest.map((m) =>
+  m.kind === "video"
+    ? {
+        kind: "video",
+        url: mediaUrl(`gallery-optimized/videos/${m.optimized}`),
+        originalUrl: mediaUrl(`videos/${m.original}`),
+        poster: m.poster
+          ? mediaUrl(`gallery-optimized/posters/${m.poster}`)
+          : undefined,
+        w: m.w,
+        h: m.h,
+      }
+    : {
+        kind: "photo",
+        url: mediaUrl(`gallery-optimized/photos/${m.optimized}`),
+        originalUrl: mediaUrl(`photos/${m.original}`),
+        w: m.w,
+        h: m.h,
+      },
+);
 
 function mulberry32(seed: number) {
   return () => {
@@ -32,11 +73,15 @@ function mulberry32(seed: number) {
   };
 }
 
-const random = mulberry32(42);
+const random = mulberry32(29);
+
 for (let i = items.length - 1; i > 0; i--) {
   const j = Math.floor(random() * (i + 1));
   [items[i], items[j]] = [items[j], items[i]];
 }
+
+// The first few photos are likely above the fold: load them right away.
+const EAGER_COUNT = 6;
 ---
 
 <MainLayout
@@ -44,101 +89,261 @@ for (let i = items.length - 1; i > 0; i--) {
   description="Film photos and video tapes by Kevin Bramasta, shot on film."
   image="/og-image.png"
 >
-    <section class="font-family-cause mx-auto flex w-full max-w-235 flex-col justify-center gap-8 px-10 py-6 max-md:px-5">
-        <header class="flex flex-col gap-3">
-            <div class="relative w-fit">
-                <h1 class="split-paraf text-xl font-semibold">Gallery</h1>
-                <svg class="absolute -bottom-2 left-0 h-2.5 w-full" viewBox="0 0 100 10" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M1 6 C 12 1, 22 10, 34 5 S 56 2, 68 6 S 90 9, 99 4" vector-effect="non-scaling-stroke" /></svg>
-            </div>
-            <p class="split-paraf text-base text-zinc-700">Tapes and shots, <strong class="font-semibold text-black">on film</strong>. Take a stroll through them.</p>
-        </header>
-
-        <Masonry
-            breakpointCols={{
-            default: 4,
-            700: 3
-            }}
-            class="gap-3 flex"
+  <section class="font-family-cause mx-auto flex w-full max-w-235 flex-col justify-center gap-8 px-10 py-6 max-md:px-5">
+    <header class="flex flex-col gap-3">
+      <div class="relative w-fit">
+        <h1 class="split-paraf text-xl font-semibold">Gallery</h1>
+        <svg
+          class="absolute -bottom-2 left-0 h-2.5 w-full"
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          aria-hidden="true"
         >
-            {items.map((item) => (
-              <div class="mb-3 overflow-hidden bg-black">
-                <button
-                  type="button"
-                  class="block w-full cursor-zoom-in"
-                  data-lightbox-kind={item.kind}
-                  data-lightbox-url={item.url}
-                >
-                  {item.kind === "video" ? (
-                    <video
-                      src={item.url}
-                      muted
-                      autoplay
-                      loop
-                      playsinline
-                      preload="none"
-                      class="block h-auto w-full"
-                    />
-                  ) : (
-                    <Image
-                      src={item.url}
-                      alt=""
-                      inferSize
-                      loading="lazy"
-                      decoding="async"
-                      class="block h-auto w-full"
-                    />
-                  )}
-                </button>
-              </div>
-            ))}
-        </Masonry>
-    </section>
+          <path d="M1 6 C 12 1, 22 10, 34 5 S 56 2, 68 6 S 90 9, 99 4" vector-effect="non-scaling-stroke" />
+        </svg>
+      </div>
+      <p class="split-paraf text-base text-zinc-700">
+        Tapes and shots, <strong class="font-semibold text-black">on film</strong>. Take a stroll through them.
+      </p>
+    </header>
 
-    <dialog
-      id="lightbox"
-      class="m-auto max-h-[90vh] max-w-[90vw] overflow-visible bg-transparent p-0 backdrop:bg-black/80"
+    <Masonry
+      breakpointCols={{
+        default: 4,
+        700: 3,
+      }}
+      class="flex gap-3"
     >
-      <button
-        type="button"
-        data-lightbox-close
-        class="absolute -top-10 right-0 text-2xl leading-none text-white"
-        aria-label="Close"
-      >
-        &times;
-      </button>
-      <div id="lightbox-content" class="flex items-center justify-center"></div>
-    </dialog>
+      {items.map((item, i) => (
+        <div class="mb-3 overflow-hidden bg-black">
+            <button
+              type="button"
+              class="block w-full cursor-zoom-in"
+              data-lightbox-kind={item.kind}
+              data-lightbox-url={item.originalUrl}
+              data-lightbox-preview={item.url}
+              data-lightbox-poster={item.poster}
+            >
+            {item.kind === "video" ? (
+              <video
+                data-src={item.url}
+                poster={item.poster}
+                width={item.w}
+                height={item.h}
+                muted
+                loop
+                playsinline
+                preload="none"
+                class="block h-auto w-full"
+              />
+            ) : (
+              <img
+                src={item.url}
+                alt=""
+                width={item.w}
+                height={item.h}
+                loading={i < EAGER_COUNT ? "eager" : "lazy"}
+                fetchpriority={i < EAGER_COUNT ? "high" : "auto"}
+                decoding="async"
+                class="block h-auto w-full"
+              />
+            )}
+          </button>
+        </div>
+      ))}
+    </Masonry>
+  </section>
+
+  <dialog
+    id="lightbox"
+    class="m-auto max-h-[90vh] max-w-[90vw] overflow-visible bg-transparent p-0 backdrop:bg-black/80"
+  >
+    <button
+      type="button"
+      data-lightbox-close
+      class="absolute -top-10 right-0 text-2xl leading-none text-white"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+    <div id="lightbox-content" class="flex items-center justify-center"></div>
+  </dialog>
 </MainLayout>
 
 <script>
-  const dialog = document.getElementById("lightbox") as HTMLDialogElement;
-  const content = document.getElementById("lightbox-content")!;
+  // ---- Autoplay videos only while they are on screen ----
+  // Videos start with no src so the browser doesn't download all of them
+  // at once. The src is set when a video nears the viewport, then it plays
+  // (muted + playsinline is what makes autoplay allowed) and pauses again
+  // when it scrolls away.
+  const videos = document.querySelectorAll<HTMLVideoElement>("video[data-src]");
 
-  document.querySelectorAll<HTMLButtonElement>("[data-lightbox-url]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const url = btn.dataset.lightboxUrl!;
-      const el =
-        btn.dataset.lightboxKind === "video"
-          ? Object.assign(document.createElement("video"), {
-              src: url,
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const video = entry.target as HTMLVideoElement;
+
+        if (entry.isIntersecting) {
+          if (!video.getAttribute("src")) {
+            video.src = video.dataset.src!;
+          }
+          video.play().catch(() => {
+            // Autoplay can be blocked (e.g. low power mode). The poster stays visible.
+          });
+        } else {
+          video.pause();
+        }
+      }
+    },
+    { rootMargin: "200px 0px" },
+  );
+
+  videos.forEach((video) => observer.observe(video));
+
+  // ---- Lightbox ----
+  const dialog = document.getElementById("lightbox") as HTMLDialogElement;
+  const content = document.getElementById("lightbox-content") as HTMLElement;
+  
+  // Warm the browser cache for the original while the person hovers or touches.
+  const warmed = new Set<string>();
+  function warm(url: string) {
+    if (warmed.has(url)) return;
+    warmed.add(url);
+    const img = new Image();
+    img.decoding = "async";
+    img.fetchPriority = "high";
+    img.src = url;
+  }
+  
+  const layer = (el: HTMLElement) => {
+    Object.assign(el.style, {
+      position: "absolute",
+      inset: "0",
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+    });
+    return el;
+  };
+  
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-lightbox-url]")
+    .forEach((btn) => {
+      const { lightboxKind, lightboxUrl, lightboxPreview, lightboxPoster } =
+        btn.dataset;
+  
+      if (lightboxKind === "photo") {
+        const prefetch = () => warm(lightboxUrl!);
+        btn.addEventListener("pointerenter", prefetch, { once: true });
+        btn.addEventListener("pointerdown", prefetch, { once: true });
+        btn.addEventListener("touchstart", prefetch, { once: true, passive: true });
+      }
+  
+      btn.addEventListener("click", () => {
+        // Lock the modal to the thumbnail's shape so nothing resizes later.
+        const thumb = btn.querySelector("img, video") as HTMLElement;
+        const rect = thumb.getBoundingClientRect();
+        const ratio = rect.width / rect.height || 1;
+  
+        content.style.position = "relative";
+        content.style.aspectRatio = String(ratio);
+        content.style.width = `min(90vw, calc(90vh * ${ratio}))`;
+  
+        if (lightboxKind === "video") {
+          // Start with the optimized video so playback begins immediately.
+          // The original loads hidden and takes over at the same timestamp
+          // once it can play through, so large files never block playback.
+          const preview = layer(
+            Object.assign(document.createElement("video"), {
+              src: lightboxPreview,
+              poster: lightboxPoster ?? "",
               controls: true,
               autoplay: true,
               playsInline: true,
-              className: "max-h-[90vh] max-w-[90vw]",
-            })
-          : Object.assign(document.createElement("img"), {
-              src: url,
-              alt: "",
-              className: "max-h-[90vh] max-w-[90vw] object-contain",
-            });
-      content.replaceChildren(el);
-      dialog.showModal();
-    });
-  });
+              preload: "auto",
+            }),
+          );
+          preview.style.background = "black";
 
-  dialog.querySelector("[data-lightbox-close]")!.addEventListener("click", () => dialog.close());
+          const full = layer(
+            Object.assign(document.createElement("video"), {
+              src: lightboxUrl,
+              controls: true,
+              playsInline: true,
+              preload: "auto",
+            }),
+          );
+          full.style.background = "black";
+          full.style.display = "none";
+
+          content.replaceChildren(preview, full);
+          dialog.showModal();
+
+          full.addEventListener(
+            "canplaythrough",
+            () => {
+              if (!content.contains(preview)) return;
+              const wasPlaying = !preview.paused;
+              full.currentTime = preview.currentTime;
+              full.style.display = "";
+              preview.remove();
+              if (wasPlaying) full.play().catch(() => {});
+            },
+            { once: true },
+          );
+          return;
+        }
+  
+        // Bottom layer: optimized image, already cached, visible immediately.
+        const low = layer(
+          Object.assign(document.createElement("img"), {
+            src: lightboxPreview,
+            alt: "",
+          }),
+        );
+  
+        // Top layer: original, invisible until fully decoded, then fades in.
+        const full = layer(
+          Object.assign(document.createElement("img"), {
+            src: lightboxUrl,
+            alt: "",
+            decoding: "async",
+            fetchPriority: "high",
+          }),
+        );
+        full.style.opacity = "0";
+        full.style.transition = "opacity 250ms ease";
+  
+        content.replaceChildren(low, full);
+        dialog.showModal();
+  
+        full
+          .decode()
+          .then(() => {
+            if (!content.contains(full)) return;
+            full.style.opacity = "1";
+          })
+          .catch(() => {
+            // If the original fails, the optimized image just stays.
+          });
+      });
+    });
+  
+  dialog
+    .querySelector("[data-lightbox-close]")!
+    .addEventListener("click", () => dialog.close());
+  
   dialog.addEventListener("click", (e) => {
     if (e.target === dialog) dialog.close();
   });
-  dialog.addEventListener("close", () => content.replaceChildren());
+  
+  dialog.addEventListener("close", () => {
+    content.replaceChildren();
+    content.style.aspectRatio = "";
+    content.style.width = "";
+  });
 </script>
