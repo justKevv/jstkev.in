@@ -1,6 +1,8 @@
 # jstkev.in portfolio
 
-![Portfolio Preview](./preview.gif)
+![Portfolio Preview](src/assets/projects/jstkev.in.png)
+
+Third mothaf#ucking try
 
 # contribution
 
