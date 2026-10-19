@@ -5,9 +5,7 @@
     --font-family-playfair: "Playfair Display", serif;
 }
 
-.hero-canvas {
-  aspect-ratio: 16 / 9; /* or whatever ratio fits your layout */
-  contain: strict;       /* tells browser nothing outside will be affected */
+@theme inline {
+    --font-family-yrdzst: var(--font-yrdzst);
+    --font-family-cause: var(--font-cause);
 }
-
-

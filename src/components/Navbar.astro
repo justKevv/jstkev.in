@@ -1,23 +1,137 @@
 ---
-const navItems = [
-  { href: "/certificates", label: "certf" },
-  { href: "/projects", label: "projects" },
-  { href: "/works", label: "works" },
-];
+import { Image } from "astro:assets";
 ---
 
-<header class="w-full h-fit relative z-999 bg-white">
-    <nav class="flex justify-between items-center py-6 px-10">
-        <a data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch class="select-none text-lg font-medium lg:text-xl">文</a>
-        <div class="flex items-center gap-4">
-            {navItems.map((item, i) => (
-              <>
-                  <a data-cuelume-press="toggle" data-cuelume-release="tick" data-astro-prefetch class="select-none capitalize font-medium relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-px after:w-full after:bg-current after:origin-left after:scale-x-0 after:transition-transform after:duration-250 hover:after:scale-x-100 text-[12px] md:text-[13.5px] lg:text-[15px]" href={item.href}>{item.label}</a>
-                {i < navItems.length - 1 && (
-                  <span class="w-1 h-1 rounded-full bg-black" />
-                )}
-              </>
-            ))}
-        </div>
+<header class="sticky top-0 w-full h-fit z-999 bg-[linear-gradient(to_bottom,#fff_66%,transparent)]">
+    <nav class="flex justify-center items-center gap-10 py-8 px-10">
+        <a href="/projects" class="font-family-cause">projects</a>
+        <a id="logo-switch" data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch aria-label="Home" class="relative inline-flex size-8 select-none items-center justify-center">
+            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[37px] opacity-100 transition-opacity duration-1500 ease-in-out">文</span>
+            <Image width={7.5} height={7.5} id="logo-out-video" class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 duration-1000 ease-in-out"
+                src="/icons/wen-out.fbf.svg" alt="" loading="eager"/>
+            <Image width={7.5} height={7.5} id="logo-video" class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-opacity duration-700 ease-in-out"
+                src="/icons/wen.fbf.svg" alt="" loading="eager"/>
+        </a>
+        <a href="" class="font-family-cause">gallery</a>
     </nav>
 </header>
+
+<script>
+  const logo = document.querySelector("#logo-switch");
+  const text = document.querySelector("#logo-text");
+  const outImage = document.querySelector("#logo-out-video");
+  const loopImage = document.querySelector("#logo-video");
+
+  const HOVER_DELAY = 5000;
+  const OUT_DURATION = 1560;
+  const LOOP_DURATION = 4680;
+
+  let phase = "text";
+  let isHovering = false;
+  let hoverTimer;
+  let finishTimer;
+  let loopStartedAt = 0;
+
+  const show = (element) => {
+    element.classList.replace("opacity-0", "opacity-100");
+  };
+
+  const hide = (element) => {
+    element.classList.replace("opacity-100", "opacity-0");
+  };
+
+  const restartAnimation = (image, source) => {
+    image.src = `${source}?t=${Date.now()}`;
+  };
+
+  const resetLogo = () => {
+    clearTimeout(hoverTimer);
+    clearTimeout(finishTimer);
+  
+    phase = "text";
+  
+    hide(outImage);
+    hideOutImmediately();
+    hide(loopImage);
+    show(text);
+  };
+  
+  const startLoop = () => {
+    phase = "loop";
+    loopStartedAt = performance.now();
+  
+    hide(text);
+    hide(outImage);
+    hideOutImmediately();
+  
+    restartAnimation(loopImage, "/icons/wen.fbf.svg");
+    show(loopImage);
+  };
+
+
+  const showOut = () => {
+    outImage.classList.remove("transition-none");
+    outImage.classList.add("transition-opacity");
+  
+    restartAnimation(outImage, "/icons/wen-out.fbf.svg");
+  
+    // Let the browser register opacity-0 before transitioning to opacity-100.
+    requestAnimationFrame(() => show(outImage));
+  };
+  
+  const hideOutImmediately = () => {
+    outImage.classList.remove("transition-opacity");
+    outImage.classList.add("transition-none");
+    hide(outImage);
+  };
+
+  if (logo && text && outImage && loopImage) {
+    logo.addEventListener("mouseenter", () => {
+      isHovering = true;
+
+      // Cancel a pending finish if the pointer comes back.
+      clearTimeout(finishTimer);
+
+      if (phase !== "text") return;
+
+      hoverTimer = window.setTimeout(() => {
+        if (!isHovering) return;
+
+        phase = "out";
+
+        hide(text);
+        showOut();
+
+        finishTimer = window.setTimeout(() => {
+          if (isHovering && phase === "out") {
+            startLoop();
+          }
+        }, OUT_DURATION);
+      }, HOVER_DELAY);
+    });
+
+    logo.addEventListener("mouseleave", () => {
+      isHovering = false;
+      clearTimeout(hoverTimer);
+
+      if (phase === "text") {
+        resetLogo();
+        return;
+      }
+
+      if (phase === "out") {
+        // Let the exit animation finish before restoring the text.
+        finishTimer = window.setTimeout(resetLogo, OUT_DURATION);
+        return;
+      }
+
+      if (phase === "loop") {
+        // Let the current loop finish before restoring the text.
+        const elapsed = performance.now() - loopStartedAt;
+        const remaining = LOOP_DURATION - (elapsed % LOOP_DURATION);
+
+        finishTimer = window.setTimeout(resetLogo, remaining);
+      }
+    });
+  }
+</script>

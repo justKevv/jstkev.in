@@ -1,0 +1,85 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+    label: string;
+    /** Local asset (optimized by Astro) or a remote image URL. */
+    logo: ImageMetadata | string;
+    href?: string;
+    /** Resting tilt the popup settles into on hover, e.g. "-6deg". */
+    rotation?: string;
+    /** CSS time, e.g. "300ms". */
+    duration?: string;
+    /** CSS easing function, e.g. "ease-out" or "cubic-bezier(...)". */
+    easing?: string;
+    /** CSS time before the animation starts, e.g. "100ms". */
+    delay?: string;
+    /** Gap between the label and the popup, e.g. "0.5rem". */
+    offset?: string;
+    /** Vertical distance the popup travels from while appearing, e.g. "0.5rem" or "-0.5rem". */
+    travel?: string;
+    /** Scale the popup starts from. */
+    startScale?: number;
+    /** Popup box size. */
+    size?: string;
+    /** Logo size inside the popup. */
+    iconSize?: string;
+}
+
+const {
+    label,
+    logo,
+    href,
+    rotation = "-6deg",
+    duration = "300ms",
+    easing = "cubic-bezier(0.34,1.56,0.64,1)",
+    delay = "0ms",
+    offset = "0.5rem",
+    travel = "0.5rem",
+    startScale = 0.5,
+    size = "3.5rem",
+    iconSize = "2.25rem",
+} = Astro.props;
+
+const style = `--hl-rotation: ${rotation}; --hl-duration: ${duration}; --hl-easing: ${easing}; --hl-delay: ${delay}; --hl-offset: ${offset}; --hl-travel: ${travel}; --hl-start-scale: ${startScale}; --hl-size: ${size}; --hl-icon-size: ${iconSize};`;
+---
+
+<span class="hover-logo relative inline-block" style={style}>
+    {href ? (
+        <a href={href} target="_blank" rel="noreferrer" class="font-semibold text-black underline underline-offset-4">{label}</a>
+    ) : (
+        <strong class="font-semibold text-black underline underline-offset-4">{label}</strong>
+    )}
+    <span class="hover-logo-popup pointer-events-none absolute left-1/2 z-10 flex items-center justify-center rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg" aria-hidden="true">
+        {typeof logo === "string" ? (
+            <Image src={logo} alt="" width={36} height={36} loading="eager" class="hover-logo-icon" />
+        ) : (
+            <Image src={logo} alt="" loading="eager" class="hover-logo-icon" />
+        )}
+    </span>
+</span>
+
+<style>
+    .hover-logo-popup {
+        bottom: calc(100% + var(--hl-offset));
+        width: var(--hl-size);
+        height: var(--hl-size);
+        transform: translate(-50%, var(--hl-travel)) scale(var(--hl-start-scale));
+        transition:
+            transform var(--hl-duration) var(--hl-easing) var(--hl-delay),
+            opacity var(--hl-duration) var(--hl-easing) var(--hl-delay);
+    }
+
+    .hover-logo:hover .hover-logo-popup,
+    .hover-logo:focus-within .hover-logo-popup {
+        transform: translate(-50%, 0) scale(1) rotate(var(--hl-rotation));
+        opacity: 1;
+    }
+
+    .hover-logo-icon {
+        width: var(--hl-icon-size);
+        height: var(--hl-icon-size);
+        object-fit: contain;
+    }
+</style>
