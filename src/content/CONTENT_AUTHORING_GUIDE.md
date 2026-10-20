@@ -34,7 +34,7 @@ const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
   schema: ({ image }) => z.object({
     name: z.string(),
-    about: z.string(),
+
     category: z.enum(['personal', 'academics']).default('personal'),
     image: image().optional(),
     description: z.string(),
@@ -51,7 +51,7 @@ const projects = defineCollection({
 | Field | Required | Type | Notes |
 |-------|----------|------|-------|
 | `name` | ✅ | string | Title-cased. Used for page title, slug, card heading. |
-| `about` | ✅ | string | Short topic label, e.g. `"Web"`, `"Machine Learning"`. |
+
 | `category` | ❌ | `'personal' \| 'academics'` | Defaults to `'personal'`. Must be exactly one of the two. |
 | `image` | ❌ | `ImageMetadata` | Relative path from this file: `../../assets/projects/your-image.png` |
 | `description` | ✅ | string | One sentence, plain text. Shown on index cards & meta tags. |
@@ -103,7 +103,6 @@ If you need a new technology, **add one entry to `stacks.ts` first**, then use i
 ```mdx
 ---
 name: "Example Project"
-about: "Web"
 description: "A short one-line description of the project."
 stack: ["astro", "typescript", "tailwindcss"]
 date: "2024"
@@ -268,7 +267,7 @@ Before committing, run `npm run build` and confirm:
 | `image` path wrong | Missing hero image, build warning | Use `../../assets/<collection>/filename.ext` relative to the `.mdx` file |
 | `date` quoted on archives | Schema expects `Date`, gets a string, build fails | Leave unquoted: `date: 2026-07-30` |
 | `date` unquoted on projects | YAML parses it as a `Date`, schema expects a string | Quote it: `date: "Feb 2025"` |
-| `about` missing on projects | Schema validation fails, build fails | Add `about: "..."` |
+
 | `projects.category` typo | Silently defaults to `'personal'` | Use exactly `'personal'` or `'academics'` |
 | `archives.title` vs `name` confusion | Slug comes from `title`, not `name` | Use `title` in archive frontmatter |
 | Filename doesn't match slug | Confusing file names, harder to find posts | Rename the file to match `generateSlug(name or title)` |
