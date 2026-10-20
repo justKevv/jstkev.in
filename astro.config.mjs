@@ -14,7 +14,9 @@ export default defineConfig({
   site: "https://jstkev.in",
   output: 'static',
   trailingSlash: 'never',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    prerenderEnvironment: 'node',
+  }),
   env: {
     schema: {
       GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
