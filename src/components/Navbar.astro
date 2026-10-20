@@ -3,135 +3,117 @@ import { Image } from "astro:assets";
 ---
 
 <header class="sticky top-0 w-full h-fit z-999 bg-[linear-gradient(to_bottom,#fff_66%,transparent)]">
-    <nav class="flex justify-center items-center gap-10 py-8 px-10">
-        <a href="/projects" class="font-family-cause">projects</a>
-        <a id="logo-switch" data-cuelume-press="toggle" data-cuelume-release="tick" href="/" data-astro-prefetch aria-label="Home" class="relative inline-flex size-8 select-none items-center justify-center">
-            <span id="logo-text" class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[37px] opacity-100 transition-opacity duration-1500 ease-in-out">文</span>
-            <Image width={7.5} height={7.5} id="logo-out-video" class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 duration-1000 ease-in-out"
-                src="/icons/wen-out.fbf.svg" alt="" loading="eager"/>
-            <Image width={7.5} height={7.5} id="logo-video" class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-0 transition-opacity duration-700 ease-in-out"
-                src="/icons/wen.fbf.svg" alt="" loading="eager"/>
-        </a>
-        <a href="/gallery" class="font-family-cause">gallery</a>
-    </nav>
+  <nav class="flex justify-center items-center gap-10 py-8 px-10">
+    <a href="/projects" class="font-family-cause">projects</a>
+
+    <a id="logo-switch" href="/" data-astro-prefetch aria-label="Home"
+       class="relative inline-flex size-8 select-none items-center justify-center">
+      <span id="logo-text"
+        class="absolute inset-0 flex items-center justify-center font-family-yrdzst text-[37px] leading-none opacity-100 transition-opacity ease-in-out">文</span>
+
+      <video id="logo-out-video" src="/icons/wen-out.webm" muted playsinline preload="auto"
+        class="pointer-events-none absolute left-1/2 top-1/2 z-10 size-[38px] -translate-x-1/2 -translate-y-[calc(50%+1px)] scale-[1.01] object-cover opacity-0 mix-blend-multiply transition-opacity ease-in-out"></video>
+
+      <video id="logo-video" src="/icons/wen.webm" muted playsinline preload="auto" loop
+        class="pointer-events-none absolute left-1/2 top-1/2 z-20 size-[38px] -translate-x-1/2 -translate-y-[calc(50%+1px)] scale-[1.01] object-cover opacity-0 mix-blend-multiply transition-opacity ease-in-out"></video>
+    </a>
+
+    <a href="/gallery" class="font-family-cause">gallery</a>
+  </nav>
 </header>
 
 <script>
   const logo = document.querySelector("#logo-switch");
   const text = document.querySelector("#logo-text");
-  const outImage = document.querySelector("#logo-out-video");
-  const loopImage = document.querySelector("#logo-video");
+  const outVideo = document.querySelector("#logo-out-video");
+  const loopVideo = document.querySelector("#logo-video");
 
-  const HOVER_DELAY = 5000;
-  const OUT_DURATION = 1560;
-  const LOOP_DURATION = 4680;
+  const HOVER_DELAY = 3000;
+  const SWAP_MS = 1000;  // 0 = hard swap
+  const RESET_MS = 1000;
 
-  let phase = "text";
+  const fade = (el, opacity, ms) => {
+    el.style.transitionDuration = `${ms}ms`;
+    el.style.opacity = String(opacity);
+  };
+
+  // Resolves when the first frame of playback is actually on screen
+  const playFromStart = async (video) => {
+    video.pause();
+    video.currentTime = 0;
+    await video.play();
+    if ("requestVideoFrameCallback" in video) {
+      await new Promise((r) => video.requestVideoFrameCallback(() => r()));
+    }
+  };
+
+  let phase = "text"; // "text" | "out" | "loop"
   let isHovering = false;
   let hoverTimer;
-  let finishTimer;
-  let loopStartedAt = 0;
+  let loopEndTimer;
 
-  const show = (element) => {
-    element.classList.replace("opacity-0", "opacity-100");
-  };
-
-  const hide = (element) => {
-    element.classList.replace("opacity-100", "opacity-0");
-  };
-
-  const restartAnimation = (image, source) => {
-    image.src = `${source}?t=${Date.now()}`;
-  };
-
-  const resetLogo = () => {
+  const goText = () => {
     clearTimeout(hoverTimer);
-    clearTimeout(finishTimer);
-  
+    clearTimeout(loopEndTimer);
     phase = "text";
-  
-    hide(outImage);
-    hideOutImmediately();
-    hide(loopImage);
-    show(text);
+    fade(text, 1, RESET_MS);
+    fade(outVideo, 0, RESET_MS);
+    fade(loopVideo, 0, RESET_MS);
+    // pause only after the fade so it doesn't freeze mid-fade
+    setTimeout(() => {
+      if (phase === "text") {
+        outVideo.pause();
+        loopVideo.pause();
+      }
+    }, RESET_MS);
   };
-  
-  const startLoop = () => {
+
+  const startOut = async () => {
+    await playFromStart(outVideo);
+    if (!isHovering) { outVideo.pause(); return; }
+    phase = "out";
+    fade(text, 0, SWAP_MS);
+    fade(outVideo, 1, SWAP_MS);
+  };
+
+  const startLoop = async () => {
+    await playFromStart(loopVideo);
     phase = "loop";
-    loopStartedAt = performance.now();
-  
-    hide(text);
-    hide(outImage);
-    hideOutImmediately();
-  
-    restartAnimation(loopImage, "/icons/wen.fbf.svg");
-    show(loopImage);
+    // Swap in the same frame: no opacity dip
+    fade(loopVideo, 1, 0);
+    fade(outVideo, 0, 0);
   };
 
+  // Out finished -> loop if still hovering, otherwise back to text
+  outVideo?.addEventListener("ended", () => {
+    if (phase !== "out") return;
+    isHovering ? startLoop() : goText();
+  });
 
-  const showOut = () => {
-    outImage.classList.remove("transition-none");
-    outImage.classList.add("transition-opacity");
-  
-    restartAnimation(outImage, "/icons/wen-out.fbf.svg");
-  
-    // Let the browser register opacity-0 before transitioning to opacity-100.
-    requestAnimationFrame(() => show(outImage));
-  };
-  
-  const hideOutImmediately = () => {
-    outImage.classList.remove("transition-opacity");
-    outImage.classList.add("transition-none");
-    hide(outImage);
+  // When leaving during the loop, finish the current cycle using real remaining time
+  const finishLoopCycle = () => {
+    const remaining = (loopVideo.duration - loopVideo.currentTime) * 1000;
+    loopEndTimer = setTimeout(() => (isHovering ? undefined : goText()), Math.max(remaining, 0));
   };
 
-  if (logo && text && outImage && loopImage) {
-    logo.addEventListener("mouseenter", () => {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (logo && text && outVideo && loopVideo && !reduceMotion) {
+    logo.addEventListener("pointerenter", (e) => {
+      if (e.pointerType !== "mouse") return;
       isHovering = true;
-
-      // Cancel a pending finish if the pointer comes back.
-      clearTimeout(finishTimer);
-
+      clearTimeout(loopEndTimer);
       if (phase !== "text") return;
-
-      hoverTimer = window.setTimeout(() => {
-        if (!isHovering) return;
-
-        phase = "out";
-
-        hide(text);
-        showOut();
-
-        finishTimer = window.setTimeout(() => {
-          if (isHovering && phase === "out") {
-            startLoop();
-          }
-        }, OUT_DURATION);
-      }, HOVER_DELAY);
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(startOut, HOVER_DELAY);
     });
 
-    logo.addEventListener("mouseleave", () => {
+    logo.addEventListener("pointerleave", (e) => {
+      if (e.pointerType !== "mouse") return;
       isHovering = false;
       clearTimeout(hoverTimer);
-
-      if (phase === "text") {
-        resetLogo();
-        return;
-      }
-
-      if (phase === "out") {
-        // Let the exit animation finish before restoring the text.
-        finishTimer = window.setTimeout(resetLogo, OUT_DURATION);
-        return;
-      }
-
-      if (phase === "loop") {
-        // Let the current loop finish before restoring the text.
-        const elapsed = performance.now() - loopStartedAt;
-        const remaining = LOOP_DURATION - (elapsed % LOOP_DURATION);
-
-        finishTimer = window.setTimeout(resetLogo, remaining);
-      }
+      if (phase === "loop") finishLoopCycle();
+      // phase "out": the "ended" handler sees isHovering === false and calls goText()
     });
   }
 </script>
