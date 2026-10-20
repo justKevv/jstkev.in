@@ -55,10 +55,11 @@ const isRemoteUrl = typeof logo === "string";
         <strong class="font-semibold text-black underline underline-offset-4">{label}</strong>
     )}
     <span class="hover-logo-popup pointer-events-none absolute left-1/2 z-10 flex items-center justify-center rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg" aria-hidden="true">
+        {/* 72px = default iconSize (2.25rem) at 2x DPR, so local logos aren't shipped at full source size */}
         {isRemoteUrl ? (
             <img src={logo as string} alt="" loading="eager" class="hover-logo-icon" />
         ) : (
-            <Image src={logo as ImageMetadata} alt="" loading="eager" class="hover-logo-icon" />
+            <Image src={logo as ImageMetadata} width={72} alt="" loading="eager" class="hover-logo-icon" />
         )}
     </span>
 </span>
