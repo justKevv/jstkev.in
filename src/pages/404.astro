@@ -1,0 +1,34 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<link rel="preload" as="image" type="image/webp" href="/torii/materials/no_toriii.webp" crossorigin="anonymous" fetchpriority="high" />
+
+<MainLayout
+  isPinnedFooter={true}
+  title="kevv."
+  description="Kevin Bramasta Arvyto Wardhana — software developer from Malang, Indonesia building web, machine learning, and IoT projects, and shooting on film."
+  image="/og-image.png"
+>
+    <section class="flex flex-1 flex-col items-center justify-center gap-3">
+        <div
+            data-torii-artwork
+            data-torii-artwork-src="/torii/materials/no_toriii.webp"
+            class="relative aspect-video w-full max-w-190 overflow-hidden mask-[url('/Pixel.webp')] [-webkit-mask-image:url('/Pixel.webp')] [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-position:center] [-webkit-mask-position:center] [mask-size:108%_108%] [-webkit-mask-size:108%_108%]"
+            role="img"
+            aria-label="Watercolor sunset over water artwork"
+        >
+            <canvas data-torii-canvas class="pointer-events-none absolute inset-y-0 block h-full w-auto"></canvas>
+        </div>
+        <div class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col items-center gap-2 font-family-cause text-center sm:w-full">
+            <p class="text-lg font-semibold tracking-[0.6em] text-[#741C1C]">404</p>
+            <h1 class="text-lg font-semibold sm:text-xl">oh, you've wandered off.</h1>
+            <p class="text-base text-zinc-600">Welp, this path goes nowhere. Even the gate left.</p>
+            <a href="/" class="mt-4 text-base underline decoration-[#741C1C] underline-offset-4">back to shore</a>
+        </div>
+    </section>
+</MainLayout>
+
+<script>
+    import '../scripts/torii-artwork.js';
+</script>

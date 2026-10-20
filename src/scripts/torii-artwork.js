@@ -5,7 +5,7 @@ const DEBUG_GOD_RAYS = import.meta.env.DEV && false
 const DEBUG_GOD_RAY_SOURCE = import.meta.env.DEV && false
 const DEBUG_CLICK_RIPPLE = import.meta.env.DEV && false
 
-const ARTWORK_URL = '/torii/materials/tori.webp'
+const DEFAULT_ARTWORK_URL = '/torii/materials/tori.webp'
 const WATER_MASK_URL = '/torii/materials/masks/waterripple_mask_18b8bfc2.webp'
 const RIPPLE_NORMAL_URL = '/torii/materials/effects/waterripplenormal.webp'
 
@@ -301,6 +301,8 @@ function mountArtwork() {
   const host = document.querySelector('[data-torii-artwork]')
   const canvas = host?.querySelector('[data-torii-canvas]')
   if (!host || !canvas) return
+
+  const artworkUrl = host.dataset.toriiArtworkSrc || DEFAULT_ARTWORK_URL
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
   const coarsePointer = window.matchMedia('(pointer: coarse)')
@@ -699,7 +701,7 @@ function mountArtwork() {
     if (loading || loaded || disposed) return
     loading = true
 
-    artworkTexture = loadTexture('artwork', ARTWORK_URL, (texture) => {
+    artworkTexture = loadTexture('artwork', artworkUrl, (texture) => {
       artworkTexture = texture
       outputMaterial = new THREE.MeshBasicMaterial({ map: texture, toneMapped: false, transparent: true, opacity: 0 })
       artwork = new THREE.Mesh(artworkGeometry, outputMaterial)
