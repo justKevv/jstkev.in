@@ -4,7 +4,6 @@ import SEO from "../components/SEO.astro";
 import type { ImageMetadata } from "astro";
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
-import DotGrid from "../components/react/DotGrid";
 import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 
@@ -37,6 +36,7 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
         <script defer is:inline src="https://cloud.umami.is/script.js" data-website-id="67a8fb86-ca7a-40ad-9d0a-828e794826cc"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preconnect" href="https://api.iconify.design" />
         <link
           rel="preload"
           as="style"
@@ -78,6 +78,21 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
             </div>
             <div class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center" aria-hidden="true">
             </div>
+            <script is:inline>
+              (function () {
+                var host = document.querySelector("main .overflow-y-auto");
+                if (!host) return;
+                var key = "scroll:" + location.pathname;
+                var nav = performance.getEntriesByType("navigation")[0];
+                if (nav && nav.type === "back_forward") {
+                  var saved = Number(sessionStorage.getItem(key));
+                  if (saved > 0) host.scrollTo({ top: saved, behavior: "instant" });
+                }
+                host.addEventListener("scroll", function () {
+                  sessionStorage.setItem(key, String(host.scrollTop));
+                }, { passive: true });
+              })();
+            </script>
         </main>
     </body>
 
@@ -88,4 +103,5 @@ const { title, description, image, type, noindex, isPinnedFooter = false, jsonLd
 
       setVolume(1)
     </script>
+
 </html>
