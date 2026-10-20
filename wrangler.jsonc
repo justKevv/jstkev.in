@@ -6,6 +6,9 @@
 		"directory": "./dist",
 		"html_handling": "drop-trailing-slash"
 	},
+	"vars": {
+    "PUBLIC_MEDIA_BASE_URL": "https://media.jstkev.in"
+  },
 	"observability": {
 		"enabled": true
 	}
