@@ -92,29 +92,5 @@ async function fetchGithubData(): Promise<GithubData> {
   }
 }
 
-// CHANGED: replaces the `let cache ... ??=` memo.
-// Uses Cloudflare's Cache API in production; falls back to a plain fetch in dev
-// (where `caches.default` doesn't exist).
-export async function getGithubData(): Promise<GithubData> {
-  const cache = (globalThis as any).caches?.default as Cache | undefined;
-  const key = new Request('https://cache.internal/github-data');
-
-  try {
-    const hit = await cache?.match(key);
-    if (hit) return (await hit.json()) as GithubData;
-  } catch {}
-
-  const data = await fetchGithubData();
-
-  if (cache && data.days.length > 0) {
-    try {
-      await cache.put(
-        key,
-        new Response(JSON.stringify(data), {
-          headers: { 'Cache-Control': 'max-age=3600' }, // refresh hourly
-        }),
-      );
-    } catch {}
-  }
-  return data;
-}
+let pending: Promise<GithubData> | undefined;
+export const getGithubData = () => (pending ??= fetchGithubData());
