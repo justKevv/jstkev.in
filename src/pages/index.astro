@@ -7,8 +7,6 @@ import HoverLogo from '../components/HoverLogo.astro';
 import kamarpelajarLogo from '../assets/logos/kamarpelajar.png';
 import indonesiaLogo from '../assets/logos/indonesia.png';
 import shenyangLogo from '../assets/logos/shenyang-aerospace-university.png';
-
-export const prerender = false;
 ---
 
 <link rel="preload" as="image" type="image/webp" href="/torii/materials/tori.webp" fetchpriority="high" />
@@ -42,8 +40,13 @@ export const prerender = false;
     </section>
 
     <WorkExperience />
-    <!-- <PullRequests />
-    <GitHubContributions /> -->
+    <PullRequests server:defer>
+      <p slot="fallback" class="text-center text-xs text-neutral-500">Loading…</p>
+    </PullRequests>
+    
+    <GitHubContributions server:defer>
+      <p slot="fallback" class="text-center text-xs text-neutral-500">Loading…</p>
+    </GitHubContributions>
 </MainLayout>
 
 <script>

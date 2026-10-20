@@ -1,9 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
-
-import { unified } from '@astrojs/markdown-remark';
-
-import { remarkReadingTime } from './remark-reading-time.mjs';
+import { defineConfig, fontProviders, envField } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -21,16 +17,16 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
   adapter: cloudflare(),
+  env: {
+    schema: {
+      GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret' }),
+    },
+  },
   image: {
     domains: ['api.iconify.design', 'media.jstkev.in'],
   },
   vite: {
     plugins: [tailwindcss()]
-  },
-  markdown: {
-    processor: unified({
-      remarkPlugins: [remarkReadingTime],
-    }),
   },
   fonts: [{
     provider: fontProviders.local(),

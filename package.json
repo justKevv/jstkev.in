@@ -26,7 +26,6 @@
     "mdast-util-to-string": "^4.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "reading-time": "^1.5.0",
     "tailwindcss": "^4.2.4",
     "wrangler": "^4.85.0"
   },
