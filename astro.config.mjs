@@ -19,7 +19,7 @@ export default defineConfig({
   adapter: cloudflare(),
   env: {
     schema: {
-      GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret' }),
+      GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
     },
   },
   image: {
