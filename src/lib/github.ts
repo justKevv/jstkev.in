@@ -37,13 +37,16 @@ export interface GithubData { prs: PR[]; days: Day[]; total: number }
 
 async function fetchGithubData(): Promise<GithubData> {
   try {
-    // CHANGED: use the imported secret
-    if (!GITHUB_TOKEN) console.error('[github] GITHUB_TOKEN is not set');
+    const token = (GITHUB_TOKEN ?? '').replace(/[^\x21-\x7E]/g, ''); // keep printable ASCII only
+    if (!token) {
+      console.error('[github] GITHUB_TOKEN is missing or empty');
+      return { prs: [], days: [], total: 0 };
+    }
 
     const res = await fetch('https://api.github.com/graphql', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${GITHUB_TOKEN}`, // CHANGED
+        Authorization: `Bearer ${token}`, // CHANGED
         'Content-Type': 'application/json',
         'User-Agent': 'jstkev.in',
       },
