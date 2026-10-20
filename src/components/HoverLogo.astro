@@ -43,6 +43,9 @@ const {
 } = Astro.props;
 
 const style = `--hl-rotation: ${rotation}; --hl-duration: ${duration}; --hl-easing: ${easing}; --hl-delay: ${delay}; --hl-offset: ${offset}; --hl-travel: ${travel}; --hl-start-scale: ${startScale}; --hl-size: ${size}; --hl-icon-size: ${iconSize};`;
+
+// Determine if logo is a string (remote URL) or local asset
+const isRemoteUrl = typeof logo === "string";
 ---
 
 <span class="hover-logo relative inline-block" style={style}>
@@ -52,10 +55,10 @@ const style = `--hl-rotation: ${rotation}; --hl-duration: ${duration}; --hl-easi
         <strong class="font-semibold text-black underline underline-offset-4">{label}</strong>
     )}
     <span class="hover-logo-popup pointer-events-none absolute left-1/2 z-10 flex items-center justify-center rounded-xl border border-neutral-200 bg-white p-2 opacity-0 shadow-lg" aria-hidden="true">
-        {typeof logo === "string" ? (
-            <Image src={logo} alt="" width={36} height={36} loading="eager" class="hover-logo-icon" />
+        {isRemoteUrl ? (
+            <img src={logo as string} alt="" loading="eager" class="hover-logo-icon" />
         ) : (
-            <Image src={logo} alt="" loading="eager" class="hover-logo-icon" />
+            <Image src={logo as ImageMetadata} alt="" loading="eager" class="hover-logo-icon" />
         )}
     </span>
 </span>

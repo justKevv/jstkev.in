@@ -11,7 +11,7 @@ export interface StackMeta {
 export const stacks: Record<string, StackMeta> = {
   astro: { url: "https://astro.build", icon: "devicon:astro" },
   typescript: { url: "https://www.typescriptlang.org/", icon: "devicon:typescript" },
-  gsap: { url: "https://gsap.com/", icon: "simple-icons:gsap" },
+  gsap: { url: "https://gsap.com/", icon: "logos:gsap" },
   tailwindcss: { url: "https://tailwindcss.com", icon: "devicon:tailwindcss" },
   "next.js": { url: "https://nextjs.org/", icon: "devicon:nextjs" },
   "sanity.io": { url: "https://www.sanity.io/", icon: "devicon:sanity" },
@@ -19,18 +19,18 @@ export const stacks: Record<string, StackMeta> = {
   arduino: { url: "https://www.arduino.cc", icon: "devicon:arduino" },
   flask: { url: "https://flask.palletsprojects.com", icon: "devicon:flask" },
   streamlit: { url: "https://streamlit.io", icon: "devicon:streamlit" },
-  yolo: { url: "https://docs.ultralytics.com/", icon: "simple-icons:yolo" },
-  gemini: { url: "https://aistudio.google.com/", icon: "vscode-icons:file-type-gemini" },
+  yolo: { url: "https://docs.ultralytics.com/", icon: "devicon:python" },
+  gemini: { url: "https://aistudio.google.com/", icon: "logos:google-gemini-icon" },
   php: { url: "https://www.php.net", icon: "devicon:php" },
   laravel: { url: "https://laravel.com", icon: "devicon:laravel" },
   alpinejs: { url: "https://alpinejs.dev", icon: "devicon:alpinejs" },
-  prelineui: { url: "https://preline.co", icon: "gg:ui-kit" },
+  prelineui: { url: "https://preline.co", icon: "devicon:bootstrap" },
   mysql: { url: "https://www.mysql.com", icon: "devicon:mysql" },
   imagekit: { url: "https://imagekit.io", icon: "material-symbols:image" },
   slim: { url: "https://www.slimframework.com", icon: "logos:slim" },
   sqlserver: { url: "https://www.microsoft.com/en-us/sql-server", icon: "devicon:microsoftsqlserver" },
   golang: { url: "https://golang.org", icon: "devicon:go" },
-  "flow launcher": { url: "https://www.flowlauncher.com", icon: "fluent:desktop-flow-24-filled" },
+  "flow launcher": { url: "https://www.flowlauncher.com", icon: "devicon-plain:devicon" },
   "notion api": { url: "https://developers.notion.com", icon: "devicon:notion" },
   fastapi: { url: "https://fastapi.tiangolo.com", icon: "devicon:fastapi" },
   docker: { url: "https://www.docker.com", icon: "devicon:docker" },
@@ -39,9 +39,9 @@ export const stacks: Record<string, StackMeta> = {
   nestjs: { url: "https://nestjs.com", icon: "devicon:nestjs" },
   "socket.io": { url: "https://socket.io", icon: "devicon:socketio" },
   supabase: { url: "https://supabase.com", icon: "devicon:supabase" },
-  langchain: { url: "https://langchain-ai.github.io", icon: "devicon:langchain" },
+  langchain: { url: "https://langchain-ai.github.io", icon: "devicon:python" },
   react: { url: "https://react.dev", icon: "devicon:react" },
-  vite: { url: "https://vite.dev", icon: "logos:vite-icon" },
+  vite: { url: "https://vite.dev", icon: "thesvg-color:vite" },
   mongodb: { url: "https://www.mongodb.com/", icon: "devicon:mongodb" },
   hono: { url: "https://hono.dev/", icon: "logos:hono" },
   bun: { url: "https://bun.sh/", icon: "devicon:bun" },
@@ -49,13 +49,13 @@ export const stacks: Record<string, StackMeta> = {
   threejs: { url: "https://threejs.org/", icon: "devicon:threejs" },
   "scikit-learn": { url: "https://scikit-learn.org/", icon: "devicon:scikitlearn" },
   pandas: { url: "https://pandas.pydata.org/", icon: "devicon:pandas" },
-  "tf-idf": { url: "https://scikit-learn.org/", icon: "devicon:python" },
+  "tf-idf": { url: "https://scikit-learn.org/", icon: "devicon:huggingface" },
   numpy: { url: "https://numpy.org/", icon: "devicon:numpy" },
 };
 
 export type StackKey = keyof typeof stacks;
 
-export const FALLBACK_STACK_ICON = "mdi:code-braces";
+export const FALLBACK_STACK_ICON = "devicon:devicon";
 
 function normalizeKey(name: string): string {
   return name.toLowerCase().trim();
@@ -85,5 +85,7 @@ export function getStackUrl(name: string): string | undefined {
 }
 
 export function getStackIcon(name: string): string {
-  return getStack(name).icon;
+  const icon = getStack(name).icon;
+  // Convert from 'devicon:astro' format to API URL format 'devicon/astro'
+  return icon.replace(':', '/');
 }
