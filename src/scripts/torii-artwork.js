@@ -21,7 +21,7 @@ const CLICK_RIPPLE_BASE_DISPLACEMENT = 0.0022
 const CLICK_RIPPLE_LIFETIME = 2.2
 const CLICK_RIPPLE_SPEED = 0.26
 const IMPACT_DURATION = 0.35
-const FADE_IN = 0.5
+const FADE_IN = 0.4 // was 1.0; raise it back if you prefer the slower reveal
 const RIPPLES = 3
 const HIT_THRESHOLD = 0.18
 
@@ -75,13 +75,12 @@ const vertexSource = /* glsl */ `
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v))
 const lerp = (a, b, t) => a + (b - a) * t
 
+// decode() does the image decoding off the main thread, so texImage2D doesn't stall.
 function loadImage(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = reject
-    img.src = url
-  })
+  const img = new Image()
+  img.decoding = 'async'
+  img.src = url
+  return img.decode().then(() => img)
 }
 
 function cacheMask(image) {
@@ -167,10 +166,16 @@ function mountArtwork() {
     const s = gl.createShader(type)
     gl.shaderSource(s, src)
     gl.compileShader(s)
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-      throw new Error(gl.getShaderInfoLog(s))
-    }
+    // Status is checked later in checkProgram so compiling can run in parallel.
     return s
+  }
+
+  const checkProgram = (prog) => {
+    if (!gl.getProgramParameter(prog.p, gl.LINK_STATUS)) {
+      const logs = prog.shaders.map((s) => gl.getShaderInfoLog(s)).join('\n')
+      throw new Error(`${gl.getProgramInfoLog(prog.p)}\n${logs}`)
+    }
+    for (const s of prog.shaders) gl.deleteShader(s)
   }
 
   const makeProgram = (fragSrc) => {
@@ -181,10 +186,7 @@ function mountArtwork() {
     gl.attachShader(p, fs)
     gl.bindAttribLocation(p, 0, 'position')
     gl.linkProgram(p)
-    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p))
-    gl.deleteShader(vs)
-    gl.deleteShader(fs)
-    return { p, loc: {} }
+    return { p, loc: {}, shaders: [vs, fs] }
   }
 
   const uloc = (prog, name) => (prog.loc[name] ??= gl.getUniformLocation(prog.p, name))
@@ -419,7 +421,9 @@ function mountArtwork() {
     textures.artwork = makeTexture(artworkImg, { srgb: true, mipmaps: true })
     textures.mask = makeTexture(maskImg)
     textures.normal = makeTexture(normalImg, { repeat: true })
-    maskPixels = cacheMask(maskImg)
+    // Only needed at click time, so keep getImageData off the critical path.
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 300))
+    idle(() => { if (!disposed) maskPixels = cacheMask(maskImg) })
 
     programs.water = makeProgram(waterFragmentShader)
     programs.source = makeProgram(godRaySourceFragmentShader)
@@ -428,6 +432,7 @@ function mountArtwork() {
     programs.combine = makeProgram(combineFragmentShader)
     programs.output = makeProgram(outputFragmentShader)
 
+    const finish = () => {
     // Constant uniforms, set once.
     const set = (prog, fn) => {
       gl.useProgram(prog.p)
@@ -461,6 +466,27 @@ function mountArtwork() {
     loaded = true
     resize()
     requestRender()
+    }
+
+    // With KHR_parallel_shader_compile the browser compiles all six programs
+    // off the main thread; we just poll until they're done.
+    const parallel = gl.getExtension('KHR_parallel_shader_compile')
+    const allPrograms = Object.values(programs)
+    const waitForCompile = () => {
+      if (disposed) return
+      if (parallel && !allPrograms.every((pr) => gl.getProgramParameter(pr.p, parallel.COMPLETION_STATUS_KHR))) {
+        requestAnimationFrame(waitForCompile)
+        return
+      }
+      try {
+        allPrograms.forEach(checkProgram)
+      } catch (err) {
+        console.warn('Torii shader error:', err)
+        return
+      }
+      finish()
+    }
+    waitForCompile()
   }
 
   const loadArtwork = () => {
@@ -555,6 +581,7 @@ function mountArtwork() {
   }, { threshold: 0.01 })
   intersectionObserver.observe(host)
   resize()
+  loadArtwork() // start downloading immediately; rendering still waits for visibility
 
   cleanupCurrent = () => {
     if (disposed) return
