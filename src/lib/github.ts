@@ -1,4 +1,7 @@
-import { GITHUB_TOKEN } from 'astro:env/server'; // CHANGED: replaces import.meta.env.GITHUB_TOKEN
+import { GITHUB_TOKEN, getSecret } from 'astro:env/server';
+
+
+  // Keep the rest of your existing function unchanged.
 
 const USER = 'justKevv';
 const EXCLUDED = ['xavierzaidane/resume-ai', 'yourfzz/mgym', 'srikresna/preparation-git'];
@@ -36,9 +39,15 @@ export interface Day { date: string; count: number; level: number }
 export interface GithubData { prs: PR[]; days: Day[]; total: number }
 
 async function fetchGithubData(): Promise<GithubData> {
+  const tokenFromSchema = GITHUB_TOKEN;
+  const tokenFromGetter = getSecret('GITHUB_TOKEN');
+
+  console.log('[github] schema token:', !!tokenFromSchema);
+  console.log('[github] getSecret token:', !!tokenFromGetter);
   console.log('[github] token length:', GITHUB_TOKEN?.length ?? 'undefined');
   try {
-    const token = (GITHUB_TOKEN ?? '').replace(/[^\x21-\x7E]/g, ''); // keep printable ASCII only
+    const token = (tokenFromSchema ?? tokenFromGetter ?? '')
+      .replace(/[^\x21-\x7E]/g, '');
     if (!token) {
       console.error('[github] GITHUB_TOKEN is missing or empty');
       return { prs: [], days: [], total: 0 };
