@@ -36,6 +36,7 @@ export interface Day { date: string; count: number; level: number }
 export interface GithubData { prs: PR[]; days: Day[]; total: number }
 
 async function fetchGithubData(): Promise<GithubData> {
+  console.log('[github] token length:', GITHUB_TOKEN?.length ?? 'undefined');
   try {
     const token = (GITHUB_TOKEN ?? '').replace(/[^\x21-\x7E]/g, ''); // keep printable ASCII only
     if (!token) {
