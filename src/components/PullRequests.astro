@@ -20,11 +20,14 @@ const headers: Record<string, string> = { Accept: 'application/vnd.github+json' 
 if (import.meta.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${import.meta.env.GITHUB_TOKEN}`;
 
 let pullRequests: PullRequest[] = [];
+let loadError = false;
 
 try {
     const query = `type:pr is:merged author:${GITHUB_USERNAME} -user:${GITHUB_USERNAME}`;
     const response = await fetch(`https://api.github.com/search/issues?q=${encodeURIComponent(query)}&sort=created&order=desc&per_page=100`, { headers });
-    if (response.ok) {
+    if (!response.ok) {
+        loadError = true;
+    } else {
         const data = await response.json();
         const items: { title: string; html_url: string; repository_url: string; number: number }[] = (data.items ?? [])
             .filter((item: { repository_url: string }) => !EXCLUDED_REPOS.includes(item.repository_url.replace('https://api.github.com/repos/', '')));
@@ -50,16 +53,19 @@ try {
         }));
     }
 } catch {
+    loadError = true;
     pullRequests = [];
 }
 ---
 
-{pullRequests.length > 0 && (
+{(loadError || pullRequests.length > 0) && (
     <section class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col justify-center gap-4 py-12 font-family-cause sm:w-full" aria-label="Merged pull requests">
         <div class="flex items-center justify-between text-xs text-neutral-500">
             <span class="text-[13px]">Pull requests</span>
-            <span>{pullRequests.length} merged</span>
+            {!loadError && <span>{pullRequests.length} merged</span>}
         </div>
+
+        {loadError && <p class="text-xs text-neutral-500">Couldn't load pull requests right now.</p>}
 
         <ul class="flex flex-col gap-3">
             {pullRequests.slice(0, RECENT_COUNT).map((pr) => (
