@@ -1,65 +1,65 @@
----
-const GITHUB_USERNAME = 'justKevv';
-const LEVEL_CLASSES = [
-    'bg-neutral-200/70',
-    'bg-[#741C1C]/25',
-    'bg-[#741C1C]/50',
-    'bg-[#741C1C]/75',
-    'bg-[#741C1C]',
-];
-
-interface Contribution {
-    date: string;
-    count: number;
-    level: number;
-}
-
-let contributions: Contribution[] = [];
-let totalLastYear = 0;
-let loadError = false;
-
-try {
-    const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`);
-    if (!response.ok) {
-        loadError = true;
-    } else {
-        const data = await response.json();
-        contributions = data.contributions ?? [];
-        totalLastYear = data.total?.lastYear ?? 0;
-    }
-} catch {
-    loadError = true;
-    contributions = [];
-}
-
-const firstWeekday = contributions.length ? new Date(`${contributions[0].date}T00:00:00Z`).getUTCDay() : 0;
-const cells: (Contribution | null)[] = [
-    ...Array.from({ length: firstWeekday }, () => null),
-    ...contributions,
-];
----
-
 <section class="mx-auto flex w-[calc(100%-5rem)] max-w-120 flex-col justify-center gap-4 py-12 font-family-cause sm:w-full" aria-label="GitHub contributions">
     <div class="flex items-center justify-between text-xs text-neutral-500">
         <span class="text-[13px]">GitHub</span>
-        <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-neutral-950">@{GITHUB_USERNAME}</a>
+        <a href="https://github.com/justKevv" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-neutral-950">@justKevv</a>
     </div>
 
-    {contributions.length > 0 ? (
-        <div class="grid grid-flow-col grid-rows-7 auto-cols-fr gap-[3px]" role="img" aria-label={`${totalLastYear} GitHub contributions in the last year`}>
-            {cells.map((cell) =>
-                cell ? (
-                    <span class={`aspect-square rounded-[2px] ${LEVEL_CLASSES[cell.level] ?? LEVEL_CLASSES[0]}`} title={`${cell.count} contribution${cell.count === 1 ? '' : 's'} on ${cell.date}`}></span>
-                ) : (
-                    <span class="aspect-square"></span>
-                )
-            )}
-        </div>
-    ) : null}
+    <div data-gh-grid class="grid grid-flow-col grid-rows-7 auto-cols-fr gap-[3px]" role="img" hidden></div>
 
-    {loadError ? (
-            <p class="text-center text-xs text-neutral-500">Couldn't load contributions right now.</p>
-        ) : (
-            <p class="text-center text-xs text-neutral-500">{totalLastYear} contributions in the last year</p>
-        )}
+    <p data-gh-status class="text-center text-xs text-neutral-500">Loading contributions…</p>
 </section>
+
+<script>
+    const LEVEL_CLASSES = [
+        'bg-neutral-200/70',
+        'bg-[#741C1C]/25',
+        'bg-[#741C1C]/50',
+        'bg-[#741C1C]/75',
+        'bg-[#741C1C]',
+    ];
+
+    interface Contribution {
+        date: string;
+        count: number;
+        level: number;
+    }
+
+    const loadContributions = async () => {
+        const grid = document.querySelector<HTMLElement>('[data-gh-grid]');
+        const status = document.querySelector<HTMLElement>('[data-gh-status]');
+        if (!grid || !status) return;
+
+        try {
+            const response = await fetch('https://github-contributions-api.jogruber.de/v4/justKevv?y=last');
+            if (!response.ok) throw new Error(`status ${response.status}`);
+            const data = await response.json();
+            const contributions: Contribution[] = data.contributions ?? [];
+            const totalLastYear: number = data.total?.lastYear ?? 0;
+            if (contributions.length === 0) throw new Error('no contributions');
+
+            const firstWeekday = new Date(`${contributions[0].date}T00:00:00Z`).getUTCDay();
+            const cells: (Contribution | null)[] = [
+                ...Array.from({ length: firstWeekday }, () => null),
+                ...contributions,
+            ];
+
+            grid.setAttribute('aria-label', `${totalLastYear} GitHub contributions in the last year`);
+            for (const cell of cells) {
+                const span = document.createElement('span');
+                span.className = 'aspect-square';
+                if (cell) {
+                    span.classList.add('rounded-[2px]', ...(LEVEL_CLASSES[cell.level] ?? LEVEL_CLASSES[0]).split(' '));
+                    span.title = `${cell.count} contribution${cell.count === 1 ? '' : 's'} on ${cell.date}`;
+                }
+                grid.append(span);
+            }
+            grid.hidden = false;
+            status.textContent = `${totalLastYear} contributions in the last year`;
+        } catch (error) {
+            console.error('[GitHubContributions]', error);
+            status.textContent = "Couldn't load contributions right now.";
+        }
+    };
+
+    loadContributions();
+</script>
